@@ -1,7 +1,9 @@
 #include "ogre_application.h"
-#include "bin/path_config.h"
+#include "path_config.h"
 
 /*
+	this is a test//delete me
+
 	Player Ship Controls:
 		- A = Engage Forward Thruster
 		- Z = Engage Back Thruster
