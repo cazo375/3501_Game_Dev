@@ -1,21 +1,22 @@
 #include "ogre_application.h"
-#include "bin/path_config.h"
+#include "path_config.h"
 
 /*
 	Player Ship Controls:
-		- A = Engage Forward Thruster
-		- Z = Engage Back Thruster
-		- S = Roll Ship
-		- X = Roll Ship
-		- < = Engage left strafe thruster
-		- > = Enage right strafe thruster
+		- W = Engage Forward Thruster
+		- S = Engage Back Thruster
+		- , = Roll Ship Left
+		- . = Roll Ship Right
+		- A = Engage left strafe thruster
+		- D = Enage right strafe thruster
+		- E = Move ship up
+		- X = Move ship down
 		- F = Fire Lazer
 		- Up Arrow: Rotate ship upwards
 		- Downward Arrow: Rotate ship downwards
 		- Left Arrow: Turn Ship Sideways
 		- Right Arrow: Turn Ship Right
-		- Page Up: Move ship up
-		- Page Down: Move ship down
+		
 
 	Target Cube Controls:
 		- I = Move Target Cube Up
@@ -417,11 +418,11 @@ namespace ogre_application {
 			applyQuaternionRotation(camera, Ogre::Quaternion(Ogre::Degree(-ROTATION_THRUST), camera->getUp()));
 		}
 
-		if (keyboard_->isKeyDown(OIS::KC_S)){
-			applyQuaternionRotation(camera, Ogre::Quaternion(Ogre::Degree(ROTATION_THRUST), camera->getDirection()));
+		if (keyboard_->isKeyDown(OIS::KC_COMMA)){
+			applyQuaternionRotation(camera, Ogre::Quaternion(Ogre::Degree(-ROTATION_THRUST), camera->getDirection()));
 		}
 
-		if (keyboard_->isKeyDown(OIS::KC_X)){
+		if (keyboard_->isKeyDown(OIS::KC_PERIOD)){
 			applyQuaternionRotation(camera, Ogre::Quaternion(Ogre::Degree(ROTATION_THRUST), camera->getDirection()));
 		}
 
@@ -434,27 +435,27 @@ namespace ogre_application {
 		}
 
 		/* Camera translation */
-		if (keyboard_->isKeyDown(OIS::KC_A)){
+		if (keyboard_->isKeyDown(OIS::KC_W)){
 			currentForwardThrust = std::min (currentForwardThrust + ACCELERATION_STEP, MAX_FORWARD_THRUST);
 		}
 
-		if (keyboard_->isKeyDown(OIS::KC_Z)){
+		if (keyboard_->isKeyDown(OIS::KC_S)){
 			currentForwardThrust = std::max (currentForwardThrust - ACCELERATION_STEP, MAX_REVRESE_THRUST);
 		}
 
-		if (keyboard_->isKeyDown(OIS::KC_PGUP)){
+		if (keyboard_->isKeyDown(OIS::KC_X)){
 			currentUpDownThrust = std::max (currentUpDownThrust - ACCELERATION_STEP, MAX_REVRESE_THRUST);
 		}
 
-		if (keyboard_->isKeyDown(OIS::KC_PGDOWN)){
+		if (keyboard_->isKeyDown(OIS::KC_E)){
 			currentUpDownThrust = std::min (currentUpDownThrust + ACCELERATION_STEP, MAX_FORWARD_THRUST);
 		}
 
-		if (keyboard_->isKeyDown(OIS::KC_COMMA)){
+		if (keyboard_->isKeyDown(OIS::KC_D)){
 			currentSideThrust = std::min (currentSideThrust + ACCELERATION_STEP, MAX_FORWARD_THRUST);
 		}
 
-		if (keyboard_->isKeyDown(OIS::KC_PERIOD)){
+		if (keyboard_->isKeyDown(OIS::KC_A)){
 			currentSideThrust = std::max (currentSideThrust - ACCELERATION_STEP, MAX_REVRESE_THRUST);
 		}
 
