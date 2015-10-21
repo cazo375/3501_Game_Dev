@@ -3,19 +3,20 @@
 
 /*
 	Player Ship Controls:
-		- A = Engage Forward Thruster
-		- Z = Engage Back Thruster
-		- S = Roll Ship
-		- X = Roll Ship
-		- < = Engage left strafe thruster
-		- > = Enage right strafe thruster
+		- W = Engage Forward Thruster
+		- S = Engage Back Thruster
+		- , = Roll Ship Left
+		- . = Roll Ship Right
+		- A = Engage left strafe thruster
+		- D = Enage right strafe thruster
+		- E = Move ship up
+		- X = Move ship down
 		- F = Fire Lazer
 		- Up Arrow: Rotate ship upwards
 		- Downward Arrow: Rotate ship downwards
 		- Left Arrow: Turn Ship Sideways
 		- Right Arrow: Turn Ship Right
-		- Page Up: Move ship up
-		- Page Down: Move ship down
+		
 
 	Target Cube Controls:
 		- I = Move Target Cube Up
