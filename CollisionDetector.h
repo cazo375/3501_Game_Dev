@@ -8,6 +8,7 @@
 #include "OGRE/OgreEntity.h"
 #include "OIS/OIS.h"
 
+// Name Space Definition
 namespace Collision_Manager {
 	
 	// Base Class For This Object
