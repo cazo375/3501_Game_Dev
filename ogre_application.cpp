@@ -2,7 +2,6 @@
 #include "path_config.h"
 
 /*
-	this is a test//delete me
 
 	Player Ship Controls:
 		- A = Engage Forward Thruster
@@ -419,12 +418,12 @@ namespace ogre_application {
 			applyQuaternionRotation(camera, Ogre::Quaternion(Ogre::Degree(-ROTATION_THRUST), camera->getUp()));
 		}
 
-		if (keyboard_->isKeyDown(OIS::KC_S)){
+		if (keyboard_->isKeyDown(OIS::KC_PERIOD)){
 			applyQuaternionRotation(camera, Ogre::Quaternion(Ogre::Degree(ROTATION_THRUST), camera->getDirection()));
 		}
 
-		if (keyboard_->isKeyDown(OIS::KC_X)){
-			applyQuaternionRotation(camera, Ogre::Quaternion(Ogre::Degree(ROTATION_THRUST), camera->getDirection()));
+		if (keyboard_->isKeyDown(OIS::KC_COMMA)){
+			applyQuaternionRotation(camera, Ogre::Quaternion(Ogre::Degree(-ROTATION_THRUST), camera->getDirection()));
 		}
 
 		if (keyboard_ ->isKeyDown(OIS::KC_F)){
@@ -436,27 +435,27 @@ namespace ogre_application {
 		}
 
 		/* Camera translation */
-		if (keyboard_->isKeyDown(OIS::KC_A)){
+		if (keyboard_->isKeyDown(OIS::KC_W)){
 			currentForwardThrust = std::min (currentForwardThrust + ACCELERATION_STEP, MAX_FORWARD_THRUST);
 		}
 
-		if (keyboard_->isKeyDown(OIS::KC_Z)){
+		if (keyboard_->isKeyDown(OIS::KC_S)){
 			currentForwardThrust = std::max (currentForwardThrust - ACCELERATION_STEP, MAX_REVRESE_THRUST);
 		}
 
-		if (keyboard_->isKeyDown(OIS::KC_PGUP)){
+		if (keyboard_->isKeyDown(OIS::KC_C)){
 			currentUpDownThrust = std::max (currentUpDownThrust - ACCELERATION_STEP, MAX_REVRESE_THRUST);
 		}
 
-		if (keyboard_->isKeyDown(OIS::KC_PGDOWN)){
+		if (keyboard_->isKeyDown(OIS::KC_E)){
 			currentUpDownThrust = std::min (currentUpDownThrust + ACCELERATION_STEP, MAX_FORWARD_THRUST);
 		}
 
-		if (keyboard_->isKeyDown(OIS::KC_COMMA)){
+		if (keyboard_->isKeyDown(OIS::KC_D)){
 			currentSideThrust = std::min (currentSideThrust + ACCELERATION_STEP, MAX_FORWARD_THRUST);
 		}
 
-		if (keyboard_->isKeyDown(OIS::KC_PERIOD)){
+		if (keyboard_->isKeyDown(OIS::KC_A)){
 			currentSideThrust = std::max (currentSideThrust - ACCELERATION_STEP, MAX_REVRESE_THRUST);
 		}
 
@@ -465,6 +464,9 @@ namespace ogre_application {
 			camera->setPosition(0.0, 0.0, 800.0);
 			camera_node->setPosition(0.0, 0.0, 800.0);
 			camera->setOrientation(Ogre::Quaternion::IDENTITY);
+			currentForwardThrust = 0.0f;
+			currentSideThrust = 0.0f;
+			currentUpDownThrust = 0.0f;
 		}
 
 		runCollisionDetection();
