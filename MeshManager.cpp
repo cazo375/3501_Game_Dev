@@ -285,13 +285,14 @@ namespace Mesh_Manager_Space {
 		/* Add triangles to the object */
 		for (int i = 0; i < num_samples_theta; i++){
 			for (int j = 0; j < (num_samples_phi-1); j++){
+
 				// Two triangles per quad
-				object->triangle(((i + 1) % num_samples_theta)*num_samples_phi + j, 
-					i*num_samples_phi + (j + 1),
-					i*num_samples_phi + j);
-				object->triangle(((i + 1) % num_samples_theta)*num_samples_phi + j, 
-					((i + 1) % num_samples_theta)*num_samples_phi + (j + 1), 
-					i*num_samples_phi + (j + 1));
+				//object->triangle(((i + 1) % num_samples_theta)*num_samples_phi + j, i*num_samples_phi + (j + 1), i*num_samples_phi + j);
+				//object->triangle(((i + 1) % num_samples_theta)*num_samples_phi + j, ((i + 1) % num_samples_theta)*num_samples_phi + (j + 1), i*num_samples_phi + (j + 1));
+
+				// Two triangles per quad
+				object->triangle(i*num_samples_phi + j, i*num_samples_phi + (j + 1), ((i + 1) % num_samples_theta)*num_samples_phi + j);
+				object->triangle(i*num_samples_phi + (j + 1), ((i + 1) % num_samples_theta)*num_samples_phi + (j + 1), ((i + 1) % num_samples_theta)*num_samples_phi + j);
 			}
 		}
 
@@ -302,10 +303,75 @@ namespace Mesh_Manager_Space {
 		object->convertToMesh("sphere.mesh");
 	}
 
+	// Creates Our Reverse Triangle Sphere Mesh... Use When Y
+	void Mesh_Manager::createReverseSphere (Ogre::SceneManager* scene_manager) {
+		
+		/* Retrieve scene manager and root scene node */
+		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
+
+		/* Create the 3D object */
+		Ogre::ManualObject* object = NULL;
+		object = scene_manager->createManualObject("ReverseSphere");
+		object->setDynamic(false);
+
+		/* Create triangle list for the object */
+		object->begin("", Ogre::RenderOperation::OT_TRIANGLE_LIST);
+
+		/* Add vertices to the object */
+		float theta, phi; // Angles for parametric equation
+		Ogre::Vector3 vertex_position;
+		Ogre::Vector3 vertex_normal;
+		Ogre::ColourValue vertex_color;
+		Ogre::Vector2 texture_coord;
+
+		float radius = 0.6;
+		int num_samples_theta = 90;
+		int num_samples_phi = 45;
+
+		for (int i = 0; i < num_samples_theta; i++){
+
+			theta = Ogre::Math::TWO_PI*i/(num_samples_theta-1); // angle theta
+
+			for (int j = 0; j < num_samples_phi; j++){
+
+				phi = Ogre::Math::PI*j/(num_samples_phi-1); // angle phi
+
+				/* Define position, normal and color of vertex */
+				vertex_normal = Ogre::Vector3(cos(theta)*sin(phi), sin(theta)*sin(phi), -cos(phi));
+				vertex_position = Ogre::Vector3(vertex_normal.x*radius, vertex_normal.y*radius, vertex_normal.z*radius);
+				vertex_color = Ogre::ColourValue(0.0, 0.0, 1.0);
+				texture_coord = Ogre::Vector2(((float)i)/((float)num_samples_theta), 1.0-((float)j)/((float)num_samples_phi));
+
+				/* Add them to the object */
+				object->position(vertex_position);
+				object->normal(vertex_normal);
+				object->colour(vertex_color); 
+				object->textureCoord(texture_coord);
+			}
+		}
+
+		/* Add triangles to the object */
+		for (int i = 0; i < num_samples_theta; i++){
+			for (int j = 0; j < (num_samples_phi-1); j++){
+
+				// Two triangles per quad
+				object->triangle(i*num_samples_phi + j, i*num_samples_phi + (j + 1), ((i + 1) % num_samples_theta)*num_samples_phi + j);
+				object->triangle(i*num_samples_phi + (j + 1), ((i + 1) % num_samples_theta)*num_samples_phi + (j + 1), ((i + 1) % num_samples_theta)*num_samples_phi + j);
+			}
+		}
+
+		/* We finished the object */
+		object->end();
+
+		/* Convert triangle list to a mesh */
+		object->convertToMesh("reverse.sphere.mesh");
+	}
+
 	// Builds All Of Our Meshes When Called
 	void Mesh_Manager::buildAllMeshes(Ogre::SceneManager* manager) {
 		createCubeMesh(manager);
 		createIcohedron(manager);
 		createSphere(manager);
+		createReverseSphere(manager);
 	}
 }

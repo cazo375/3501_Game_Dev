@@ -3,6 +3,7 @@
 
 #include <exception>
 #include <string>
+#include <vector>
 
 #include "OGRE/OgreRoot.h"
 #include "OGRE/OgreRenderSystem.h"
@@ -11,8 +12,11 @@
 #include "OGRE/OgreManualObject.h"
 #include "OGRE/OgreEntity.h"
 #include "OIS/OIS.h"
+
 #include "CollisionDetector.h"
 #include "MeshManager.h"
+#include "EnemyBase.h"
+#include "Planet.h"
 
 /* Thrust Constants */
 #define ACCELERATION_STEP 0.3f
@@ -77,8 +81,9 @@ namespace ogre_application {
 
 		/* Camera demo */
 		void CreateAsteroidField(int num_asteroids); // Create asteroid field
+		void CreatePlanetField (void);
 		void TransformAsteroidField(void);
-
+		void TransformPlanetField (void);
 	private:
 		// Create root that allows us to access Ogre commands
 		std::auto_ptr<Ogre::Root> ogre_root_;
@@ -101,6 +106,10 @@ namespace ogre_application {
 		Ogre::SceneNode* cube_[MAX_NUM_ASTEROIDS];
 		enum Direction last_dir_;
 
+		// Planets Within The Game
+		std::vector<Planet_Space::Planet> planets;
+
+		// Camera Node
 		Ogre::SceneNode* camera_node;
 
 		// Input managers

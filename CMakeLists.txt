@@ -5,11 +5,11 @@ project(CameraDemo)
 
 # Specify project files: header files and source files
 set(HDRS
-	./ogre_application.h ./CollisionDetector.h ./MeshManager.h
+	./ogre_application.h ./CollisionDetector.h ./MeshManager.h ./EnemyBase.h ./Planet.h
 )
  
 set(SRCS
-	./ogre_application.cpp ./CollisionDetector.cpp ./MeshManager.cpp ./main.cpp ./MaterialVp.glsl ./MaterialFp.glsl MaterialFile.material ./ShinyMaterialVp.glsl ./ShinyMaterialFp.glsl ./ShinyBlueMaterialVp.glsl ./ShinyBlueMaterialFp.glsl ./ShinyBlue.material ./Shiny.material
+	./ogre_application.cpp ./CollisionDetector.cpp ./Planet.cpp ./EnemyBase.cpp ./MeshManager.cpp ./main.cpp ./EarthTexture.material ./EarthTextureMaterialFp.glsl ./EarthTextureMaterialVp.glsl ./MaterialVp.glsl ./MaterialFp.glsl MaterialFile.material ./ShinyMaterialVp.glsl ./ShinyMaterialFp.glsl ./ShinyBlueMaterialVp.glsl ./ShinyBlueMaterialFp.glsl ./ShinyBlue.material ./Shiny.material
 )
 
 # The rules here are specific to Windows Systems

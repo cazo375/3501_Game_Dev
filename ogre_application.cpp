@@ -1,30 +1,30 @@
 #include "ogre_application.h"
-#include "path_config.h"
+#include "bin/path_config.h"
 
 /*
-	this is a test//delete me
+this is a test//delete me
 
-	Player Ship Controls:
-		- W = Engage Forward Thruster
-		- S = Engage Back Thruster
-		- , = Roll Ship Left
-		- . = Roll Ship Right
-		- A = Engage left strafe thruster
-		- D = Enage right strafe thruster
-		- E = Move ship up
-		- X = Move ship down
-		- F = Fire Lazer
-		- Up Arrow: Rotate ship upwards
-		- Downward Arrow: Rotate ship downwards
-		- Left Arrow: Turn Ship Sideways
-		- Right Arrow: Turn Ship Right
-		
+Player Ship Controls:
+- W = Engage Forward Thruster
+- S = Engage Back Thruster
+- , = Roll Ship Left
+- . = Roll Ship Right
+- A = Engage left strafe thruster
+- D = Enage right strafe thruster
+- E = Move ship up
+- X = Move ship down
+- F = Fire Lazer
+- Up Arrow: Rotate ship upwards
+- Downward Arrow: Rotate ship downwards
+- Left Arrow: Turn Ship Sideways
+- Right Arrow: Turn Ship Right
 
-	Target Cube Controls:
-		- I = Move Target Cube Up
-		- J = Move Target Cube Left
-		- K = Move Target Cube Down
-		- L = Move Target Cube Right
+
+Target Cube Controls:
+- I = Move Target Cube Up
+- J = Move Target Cube Left
+- K = Move Target Cube Down
+- L = Move Target Cube Right
 */
 
 namespace ogre_application {
@@ -355,6 +355,7 @@ namespace ogre_application {
 		if (animating_){
 			/* Animate transformation */
 			TransformAsteroidField();
+			TransformPlanetField();
 		}
 
 		/* Capture input */
@@ -420,11 +421,11 @@ namespace ogre_application {
 			applyQuaternionRotation(camera, Ogre::Quaternion(Ogre::Degree(-ROTATION_THRUST), camera->getUp()));
 		}
 
-		if (keyboard_->isKeyDown(OIS::KC_COMMA)){
+		if (keyboard_->isKeyDown(OIS::KC_Z)){
 			applyQuaternionRotation(camera, Ogre::Quaternion(Ogre::Degree(-ROTATION_THRUST), camera->getDirection()));
 		}
 
-		if (keyboard_->isKeyDown(OIS::KC_PERIOD)){
+		if (keyboard_->isKeyDown(OIS::KC_X)){
 			applyQuaternionRotation(camera, Ogre::Quaternion(Ogre::Degree(ROTATION_THRUST), camera->getDirection()));
 		}
 
@@ -445,7 +446,7 @@ namespace ogre_application {
 			currentForwardThrust = std::max (currentForwardThrust - ACCELERATION_STEP, MAX_REVRESE_THRUST);
 		}
 
-		if (keyboard_->isKeyDown(OIS::KC_X)){
+		if (keyboard_->isKeyDown(OIS::KC_Q)){
 			currentUpDownThrust = std::max (currentUpDownThrust - ACCELERATION_STEP, MAX_REVRESE_THRUST);
 		}
 
@@ -463,9 +464,16 @@ namespace ogre_application {
 
 		/* Reset spaceship position */
 		if (keyboard_->isKeyDown(OIS::KC_R)){
+
+			// Stop all current thrust
+			currentForwardThrust = 0;
+			currentSideThrust = 0;
+			currentUpDownThrust = 0;
+
 			camera->setPosition(0.0, 0.0, 800.0);
-			camera_node->setPosition(0.0, 0.0, 800.0);
 			camera->setOrientation(Ogre::Quaternion::IDENTITY);
+			camera_node->setOrientation(camera->getOrientation());
+			camera_node->setPosition(camera->getPosition());
 		}
 
 		runCollisionDetection();
@@ -540,6 +548,7 @@ namespace ogre_application {
 		}
 	}
 
+	// Creates Our Targetting Cube
 	void OgreApplication::CreateTargetCube (void) {
 		Ogre::SceneManager* scene_manager = ogre_root_->getSceneManager("MySceneManager");
 		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
@@ -592,6 +601,13 @@ namespace ogre_application {
 		}
 	}
 
+	// Creates The Planetary Field
+	void OgreApplication::CreatePlanetField(void) {
+		Ogre::SceneManager* scene_manager = ogre_root_->getSceneManager("MySceneManager");
+		Planet_Space::Planet nebula (scene_manager, NEBULA);
+
+		planets.push_back(nebula);
+	}
 
 	void OgreApplication::CreateAsteroidField(int num_asteroids){
 
@@ -620,6 +636,7 @@ namespace ogre_application {
 			/* Create multiple entities of a mesh */
 			Ogre::String entity_name, prefix("Asteroid");
 			for (int i = 0; i < num_asteroids_; i++){
+
 				/* Create entity */
 				entity_name = prefix + Ogre::StringConverter::toString(i);
 				//Ogre::Entity *entity = scene_manager->createEntity(entity_name, "Cube");
@@ -642,6 +659,7 @@ namespace ogre_application {
 	}
 
 
+
 	void OgreApplication::TransformAsteroidField(void){
 
 		// Rotate asteroids
@@ -655,6 +673,15 @@ namespace ogre_application {
 				// Set the position every time
 				cube_[i]->setPosition(asteroid_[i].pos);
 			}
+		}
+	}
+
+	// Transform Our Planet Field
+	void OgreApplication::TransformPlanetField(void) {
+		std::vector<Planet_Space::Planet>::iterator iter = planets.begin();
+		std::vector<Planet_Space::Planet>::iterator iter_end = planets.end();
+		for (; iter != iter_end; iter++){
+			iter->advance();
 		}
 	}
 
