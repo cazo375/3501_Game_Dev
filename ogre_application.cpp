@@ -469,6 +469,12 @@ namespace ogre_application {
 			currentUpDownThrust = 0.0f;
 		}
 
+		if (keyboard_->isKeyDown(OIS::KC_Q)){
+			currentForwardThrust = 0.0f;
+			currentSideThrust = 0.0f;
+			currentUpDownThrust = 0.0f;
+		}
+
 		runCollisionDetection();
 
 		return true;
