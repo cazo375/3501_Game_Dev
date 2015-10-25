@@ -13,7 +13,7 @@ int main(void){
 	try {
 		application.Init();
 		application.CreateTargetCube();
-		application.CreateAsteroidField(250);
+		application.CreateAsteroidField(200);
 		application.CreatePlanetField();
 		application.TransformAsteroidField();
 		application.MainLoop();
