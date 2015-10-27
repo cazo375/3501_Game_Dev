@@ -5,6 +5,15 @@
 #include <string>
 #include <vector>
 
+#include <OgreCamera.h>
+#include <OgreEntity.h>
+#include <OgreLogManager.h>
+#include <OgreRoot.h>
+#include <OgreViewport.h>
+#include <OgreSceneManager.h>
+#include <OgreRenderWindow.h>
+#include <OgreConfigFile.h>
+
 #include "OGRE/OgreRoot.h"
 #include "OGRE/OgreRenderSystem.h"
 #include "OGRE/OgreRenderWindow.h"
@@ -112,6 +121,8 @@ namespace ogre_application {
 		// Camera Node
 		Ogre::SceneNode* camera_node;
 
+		Ogre::Billboard* user_interface;
+
 		// Input managers
 		OIS::InputManager *input_manager_;
 		OIS::Mouse *mouse_;
@@ -130,6 +141,9 @@ namespace ogre_application {
 		/* Methods to handle events */
 		bool frameRenderingQueued(const Ogre::FrameEvent& fe);
 		void windowResized(Ogre::RenderWindow* rw);
+
+		//Draw User Interface
+		void drawUI(void);
 
 		// Lazer Mechanics
 		Lazer currentLazer;

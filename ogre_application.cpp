@@ -1,5 +1,5 @@
 #include "ogre_application.h"
-#include "bin/path_config.h"
+#include "path_config.h"
 
 /*
 this is a test//delete me
@@ -446,7 +446,7 @@ namespace ogre_application {
 			currentForwardThrust = std::max (currentForwardThrust - ACCELERATION_STEP, MAX_REVRESE_THRUST);
 		}
 
-		if (keyboard_->isKeyDown(OIS::KC_Q)){
+		if (keyboard_->isKeyDown(OIS::KC_X)){
 			currentUpDownThrust = std::max (currentUpDownThrust - ACCELERATION_STEP, MAX_REVRESE_THRUST);
 		}
 
@@ -501,6 +501,12 @@ namespace ogre_application {
 		}
 	}
 
+	void OgreApplication::drawUI(void){
+		int UI_layer_total = 1;
+		Ogre::SceneManager* scene_manager = ogre_root_->getSceneManager("MySceneManager");
+
+	};
+
 	void OgreApplication::windowResized(Ogre::RenderWindow* rw){
 
 		/* Update the window and aspect ratio when the window is resized */
@@ -552,7 +558,7 @@ namespace ogre_application {
 	void OgreApplication::CreateTargetCube (void) {
 		Ogre::SceneManager* scene_manager = ogre_root_->getSceneManager("MySceneManager");
 		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
-		Ogre::Entity *entity = scene_manager->createEntity("target.cube", "cube.mesh");
+		Ogre::Entity *entity = scene_manager->createEntity("target.cube", "Square.mesh");
 		Ogre::Camera* camera = scene_manager->getCamera("MyCamera");
 
 		camera_node = root_scene_node->createChildSceneNode();

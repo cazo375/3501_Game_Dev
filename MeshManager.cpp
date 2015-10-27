@@ -367,11 +367,73 @@ namespace Mesh_Manager_Space {
 		object->convertToMesh("reverse.sphere.mesh");
 	}
 
+	//void Mesh_Manager::createSquare(Ogre::SceneManager* scene_manager){
+	//	Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
+
+	//		/* Create the 3D object */
+	//	Ogre::ManualObject* object = NULL;
+	//	Ogre::String object_name = "Square";
+	//	object = scene_manager->createManualObject(object_name);
+	//	object->setDynamic(false);
+
+	//	/* Create triangle list for the object */
+	//	Ogre::String material_name = "ObjectMaterial";
+	//	object->begin(material_name, Ogre::RenderOperation::OT_TRIANGLE_LIST);
+
+	//	Ogre::Vector3 v0(-1.0,  1.0,  0.0);
+	//	Ogre::Vector3 v1( 1.0,  1.0,  0.0);
+	//	Ogre::Vector3 v2(-1.0, -1.0,  0.0);
+	//	Ogre::Vector3 v3( 1.0, -1.0,  0.0);
+
+	//	Ogre::Vector3 vertex_normal(0.0, 0.0, -1.0);
+
+	//	Ogre::ColourValue vertex_colour(0.0, 0.0, 1.0);
+
+	//	object->position(v0);
+	//	object->normal(vertex_normal);
+	//	object->textureCoord(0, 1);
+	//	object->colour(vertex_colour);
+	//	object->index(0);
+
+	//	object->position(v1);
+	//	object->normal(vertex_normal);
+	//	object->textureCoord(1, 1);
+	//	object->colour(vertex_colour);
+	//	object->index(1);
+
+	//	object->position(v2);
+	//	object->normal(vertex_normal);
+	//	object->textureCoord(0, 0);
+	//	object->colour(vertex_colour);
+	//	object->index(2);
+
+	//	object->position(v3);
+	//	object->normal(vertex_normal);
+	//	object->textureCoord(1, 0);
+	//	object->colour(vertex_colour);
+	//	object->index(3);
+	//	
+
+	//	object->triangle(0, 1, 2);
+	//	object->triangle(1, 3, 2);
+
+
+
+	//	/* We finished the object */
+	//	object->end();
+
+	//	/* Convert triangle list to a mesh */
+	//	Ogre::String mesh_name = "Square.mesh";
+	//	object->convertToMesh(mesh_name);
+
+	//};
+
 	// Builds All Of Our Meshes When Called
 	void Mesh_Manager::buildAllMeshes(Ogre::SceneManager* manager) {
 		createCubeMesh(manager);
 		createIcohedron(manager);
 		createSphere(manager);
 		createReverseSphere(manager);
+		createSquare(manager);
 	}
 }

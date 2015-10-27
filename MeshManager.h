@@ -17,6 +17,7 @@ namespace Mesh_Manager_Space {
 		static void createIcohedron (Ogre::SceneManager* manager);
 		static void createSphere (Ogre::SceneManager* manager);
 		static void createReverseSphere (Ogre::SceneManager* manager);
-		static void buildAllMeshes(Ogre::SceneManager* manager);
+		static void createSquare(Ogre::SceneManager* manager);
+		static void buildAllMeshes(Ogre::SceneManager* manager);		
 	};
 }
