@@ -30,6 +30,8 @@ namespace Enemy_Space {
 		Ogre::Vector3 original_position;
 
 		Ogre::String entity_name;
+		boolean alive;
+
 		// Path Related Variables
 		std::vector<Ogre::Vector3> pathPoints;
 		void buildPointGraph(void) ;

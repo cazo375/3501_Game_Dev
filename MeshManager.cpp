@@ -287,12 +287,8 @@ namespace Mesh_Manager_Space {
 			for (int j = 0; j < (num_samples_phi-1); j++){
 
 				// Two triangles per quad
-				//object->triangle(((i + 1) % num_samples_theta)*num_samples_phi + j, i*num_samples_phi + (j + 1), i*num_samples_phi + j);
-				//object->triangle(((i + 1) % num_samples_theta)*num_samples_phi + j, ((i + 1) % num_samples_theta)*num_samples_phi + (j + 1), i*num_samples_phi + (j + 1));
-
-				// Two triangles per quad
-				object->triangle(i*num_samples_phi + j, i*num_samples_phi + (j + 1), ((i + 1) % num_samples_theta)*num_samples_phi + j);
-				object->triangle(i*num_samples_phi + (j + 1), ((i + 1) % num_samples_theta)*num_samples_phi + (j + 1), ((i + 1) % num_samples_theta)*num_samples_phi + j);
+				object->triangle(((i + 1) % num_samples_theta)*num_samples_phi + j, i*num_samples_phi + (j + 1), i*num_samples_phi + j);
+				object->triangle(((i + 1) % num_samples_theta)*num_samples_phi + j, ((i + 1) % num_samples_theta)*num_samples_phi + (j + 1), i*num_samples_phi + (j + 1));
 			}
 		}
 

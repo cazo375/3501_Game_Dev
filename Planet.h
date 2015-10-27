@@ -19,6 +19,7 @@ namespace Planet_Space {
 		float getPlanetRadius (void);
 		Ogre::Vector3 getPlanetPostion (void);
 		void setPlanetPosition (Ogre::Vector3 value);
+		void destoryPlanet (Ogre::SceneManager* scene_manager);
 
 		// Methods For Updating Planets On A Per-Frame Basis
 		void advance(void);

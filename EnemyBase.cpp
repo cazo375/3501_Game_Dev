@@ -12,7 +12,7 @@ namespace Enemy_Space {
 	}
 
 	// Enemy Constructor
-	Enemy::Enemy (Ogre::SceneManager* scene_man, Ogre::Vector3 initalPosition) : scene_manager(scene_man) {
+	Enemy::Enemy (Ogre::SceneManager* scene_man, Ogre::Vector3 initalPosition) : scene_manager(scene_man), alive(true){
 		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
 		Ogre::Entity *entity = scene_manager->createEntity("test" + enemy_num++, "cube.mesh");
 
@@ -22,6 +22,7 @@ namespace Enemy_Space {
 		original_position = initalPosition;
 
 		enemy_node->setPosition(Ogre::Vector3 (initalPosition.x, initalPosition.y, initalPosition.z - 15));
+
 
 		buildPointGraph();
 	}
@@ -42,19 +43,18 @@ namespace Enemy_Space {
 
 			if (enemy_node->getPosition().squaredDistance(pathPoints[currentPathIndex % pathPoints.size()]) < NODE_MIN_RADIUS) {
 				currentPathIndex++;
-
-				if (currentPathIndex == 2) {
-					destoryEnemy();
-				}
 			}
 		}
 	}
 
 	// Destories The Enemy And Removes Them From The Scene 
 	void Enemy::destoryEnemy(void) {
-		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
-		root_scene_node->removeAndDestroyChild(enemy_node->getName());
-		scene_manager->destroyEntity(entity_name);
-		enemy_node = 0;
+		if (alive) {
+			Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
+			root_scene_node->removeAndDestroyChild(enemy_node->getName());
+			scene_manager->destroyEntity(entity_name);
+			enemy_node = 0;
+			alive = false;
+		}
 	}
 }

@@ -356,6 +356,7 @@ namespace ogre_application {
 			/* Animate transformation */
 			TransformAsteroidField();
 			TransformPlanetField();
+			level_manager.advanceCurrentLevel();
 		}
 
 		/* Capture input */
@@ -437,6 +438,14 @@ namespace ogre_application {
 			currentForwardThrust = 0;
 		}
 
+		// Switch Level Commands
+		if (keyboard_->isKeyDown (OIS::KC_L)) {
+			if (level_manager.canSwitchLevels()) {
+				Ogre::SceneManager* scene_manager = ogre_root_->getSceneManager("MySceneManager");
+				level_manager.cycleNextLevel(scene_manager);
+			}
+		}
+
 		/* Camera translation */
 		if (keyboard_->isKeyDown(OIS::KC_W)){
 			currentForwardThrust = std::min (currentForwardThrust + ACCELERATION_STEP, MAX_FORWARD_THRUST);
@@ -477,9 +486,12 @@ namespace ogre_application {
 		}
 
 		runCollisionDetection();
+		level_manager.incrementLevelTicker();
 
 		return true;
 	}
+
+
 
 	// Apply Our Quaterion Rotations To What We Need
 	void OgreApplication::applyQuaternionRotation(Ogre::Camera *c, Ogre::Quaternion & q) {
@@ -685,5 +697,10 @@ namespace ogre_application {
 		}
 	}
 
+	// Fires The Entire Game Off...
+	void OgreApplication::startGame(void) {
+		Ogre::SceneManager* scene_manager = ogre_root_->getSceneManager("MySceneManager");
+		level_manager.cycleNextLevel(scene_manager);
+	}
 
 } // namespace ogre_application;

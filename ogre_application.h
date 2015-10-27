@@ -15,8 +15,7 @@
 
 #include "CollisionDetector.h"
 #include "MeshManager.h"
-#include "EnemyBase.h"
-#include "Planet.h"
+#include "Level_Manager.h"
 
 /* Thrust Constants */
 #define ACCELERATION_STEP 0.3f
@@ -84,9 +83,40 @@ namespace ogre_application {
 		void CreatePlanetField (void);
 		void TransformAsteroidField(void);
 		void TransformPlanetField (void);
+
+		/* Level Methods*/
+		void startGame(void);
+
 	private:
-		// Create root that allows us to access Ogre commands
+
+		/*----------------------------------- Functions ------------------------------*/
+		/* Methods to initialize the application */
+		void InitRootNode(void);
+		void InitPlugins(void);
+		void InitRenderSystem(void);
+		void InitWindow(void);
+		void InitViewport(void);
+		void InitEvents(void);
+		void InitOIS(void);
+		void LoadMaterials(void);
+
+		/* Methods to handle events */
+		bool frameRenderingQueued(const Ogre::FrameEvent& fe);
+		void windowResized(Ogre::RenderWindow* rw);
+
+		// Methods For Moving Objects On A Frame Per Frame Basis
+		void moveLazer (void);
+		void applyQuaternionRotation (Ogre::Camera* c, Ogre::Quaternion &q);
+
+		// Collision Detection Method
+		void runCollisionDetection(void);
+		void destoryLazer (void);
+		void destoryAstroid (int index);
+
+
+		/*----------------------------------- Variables ------------------------------*/
 		std::auto_ptr<Ogre::Root> ogre_root_;
+
 		// Main Ogre window
 		Ogre::RenderWindow* ogre_window_;
 
@@ -117,33 +147,15 @@ namespace ogre_application {
 		OIS::Mouse *mouse_;
 		OIS::Keyboard *keyboard_;
 
-		/* Methods to initialize the application */
-		void InitRootNode(void);
-		void InitPlugins(void);
-		void InitRenderSystem(void);
-		void InitWindow(void);
-		void InitViewport(void);
-		void InitEvents(void);
-		void InitOIS(void);
-		void LoadMaterials(void);
-
-		/* Methods to handle events */
-		bool frameRenderingQueued(const Ogre::FrameEvent& fe);
-		void windowResized(Ogre::RenderWindow* rw);
-
 		// Lazer Mechanics
 		Lazer currentLazer;
 		Ogre::SceneNode* lazer;
-		void moveLazer (void);
 
 		// Target Cube
 		Ogre::SceneNode* targetCube;
-		void applyQuaternionRotation (Ogre::Camera* c, Ogre::Quaternion &q);
 
-		// Collision Detection Method
-		void runCollisionDetection(void);
-		void destoryLazer (void);
-		void destoryAstroid (int index);
+		// Game Variables
+		Level_Manager_Space::Level_Manager level_manager;
 
 	}; // class OgreApplication
 

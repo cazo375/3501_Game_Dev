@@ -16,6 +16,7 @@ int main(void){
 		application.CreateAsteroidField(200);
 		application.CreatePlanetField();
 		application.TransformAsteroidField();
+		application.startGame();
 		application.MainLoop();
 	}
 	catch (std::exception &e){
