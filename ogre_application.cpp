@@ -84,7 +84,6 @@ namespace ogre_application {
 		currentForwardThrust = 0.0f;
 		currentSideThrust = 0.0f;
 		currentUpDownThrust = 0.0f;
-		lazer = nullptr;
 
 		num_asteroids_ = 0;
 
@@ -357,6 +356,7 @@ namespace ogre_application {
 			TransformAsteroidField();
 			TransformPlanetField();
 			level_manager.advanceCurrentLevel();
+			player->advance();
 		}
 
 		/* Capture input */
@@ -389,55 +389,6 @@ namespace ogre_application {
 			return false;
 		}
 
-		/* Move ship according to keyboard input andlast move */
-		/* Movement factors to apply to the ship */
-		double trans_factor = 5.0; // Small continuous translation
-		float small_trans_factor = 0.1; // Translation applied with thrusters
-		Ogre::Radian rot_factor(Ogre::Math::PI / 90); // Camera rotation with directional thrusters
-
-		// Apply Our Thrusts
-		camera->setPosition(camera->getPosition() + camera->getDirection()*currentForwardThrust);
-		camera->setPosition(camera->getPosition() + camera->getUp()*currentUpDownThrust);
-		camera->setPosition(camera->getPosition() + camera->getRight()*currentSideThrust);
-		camera_node->setPosition(camera->getPosition());
-
-		if (lazer) {
-			moveLazer();
-		} 
-
-		/* Apply user commands */
-		if (keyboard_->isKeyDown(OIS::KC_UP)){
-			applyQuaternionRotation(camera, Ogre::Quaternion(Ogre::Degree(ROTATION_THRUST), camera->getRight()));
-		}
-
-		if (keyboard_->isKeyDown(OIS::KC_DOWN)){
-			applyQuaternionRotation(camera, Ogre::Quaternion(Ogre::Degree(-ROTATION_THRUST), camera->getRight()));
-		}
-
-		if (keyboard_->isKeyDown(OIS::KC_LEFT)){
-			applyQuaternionRotation(camera, Ogre::Quaternion(Ogre::Degree(ROTATION_THRUST), camera->getUp()));
-		}
-
-		if (keyboard_->isKeyDown(OIS::KC_RIGHT)){
-			applyQuaternionRotation(camera, Ogre::Quaternion(Ogre::Degree(-ROTATION_THRUST), camera->getUp()));
-		}
-
-		if (keyboard_->isKeyDown(OIS::KC_Z)){
-			applyQuaternionRotation(camera, Ogre::Quaternion(Ogre::Degree(-ROTATION_THRUST), camera->getDirection()));
-		}
-
-		if (keyboard_->isKeyDown(OIS::KC_X)){
-			applyQuaternionRotation(camera, Ogre::Quaternion(Ogre::Degree(ROTATION_THRUST), camera->getDirection()));
-		}
-
-		if (keyboard_ ->isKeyDown(OIS::KC_F)){
-			CreateCubeInstance();
-		}
-
-		if (keyboard_->isKeyDown (OIS::KC_G)) {
-			currentForwardThrust = 0;
-		}
-
 		// Switch Level Commands
 		if (keyboard_->isKeyDown (OIS::KC_L)) {
 			if (level_manager.canSwitchLevels()) {
@@ -446,30 +397,6 @@ namespace ogre_application {
 			}
 		}
 
-		/* Camera translation */
-		if (keyboard_->isKeyDown(OIS::KC_W)){
-			currentForwardThrust = std::min (currentForwardThrust + ACCELERATION_STEP, MAX_FORWARD_THRUST);
-		}
-
-		if (keyboard_->isKeyDown(OIS::KC_S)){
-			currentForwardThrust = std::max (currentForwardThrust - ACCELERATION_STEP, MAX_REVRESE_THRUST);
-		}
-
-		if (keyboard_->isKeyDown(OIS::KC_Q)){
-			currentUpDownThrust = std::max (currentUpDownThrust - ACCELERATION_STEP, MAX_REVRESE_THRUST);
-		}
-
-		if (keyboard_->isKeyDown(OIS::KC_E)){
-			currentUpDownThrust = std::min (currentUpDownThrust + ACCELERATION_STEP, MAX_FORWARD_THRUST);
-		}
-
-		if (keyboard_->isKeyDown(OIS::KC_D)){
-			currentSideThrust = std::min (currentSideThrust + ACCELERATION_STEP, MAX_FORWARD_THRUST);
-		}
-
-		if (keyboard_->isKeyDown(OIS::KC_A)){
-			currentSideThrust = std::max (currentSideThrust - ACCELERATION_STEP, MAX_REVRESE_THRUST);
-		}
 
 		/* Reset spaceship position */
 		if (keyboard_->isKeyDown(OIS::KC_R)){
@@ -485,26 +412,39 @@ namespace ogre_application {
 			camera_node->setPosition(camera->getPosition());
 		}
 
+		player->applyKeyEvent(keyboard_);
+
 		runCollisionDetection();
 		level_manager.incrementLevelTicker();
 
 		return true;
 	}
 
+	void OgreApplication::runCollisionDetection(void) {
+		Level_Space::Level* currentLevel = level_manager.getCurrentLevelObj();
+		if (currentLevel) {
+			std::vector<Planet_Space::Planet*> planets = currentLevel->getPlanets();
+			std::vector<Planet_Space::Planet*>::iterator iter = planets.begin();
+			std::vector<Planet_Space::Planet*>::iterator iter_end = planets.end();
+			for (; iter != iter_end; iter++){
+				Planet_Space::Planet* nextPlanet = (*iter);
+				if (Collision_Manager::CollisionManager::runBoundingSphereCollision (nextPlanet->getPlanetPostion(), player->getPlayerPosition(), nextPlanet->getPlanetRadius(), player->getBoundingCircleRadius())) {
+					player->resetPosition();
+					break;
+				}
+			}
+		}
 
-
-	// Apply Our Quaterion Rotations To What We Need
-	void OgreApplication::applyQuaternionRotation(Ogre::Camera *c, Ogre::Quaternion & q) {
-		c->rotate(q);
-		camera_node->setOrientation(c->getOrientation());
+		runLazerCollisionDetection();
 	}
 
-	void OgreApplication::runCollisionDetection(void) {
+	void OgreApplication::runLazerCollisionDetection(void) {
+		Ogre::SceneNode* lazer = player->getCurrentLazer();
+		Player_Space::Lazer currentLazer = player->getCurrentLazerDO();
 		if (lazer) {
 			for (int i = 0; i < num_asteroids_; i++){
 				if (cube_[i]) {
 					if (Collision_Manager::CollisionManager::runRaySphereCollision (currentLazer.pos, currentLazer.direction, asteroid_[i].pos, 8.0f)) {
-						destoryLazer();
 						destoryAstroid(i);
 						break;
 					}
@@ -537,70 +477,7 @@ namespace ogre_application {
 
 	// Creates A Cube Instance At Our Position
 	void OgreApplication::CreateCubeInstance (Ogre::Vector3 pos) {
-
-		if (!lazer) {
-			Ogre::SceneManager* scene_manager = ogre_root_->getSceneManager("MySceneManager");
-			Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
-			Ogre::Camera* camera = scene_manager->getCamera("MyCamera");
-
-			/* Create multiple entities of a mesh */
-			Ogre::String entity_name("cube");
-			Ogre::Entity *entity = scene_manager->createEntity(entity_name, "cube.mesh");
-
-			/* Create a scene node for the entity */
-			currentLazer.lifeCounter = 0;
-			currentLazer.pos = camera->getPosition();
-			currentLazer.direction = (targetCube->_getDerivedPosition() - camera_node->getPosition()).normalisedCopy();
-
-			lazer = root_scene_node->createChildSceneNode(entity_name);
-			lazer->attachObject(entity);
-			lazer->setPosition(currentLazer.pos);
-			lazer->setScale (0.50f, 0.50f, 0.5f);
-			lazer->lookAt(targetCube->_getDerivedPosition(), Ogre::Node::TransformSpace::TS_LOCAL, currentLazer.direction);
-		}
-	}
-
-	// Creates Our Targetting Cube
-	void OgreApplication::CreateTargetCube (void) {
-		Ogre::SceneManager* scene_manager = ogre_root_->getSceneManager("MySceneManager");
-		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
-		Ogre::Entity *entity = scene_manager->createEntity("target.cube", "cube.mesh");
-		Ogre::Camera* camera = scene_manager->getCamera("MyCamera");
-
-		camera_node = root_scene_node->createChildSceneNode();
-		camera_node->setPosition(camera_position_g);
-		targetCube = camera_node->createChildSceneNode("target.cube");
-		targetCube->attachObject(entity);
-		targetCube->translate(0.0f, 0.0f, -30.0f);
-	}
-
-
-	// Moves Our Lazer If It Is Defined
-	void OgreApplication::moveLazer(void) {
-		if (lazer) {
-			currentLazer.pos = currentLazer.pos + currentLazer.direction * LAZER_THRUST;
-			currentLazer.lifeCounter++;
-			lazer->setPosition(currentLazer.pos);
-
-			// Destroy Our Lazer If It Lives To Long
-			if (currentLazer.lifeCounter >= LAZER_LIFE_SPAN) {
-				destoryLazer();
-			}
-		}
-
-	}
-
-	void OgreApplication::destoryLazer(void) {
-		if (lazer) {
-			Ogre::SceneManager* scene_manager = ogre_root_->getSceneManager("MySceneManager");
-			Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
-			root_scene_node->removeAndDestroyChild(lazer->getName());
-			scene_manager->destroyEntity("cube");
-
-			// Blank Our Objects And Get Ready For The Next One
-			lazer = 0;
-			currentLazer.lifeCounter = -1;
-		}
+		player->fireWeapon();
 	}
 
 	void OgreApplication::destoryAstroid(int index) {
@@ -700,7 +577,12 @@ namespace ogre_application {
 	// Fires The Entire Game Off...
 	void OgreApplication::startGame(void) {
 		Ogre::SceneManager* scene_manager = ogre_root_->getSceneManager("MySceneManager");
+		Ogre::Camera* camera = scene_manager->getCamera("MyCamera");
+
 		level_manager.cycleNextLevel(scene_manager);
+
+		player = new Player_Space::Player (scene_manager, camera);
+		player->createPlayer();
 	}
 
 } // namespace ogre_application;

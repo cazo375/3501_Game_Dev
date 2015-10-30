@@ -12,7 +12,6 @@ int main(void){
 
 	try {
 		application.Init();
-		application.CreateTargetCube();
 		application.CreateAsteroidField(200);
 		application.CreatePlanetField();
 		application.TransformAsteroidField();

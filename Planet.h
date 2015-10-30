@@ -9,6 +9,7 @@
 
 enum PLANET_NAME {EARTH, VENUS, NEBULA};
 
+// Planet Space
 namespace Planet_Space {
 	class Planet {
 	public:

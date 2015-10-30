@@ -16,6 +16,7 @@
 #include "CollisionDetector.h"
 #include "MeshManager.h"
 #include "Level_Manager.h"
+#include "Player.h"
 
 /* Thrust Constants */
 #define ACCELERATION_STEP 0.3f
@@ -55,13 +56,6 @@ namespace ogre_application {
 		Ogre::Vector3 drift; // Drift direction
 	};
 
-	struct Lazer {
-		Ogre::Vector3 pos;
-		Ogre::Vector3 direction;
-		Ogre::Quaternion ori;
-		float lifeCounter;
-	};
-
 	/* Possible directions of the ship */
 	enum Direction { Forward, Backward, Up, Down, Left, Right };
 
@@ -75,7 +69,7 @@ namespace ogre_application {
 		OgreApplication(void);
 		void Init(void);																// Call Init() before running the main loop
 		void CreateCubeInstance (Ogre::Vector3 pos = Ogre::Vector3 (0.0, 0.0, 0.0));
-		void CreateTargetCube (void);
+		//void CreateTargetCube (void);
 		void MainLoop(void);															// Keep application active
 
 		/* Camera demo */
@@ -104,13 +98,10 @@ namespace ogre_application {
 		bool frameRenderingQueued(const Ogre::FrameEvent& fe);
 		void windowResized(Ogre::RenderWindow* rw);
 
-		// Methods For Moving Objects On A Frame Per Frame Basis
-		void moveLazer (void);
-		void applyQuaternionRotation (Ogre::Camera* c, Ogre::Quaternion &q);
-
 		// Collision Detection Method
 		void runCollisionDetection(void);
-		void destoryLazer (void);
+		void runLazerCollisionDetection (void);
+
 		void destoryAstroid (int index);
 
 
@@ -124,6 +115,8 @@ namespace ogre_application {
 		bool animating_; // Whether animation is on or off
 		bool space_down_; // Whether space key was pressed
 
+		
+		// Movement Variables		
 		float currentForwardThrust;		// The current thrust of the ship
 		float currentSideThrust;		// Curent Side Thruster Amount
 		float currentUpDownThrust;		// Current Up Down Thruster
@@ -147,9 +140,7 @@ namespace ogre_application {
 		OIS::Mouse *mouse_;
 		OIS::Keyboard *keyboard_;
 
-		// Lazer Mechanics
-		Lazer currentLazer;
-		Ogre::SceneNode* lazer;
+		Player_Space::Player* player;
 
 		// Target Cube
 		Ogre::SceneNode* targetCube;
