@@ -15,16 +15,17 @@ namespace Level_Space {
 	class Level
 	{
 	public:
-				Level(void);
+		Level(void);
 		Level(int levelNum);
 		~Level(void);
 
 		void advance (void);
 		void createLevel (Ogre::SceneManager* scene_manager);
 		void destoryLevel (Ogre::SceneManager* scene_manager);
+		std::vector<Planet_Space::Planet*> getPlanets(void);
 	private:
 		int levelNum;
 		std::vector<Enemy_Space::Enemy> enemies;
-		std::vector<Planet_Space::Planet> planets;
+		std::vector<Planet_Space::Planet*> planets;
 	};
 }

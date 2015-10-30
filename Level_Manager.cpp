@@ -15,9 +15,13 @@ namespace Level_Manager_Space {
 		return currentLevel % levels.size();
 	}
 
+	Level_Space::Level* Level_Manager::getCurrentLevelObj (void) {
+		return levels[currentLevel % levels.size()];
+	}
+
 	// Advances Our Current Level A Frame When Called 
 	void Level_Manager::advanceCurrentLevel (void) {
-		levels[currentLevel % levels.size()].advance();
+		levels[currentLevel % levels.size()]->advance();
 	}
 
 	// Cylces The Levels When Called
@@ -25,22 +29,20 @@ namespace Level_Manager_Space {
 		int test = levels.size();
 		if (currentLevel + 1 < test) {
 			if (currentLevel >= 0) {
-				levels[currentLevel % levels.size()].destoryLevel(scene_manager);
+				levels[currentLevel % levels.size()]->destoryLevel(scene_manager);
 			}
 
 			currentLevel++;
 
 			level_switch_counter = 0;
-			levels[currentLevel % levels.size()].createLevel(scene_manager);
+			levels[currentLevel % levels.size()]->createLevel(scene_manager);
 		}
 	}
 
 	// Creates Our Levels When Called
 	void Level_Manager::createAllLevels (void) {
-		Level_Space::Level testLevel(0);
-		Level_Space::Level testLevel2(1);
-		levels.push_back(testLevel);
-		levels.push_back(testLevel2);
+		levels.push_back(new Level_Space::Level(0));
+		levels.push_back(new Level_Space::Level(1));
 	}
 
 	// Checks To See If We Can Switch Levels

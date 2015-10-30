@@ -25,10 +25,11 @@ namespace Level_Manager_Space {
 		void incrementLevelTicker (void);
 
 		boolean canSwitchLevels (void);
+		Level_Space::Level* getCurrentLevelObj (void);
 
 	private:
 		int currentLevel;
 		long level_switch_counter;
-		std::vector<Level_Space::Level> levels;
+		std::vector<Level_Space::Level*> levels;
 	};
 }
