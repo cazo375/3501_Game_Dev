@@ -20,4 +20,11 @@ namespace Collision_Manager {
 		return (discr >= 0.0f);
 	};
 
+	bool CollisionManager::runBoundingSphereCollision(Ogre::Vector3 obj1, Ogre::Vector3 obj2, float radius1, float radius2) {
+		float combinedRadius = radius1 + radius2;
+		Ogre::Vector3 realPos = obj1 - obj2;
+		float distanceBetween = realPos.x * realPos.x + realPos.y * realPos.y + realPos.z * realPos.z;
+		return distanceBetween <= combinedRadius * combinedRadius;
+	}
+
 }
