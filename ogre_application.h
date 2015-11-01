@@ -101,7 +101,7 @@ namespace ogre_application {
 		// Collision Detection Method
 		void runCollisionDetection(void);
 		void runLazerCollisionDetection (void);
-
+		void runPlanetCollisionDetection (void);
 		void destoryAstroid (int index);
 
 
@@ -130,7 +130,7 @@ namespace ogre_application {
 		enum Direction last_dir_;
 
 		// Planets Within The Game
-		std::vector<Planet_Space::Planet> planets;
+		Planet_Space::Planet nebula;
 
 		// Camera Node
 		Ogre::SceneNode* camera_node;

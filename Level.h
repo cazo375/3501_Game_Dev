@@ -22,10 +22,12 @@ namespace Level_Space {
 		void advance (void);
 		void createLevel (Ogre::SceneManager* scene_manager);
 		void destoryLevel (Ogre::SceneManager* scene_manager);
+
 		std::vector<Planet_Space::Planet*> getPlanets(void);
+		std::vector<Enemy_Space::Enemy*> getEnemies (void);
 	private:
 		int levelNum;
-		std::vector<Enemy_Space::Enemy> enemies;
+		std::vector<Enemy_Space::Enemy*> enemies;
 		std::vector<Planet_Space::Planet*> planets;
 	};
 }

@@ -62,7 +62,7 @@ namespace ogre_application {
 	const Ogre::String material_directory_g = MATERIAL_DIRECTORY;
 
 
-	OgreApplication::OgreApplication(void){
+	OgreApplication::OgreApplication(void) {
 
 		/* Don't do work in the constructor, leave it for the Init() function */
 	}
@@ -337,9 +337,11 @@ namespace ogre_application {
 			}
 		}
 		catch (Ogre::Exception &e){
+			std::cout << "Exception: " << std::string(e.what());
 			throw(OgreAppException(std::string("Ogre::Exception: ") + std::string(e.what())));
 		}
 		catch(std::exception &e){
+			std::cout << "Exception: " << std::string(e.what());
 			throw(OgreAppException(std::string("std::Exception: ") + std::string(e.what())));
 		}
 	}
@@ -397,21 +399,6 @@ namespace ogre_application {
 			}
 		}
 
-
-		/* Reset spaceship position */
-		if (keyboard_->isKeyDown(OIS::KC_R)){
-
-			// Stop all current thrust
-			currentForwardThrust = 0;
-			currentSideThrust = 0;
-			currentUpDownThrust = 0;
-
-			camera->setPosition(0.0, 0.0, 800.0);
-			camera->setOrientation(Ogre::Quaternion::IDENTITY);
-			camera_node->setOrientation(camera->getOrientation());
-			camera_node->setPosition(camera->getPosition());
-		}
-
 		player->applyKeyEvent(keyboard_);
 
 		runCollisionDetection();
@@ -421,6 +408,43 @@ namespace ogre_application {
 	}
 
 	void OgreApplication::runCollisionDetection(void) {
+		runLazerCollisionDetection();
+		runPlanetCollisionDetection();
+	}
+
+	// Runs the Lazer Collision Detection
+	void OgreApplication::runLazerCollisionDetection(void) {
+		Weapon_Space::Weapon_Shot* lazer = player->getCurrentLazer();
+		if (lazer) {
+			// Check Against Our Astorids
+			for (int i = 0; i < num_asteroids_; i++){
+				if (cube_[i]) {
+					if (Collision_Manager::CollisionManager::runRaySphereCollision (lazer->getPosition(), lazer->getDirection(), asteroid_[i].pos, 8.0f)) {
+						destoryAstroid(i);
+						break;
+					}
+				}
+			}		
+
+			// Check Against Our Enemies
+			Level_Space::Level* currentLevel = level_manager.getCurrentLevelObj();
+			if (currentLevel) {
+				std::vector<Enemy_Space::Enemy*> enemies = currentLevel->getEnemies();
+				std::vector<Enemy_Space::Enemy*>::iterator iter = enemies.begin();
+				std::vector<Enemy_Space::Enemy*>::iterator iter_end = enemies.end();
+				for (; iter != iter_end; iter++){
+					Enemy_Space::Enemy* nextEnemy = (*iter);
+					if (Collision_Manager::CollisionManager::runBoundingSphereCollision (nextEnemy->getPosition(), lazer->getPosition(), nextEnemy->getBoundingSphereRadius(), 1.0f)) {
+						std::cout << "I Hit An Enemy Pa" << std::endl;
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	// Runs The Planet Collsion Detection
+	void OgreApplication::runPlanetCollisionDetection(void) {
 		Level_Space::Level* currentLevel = level_manager.getCurrentLevelObj();
 		if (currentLevel) {
 			std::vector<Planet_Space::Planet*> planets = currentLevel->getPlanets();
@@ -435,21 +459,9 @@ namespace ogre_application {
 			}
 		}
 
-		runLazerCollisionDetection();
-	}
-
-	void OgreApplication::runLazerCollisionDetection(void) {
-		Ogre::SceneNode* lazer = player->getCurrentLazer();
-		Player_Space::Lazer currentLazer = player->getCurrentLazerDO();
-		if (lazer) {
-			for (int i = 0; i < num_asteroids_; i++){
-				if (cube_[i]) {
-					if (Collision_Manager::CollisionManager::runRaySphereCollision (currentLazer.pos, currentLazer.direction, asteroid_[i].pos, 8.0f)) {
-						destoryAstroid(i);
-						break;
-					}
-				}
-			}		
+		// If The Player Escapes The Nebula
+		if (!Collision_Manager::CollisionManager::runBoundingSphereCollision (nebula.getPlanetPostion(), player->getPlayerPosition(), nebula.getPlanetRadius() - 1200, player->getBoundingCircleRadius())) {
+			player->resetPosition();
 		}
 	}
 
@@ -493,9 +505,7 @@ namespace ogre_application {
 	// Creates The Planetary Field
 	void OgreApplication::CreatePlanetField(void) {
 		Ogre::SceneManager* scene_manager = ogre_root_->getSceneManager("MySceneManager");
-		Planet_Space::Planet nebula (scene_manager, NEBULA);
-
-		planets.push_back(nebula);
+		nebula = Planet_Space::Planet(scene_manager, NEBULA);
 	}
 
 	void OgreApplication::CreateAsteroidField(int num_asteroids){
@@ -567,11 +577,7 @@ namespace ogre_application {
 
 	// Transform Our Planet Field
 	void OgreApplication::TransformPlanetField(void) {
-		std::vector<Planet_Space::Planet>::iterator iter = planets.begin();
-		std::vector<Planet_Space::Planet>::iterator iter_end = planets.end();
-		for (; iter != iter_end; iter++){
-			iter->advance();
-		}
+		nebula.advance();
 	}
 
 	// Fires The Entire Game Off...

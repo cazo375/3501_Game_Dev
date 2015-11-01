@@ -5,24 +5,23 @@ namespace Enemy_Space {
 
 	static int enemy_num;
 
-	Enemy::Enemy(void) {
+	Enemy::Enemy(void) : enemyHealth(10), boundingSphereRadius(4) {
 	}
 
 	Enemy::~Enemy (void) {
 	}
 
 	// Enemy Constructor
-	Enemy::Enemy (Ogre::SceneManager* scene_man, Ogre::Vector3 initalPosition) : scene_manager(scene_man), alive(true){
+	Enemy::Enemy (Ogre::SceneManager* scene_man, Ogre::Vector3 initalPosition) : scene_manager(scene_man), alive(true), enemyHealth(10), boundingSphereRadius(4), original_position(initalPosition){
 		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
 		Ogre::Entity *entity = scene_manager->createEntity("test" + enemy_num++, "cube.mesh");
 
 		entity_name = "enemy" + enemy_num;
 		enemy_node = root_scene_node->createChildSceneNode(entity_name);
 		enemy_node->attachObject(entity);
-		original_position = initalPosition;
 
 		enemy_node->setPosition(Ogre::Vector3 (initalPosition.x, initalPosition.y, initalPosition.z - 15));
-
+		enemy_node->setScale (boundingSphereRadius, boundingSphereRadius, boundingSphereRadius);
 
 		buildPointGraph();
 	}
@@ -56,5 +55,17 @@ namespace Enemy_Space {
 			enemy_node = 0;
 			alive = false;
 		}
+	}
+
+	int Enemy::getEnemyHealth(void) {
+		return enemyHealth;
+	}
+
+	float  Enemy::getBoundingSphereRadius(void) {
+		return boundingSphereRadius;
+	}
+
+	Ogre::Vector3 Enemy::getPosition(void){
+		return enemy_node->getPosition();
 	}
 }

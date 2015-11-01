@@ -24,6 +24,12 @@ namespace Enemy_Space {
 
 		void advance (void);		// Called On A Per Frame Basis... Causes The Enemy To Advance To It's Next Frame
 		void destoryEnemy (void);	
+
+		// Getters And Setters
+		int getEnemyHealth(void);
+		float getBoundingSphereRadius(void);
+		Ogre::Vector3 getPosition(void);
+
 	protected:
 		Ogre::SceneNode* enemy_node;
 		Ogre::SceneManager* scene_manager;
@@ -36,5 +42,10 @@ namespace Enemy_Space {
 		std::vector<Ogre::Vector3> pathPoints;
 		void buildPointGraph(void) ;
 		int currentPathIndex;
+
+		// Collision Related Variables
+		int enemyHealth;
+		float boundingSphereRadius;
+		
 	};
 }
