@@ -1,18 +1,21 @@
 #include "Player.h"
 
 namespace Player_Space {		
+
+	// Player Constructor
 	Player::Player(Ogre::SceneManager* manager, Ogre::Camera* camera, Ogre::Vector3 pos) {
 		scene_manager = manager;
 		player_camera = camera;
 		initialPosition = camera->getPosition();
 		initialOrientation = camera->getOrientation();
-		lazer = nullptr;
+		test_shot = nullptr;
 		initialize();
 	}
 
 	Player::~Player() {
 	}
 
+	// Advances the player by a frame
 	void Player::advance (void) {
 		player_camera->setPosition(player_camera->getPosition() + player_camera->getDirection()*currentForwardThrust);
 		player_camera->setPosition(player_camera->getPosition() + player_camera->getUp()*currentUpDownThrust);
@@ -28,6 +31,7 @@ namespace Player_Space {
 		camera_node->setOrientation(player_camera->getOrientation());
 	}
 
+	// Applys A Captured Key Event To This Player
 	void Player::applyKeyEvent (OIS::Keyboard* keyboard_) {
 		if (keyboard_->isKeyDown (OIS::KC_G)) {
 			initialize();
@@ -111,59 +115,25 @@ namespace Player_Space {
 
 	// Fires The Weapon If Hasn't Been Fired
 	void Player::fireWeapon (void) {
-		if (!lazer) {
-			Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
-
-			/* Create multiple entities of a mesh */
-			Ogre::String entity_name("cube");
-			Ogre::Entity *entity = scene_manager->createEntity(entity_name, "cube.mesh");
-
-			/* Create a scene node for the entity */
-			currentLazer.lifeCounter = 0;
-			currentLazer.pos = player_camera->getPosition();
-			currentLazer.direction = (targetCube->_getDerivedPosition() - camera_node->getPosition()).normalisedCopy();
-
-			lazer = root_scene_node->createChildSceneNode(entity_name);
-			lazer->attachObject(entity);
-			lazer->setPosition(currentLazer.pos);
-			lazer->setScale (0.50f, 0.50f, 0.5f);
-			lazer->lookAt(targetCube->_getDerivedPosition(), Ogre::Node::TransformSpace::TS_LOCAL, currentLazer.direction);
-		}
-	}
-
-	// Destorys the lazer when called
-	void Player::destroyFiredWeapon (void) {
-		if (lazer) {
-			Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
-			root_scene_node->removeAndDestroyChild(lazer->getName());
-			scene_manager->destroyEntity("cube");
-
-			// Blank Our Objects And Get Ready For The Next One
-			lazer = 0;
-			currentLazer.lifeCounter = -1;
+		if (!test_shot) {
+			test_shot = new Weapon_Space::Weapon_Shot (scene_manager, camera_node->getPosition(), (targetCube->_getDerivedPosition() - camera_node->getPosition()).normalisedCopy());
 		}
 	}
 
 	// Moves Our Lazer If It Is Defined
 	void Player::moveLazer(void) {
-		if (lazer) {
-			currentLazer.pos = currentLazer.pos + currentLazer.direction * LAZER_THRUST;
-			currentLazer.lifeCounter++;
-			lazer->setPosition(currentLazer.pos);
+		if (test_shot) {
+			test_shot->moveShot();
 
-			// Destroy Our Lazer If It Lives To Long
-			if (currentLazer.lifeCounter >= LAZER_LIFE_SPAN) {
-				destroyFiredWeapon();
+			if (test_shot->shouldDestoryShot()) {
+				delete test_shot;
+				test_shot = nullptr;
 			}
 		}
 	}
 
-	Ogre::SceneNode* Player::getCurrentLazer(void) {
-		return lazer;
-	}
-
-	Lazer Player::getCurrentLazerDO (void) {
-		return currentLazer;
+	Weapon_Space::Weapon_Shot* Player::getCurrentLazer(void) {
+		return test_shot;
 	}
 
 	float Player::getBoundingCircleRadius (void) {

@@ -7,6 +7,7 @@
 #include "OGRE/OgreManualObject.h"
 #include "OGRE/OgreEntity.h"
 #include "OIS/OIS.h"
+#include "WeaponBase.h"
 
 #define ACCELERATION_STEP 0.3f
 #define ORIENTATION_STEP 2.0f
@@ -39,8 +40,7 @@ namespace Player_Space {
 		void advance(void);
 		void fireWeapon (void);
 
-		Ogre::SceneNode* getCurrentLazer(void);
-		Lazer getCurrentLazerDO(void);
+		Weapon_Space::Weapon_Shot* getCurrentLazer(void);
 
 		// Collision Detection Variables
 		void resetPosition(void);
@@ -57,8 +57,7 @@ namespace Player_Space {
 		Ogre::Quaternion initialOrientation;
 
 		// Lazer Mechanics
-		Lazer currentLazer;
-		Ogre::SceneNode* lazer;
+		Weapon_Space::Weapon_Shot* test_shot;
 
 		// Movement Variables		
 		float currentForwardThrust;		// The current thrust of the ship
@@ -72,6 +71,6 @@ namespace Player_Space {
 		void applyRotation (Ogre::Quaternion& quat);
 		void destroyFiredWeapon (void);
 		void moveLazer (void);
-				void initialize(void);
+		void initialize(void);
 	};
 }

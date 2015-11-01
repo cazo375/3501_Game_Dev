@@ -13,6 +13,7 @@ enum PLANET_NAME {EARTH, VENUS, NEBULA};
 namespace Planet_Space {
 	class Planet {
 	public:
+		Planet(void);
 		Planet(Ogre::SceneManager* manager, PLANET_NAME name = EARTH);
 		~Planet(void);
 

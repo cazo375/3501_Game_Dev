@@ -7,6 +7,10 @@ namespace Planet_Space {
 
 	static int planet_num;
 
+	Planet::Planet(void) {
+		rotationQuaternion = Ogre::Quaternion(Ogre::Radian (0.0002f), Ogre::Vector3(1.0f, 1.0f, 1.0f));
+	}
+
 	// Public Constructor For Our Planet
 	Planet::Planet(Ogre::SceneManager* manager, PLANET_NAME name) : planetType (name) {
 		createPlanet(manager);
@@ -37,27 +41,33 @@ namespace Planet_Space {
 
 		switch (planetType) {
 		case EARTH :
-			planetNode = manager->getRootSceneNode()->createChildSceneNode("Earth");
-			planetName = "Earth" + planet_num++;
+			planetName = Ogre::String("Earth" + planet_num++);
 			entity = manager->createEntity(planetName, "sphere.mesh");
 			entity->setMaterialName("EarthTexture");
+
+			planetNode = manager->getRootSceneNode()->createChildSceneNode(planetName);
 			planetNode->attachObject(entity);
+
 			radius = 50.0f;
 			break;
 		case VENUS :
-			planetNode = manager->getRootSceneNode()->createChildSceneNode("Venus");
-			planetName = "Venus" + planet_num++;
+			planetName = Ogre::String("Venus" + planet_num++);
 			entity = manager->createEntity(planetName, "sphere.mesh");
 			entity->setMaterialName("VenusTexture");
+
+			planetNode = manager->getRootSceneNode()->createChildSceneNode(planetName);
 			planetNode->attachObject(entity);
+
 			radius = 40.0f;
 			break;
 		case NEBULA :
-			planetNode = manager->getRootSceneNode()->createChildSceneNode("Nebula");
-			planetName = "Nebula" + planet_num++;
-			entity = manager->createEntity("Nebula" + planet_num++, "reverse.sphere.mesh");
+			planetName = Ogre::String("Nebula" + planet_num++);
+			entity = manager->createEntity(planetName, "reverse.sphere.mesh");
 			entity->setMaterialName("NebulaTexture");
+
+			planetNode = manager->getRootSceneNode()->createChildSceneNode(planetName);
 			planetNode->attachObject(entity);
+
 			radius = 3000.0f;
 			break;
 		}
