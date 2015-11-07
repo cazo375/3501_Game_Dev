@@ -6,11 +6,12 @@ namespace Weapon_Space {
 	}
 
 	// Constructor For The Weapons Shot
-	Weapon_Shot::Weapon_Shot(Ogre::SceneManager* manager, Ogre::Vector3 position, Ogre::Vector3 dir) {
+	Weapon_Shot::Weapon_Shot(Ogre::SceneManager* manager, Ogre::Vector3 position, Ogre::Vector3 dir, Ogre::String shotName) {
 		scene_manager = manager;
 		lifeCounter = 0;
+		damageAmount = 1;
 		direction = dir;
-		entity_name = "shot";
+		entity_name = shotName + "shot";
 		weapon_mesh = "cube.mesh";
 
 		createEntity(position);
@@ -21,7 +22,7 @@ namespace Weapon_Space {
 
 	void Weapon_Shot::createEntity (Ogre::Vector3 position) {
 		// Create And Place The Obhect
-		Ogre::Entity *entity = scene_manager->createEntity(entity_name, weapon_mesh);
+		Ogre::Entity* entity = scene_manager->createEntity(entity_name, weapon_mesh);
 		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
 		weapon_shot_node = root_scene_node->createChildSceneNode(entity_name);
 		weapon_shot_node->attachObject(entity);
@@ -56,5 +57,9 @@ namespace Weapon_Space {
 
 	Ogre::Vector3 Weapon_Shot::getDirection(void) {
 		return direction;
+	}
+
+	float Weapon_Shot::getDamageAmount(void) {
+		return damageAmount;
 	}
 }

@@ -68,8 +68,6 @@ namespace ogre_application {
 	public:
 		OgreApplication(void);
 		void Init(void);																// Call Init() before running the main loop
-		void CreateCubeInstance (Ogre::Vector3 pos = Ogre::Vector3 (0.0, 0.0, 0.0));
-		//void CreateTargetCube (void);
 		void MainLoop(void);															// Keep application active
 
 		/* Camera demo */
@@ -103,6 +101,9 @@ namespace ogre_application {
 		void runLazerCollisionDetection (void);
 		void runPlanetCollisionDetection (void);
 		void destoryAstroid (int index);
+
+		// Enemies Shoot A Players
+		void haveEnemiesShootAtPlayer (void);
 
 
 		/*----------------------------------- Variables ------------------------------*/

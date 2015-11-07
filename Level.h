@@ -22,6 +22,7 @@ namespace Level_Space {
 		void advance (void);
 		void createLevel (Ogre::SceneManager* scene_manager);
 		void destoryLevel (Ogre::SceneManager* scene_manager);
+		void destoryEnemyAt (int index);
 
 		std::vector<Planet_Space::Planet*> getPlanets(void);
 		std::vector<Enemy_Space::Enemy*> getEnemies (void);

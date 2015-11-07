@@ -56,6 +56,12 @@ namespace Level_Space {
 		}
 	}
 
+	// Removes An Enemey At An Index
+	void Level::destoryEnemyAt (int index) {
+		delete enemies[index];
+		enemies.erase(enemies.begin() + index);
+	}
+
 	std::vector<Planet_Space::Planet*> Level::getPlanets(void) {
 		return planets;
 	}

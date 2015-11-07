@@ -378,19 +378,11 @@ namespace ogre_application {
 			ogre_window_->destroy();
 			return false;
 		}
+		
+		// Apply The Keyboard Command
+		player->applyKeyEvent(keyboard_);
 
-		/* Camera demo */
-		if (!animating_){
-			return true;
-		}
-
-		/* Get camera object */
-		Ogre::SceneManager* scene_manager = ogre_root_->getSceneManager("MySceneManager");
-		Ogre::Camera* camera = scene_manager->getCamera("MyCamera");
-		if (!camera){
-			return false;
-		}
-
+		
 		// Switch Level Commands
 		if (keyboard_->isKeyDown (OIS::KC_L)) {
 			if (level_manager.canSwitchLevels()) {
@@ -398,15 +390,30 @@ namespace ogre_application {
 				level_manager.cycleNextLevel(scene_manager);
 			}
 		}
-
-		player->applyKeyEvent(keyboard_);
-
+		
+		// Run All Of The Collision Dection
 		runCollisionDetection();
+
+		// Have The Enemies Fire At The Player
+		haveEnemiesShootAtPlayer();
+
+		// Increment The Level Ticker
 		level_manager.incrementLevelTicker();
 
 		return true;
 	}
 
+	// Have The Enemies Shoot At The Player
+	void OgreApplication::haveEnemiesShootAtPlayer(void) {
+		Level_Space::Level* currentLevel = level_manager.getCurrentLevelObj();
+		std::vector<Enemy_Space::Enemy*> enemies = currentLevel->getEnemies();
+	
+		for (int i = 0; i < enemies.size(); i++) {
+			enemies[i]->shouldFireShot(player);
+		}
+	}
+
+	// Runs The Collision Detection 
 	void OgreApplication::runCollisionDetection(void) {
 		runLazerCollisionDetection();
 		runPlanetCollisionDetection();
@@ -414,7 +421,7 @@ namespace ogre_application {
 
 	// Runs the Lazer Collision Detection
 	void OgreApplication::runLazerCollisionDetection(void) {
-		Weapon_Space::Weapon_Shot* lazer = player->getCurrentLazer();
+		Weapon_Space::Weapon_Shot* lazer = player->getCurrentShot();
 		if (lazer) {
 			// Check Against Our Astorids
 			for (int i = 0; i < num_asteroids_; i++){
@@ -430,12 +437,18 @@ namespace ogre_application {
 			Level_Space::Level* currentLevel = level_manager.getCurrentLevelObj();
 			if (currentLevel) {
 				std::vector<Enemy_Space::Enemy*> enemies = currentLevel->getEnemies();
-				std::vector<Enemy_Space::Enemy*>::iterator iter = enemies.begin();
-				std::vector<Enemy_Space::Enemy*>::iterator iter_end = enemies.end();
-				for (; iter != iter_end; iter++){
-					Enemy_Space::Enemy* nextEnemy = (*iter);
-					if (Collision_Manager::CollisionManager::runBoundingSphereCollision (nextEnemy->getPosition(), lazer->getPosition(), nextEnemy->getBoundingSphereRadius(), 1.0f)) {
-						std::cout << "I Hit An Enemy Pa" << std::endl;
+				for (int i = 0; i < enemies.size(); i++) {
+					Enemy_Space::Enemy* nextEnemy = enemies[i];
+					if (Collision_Manager::CollisionManager::runBoundingSphereCollision (nextEnemy->getPosition(), lazer->getPosition(), nextEnemy->getBoundingCircleRadius(), 1.0f)) {
+						nextEnemy->registerHit(lazer->getDamageAmount());
+
+						// If The Enemy Was Killed Remove Them From The Level
+						if (nextEnemy ->enemyDead()) {
+							Level_Space::Level* currentLevel = level_manager.getCurrentLevelObj();
+							if (currentLevel) {
+								currentLevel->destoryEnemyAt(i);
+							}
+						}
 						break;
 					}
 				}
@@ -452,7 +465,7 @@ namespace ogre_application {
 			std::vector<Planet_Space::Planet*>::iterator iter_end = planets.end();
 			for (; iter != iter_end; iter++){
 				Planet_Space::Planet* nextPlanet = (*iter);
-				if (Collision_Manager::CollisionManager::runBoundingSphereCollision (nextPlanet->getPlanetPostion(), player->getPlayerPosition(), nextPlanet->getPlanetRadius(), player->getBoundingCircleRadius())) {
+				if (Collision_Manager::CollisionManager::runBoundingSphereCollision (nextPlanet->getPlanetPostion(), player->getPosition(), nextPlanet->getPlanetRadius(), player->getBoundingCircleRadius())) {
 					player->resetPosition();
 					break;
 				}
@@ -460,7 +473,7 @@ namespace ogre_application {
 		}
 
 		// If The Player Escapes The Nebula
-		if (!Collision_Manager::CollisionManager::runBoundingSphereCollision (nebula.getPlanetPostion(), player->getPlayerPosition(), nebula.getPlanetRadius() - 1200, player->getBoundingCircleRadius())) {
+		if (!Collision_Manager::CollisionManager::runBoundingSphereCollision (nebula.getPlanetPostion(), player->getPosition(), nebula.getPlanetRadius() - 1200, player->getBoundingCircleRadius())) {
 			player->resetPosition();
 		}
 	}
@@ -485,11 +498,6 @@ namespace ogre_application {
 		ogre_window_->resize(width, height);
 		ogre_window_->windowMovedOrResized();
 		ogre_window_->update();
-	}
-
-	// Creates A Cube Instance At Our Position
-	void OgreApplication::CreateCubeInstance (Ogre::Vector3 pos) {
-		player->fireWeapon();
 	}
 
 	void OgreApplication::destoryAstroid(int index) {
