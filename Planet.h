@@ -7,14 +7,14 @@
 #include "OGRE/OgreEntity.h"
 #include "OIS/OIS.h"
 
-enum PLANET_NAME {EARTH, VENUS, NEBULA};
+enum PLANET_NAME {EARTH, VENUS, JUPITER, NEPTUNE, NEBULA};
 
 // Planet Space
 namespace Planet_Space {
 	class Planet {
 	public:
 		Planet(void);
-		Planet(Ogre::SceneManager* manager, PLANET_NAME name = EARTH);
+		Planet(Ogre::SceneManager* manager, PLANET_NAME name = EARTH, Ogre::Vector3 pos = Ogre::Vector3 (0.0, 0.0, 0.0));
 		~Planet(void);
 
 		// Getters And Setters For This Planet Object
@@ -35,5 +35,6 @@ namespace Planet_Space {
 
 		// Methods For Rendering The New Planet Object
 		void createPlanet(Ogre::SceneManager* manager, Ogre::Vector3 pos = Ogre::Vector3 (0.0f, 0.0f, 0.0f));
+		void createPlanetOnType (Ogre::SceneManager*, Ogre::String, Ogre::String, Ogre::String mesh = "sphere.mesh");
 	};
 }

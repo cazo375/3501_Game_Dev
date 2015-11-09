@@ -12,8 +12,8 @@ namespace Planet_Space {
 	}
 
 	// Public Constructor For Our Planet
-	Planet::Planet(Ogre::SceneManager* manager, PLANET_NAME name) : planetType (name) {
-		createPlanet(manager);
+	Planet::Planet(Ogre::SceneManager* manager, PLANET_NAME name, Ogre::Vector3 pos) : planetType (name) {
+		createPlanet(manager, pos);
 		rotationQuaternion = Ogre::Quaternion(Ogre::Radian (0.0002f), Ogre::Vector3(1.0f, 1.0f, 1.0f));
 	}
 
@@ -37,43 +37,42 @@ namespace Planet_Space {
 
 	// Creates Our Planet Entity
 	void Planet::createPlanet(Ogre::SceneManager* manager, Ogre::Vector3 pos) {
-		Ogre::Entity *entity;
-
 		switch (planetType) {
 		case EARTH :
-			planetName = Ogre::String("Earth" + planet_num++);
-			entity = manager->createEntity(planetName, "sphere.mesh");
-			entity->setMaterialName("EarthTexture");
-
-			planetNode = manager->getRootSceneNode()->createChildSceneNode(planetName);
-			planetNode->attachObject(entity);
-
+			createPlanetOnType (manager, "Earth", "EarthTexture");
 			radius = 50.0f;
 			break;
 		case VENUS :
-			planetName = Ogre::String("Venus" + planet_num++);
-			entity = manager->createEntity(planetName, "sphere.mesh");
-			entity->setMaterialName("VenusTexture");
-
-			planetNode = manager->getRootSceneNode()->createChildSceneNode(planetName);
-			planetNode->attachObject(entity);
-
+			createPlanetOnType (manager, "Venus", "VenusTexture");
 			radius = 40.0f;
 			break;
+		case JUPITER :
+			createPlanetOnType (manager, "Jupiter", "JupiterTexture");
+			radius = 150.0f;
+			break;
+		case NEPTUNE :
+			createPlanetOnType (manager, "Neptune", "NeptuneTexture");
+			radius = 100.0f;
+			break;
 		case NEBULA :
-			planetName = Ogre::String("Nebula" + planet_num++);
-			entity = manager->createEntity(planetName, "reverse.sphere.mesh");
-			entity->setMaterialName("NebulaTexture");
-
-			planetNode = manager->getRootSceneNode()->createChildSceneNode(planetName);
-			planetNode->attachObject(entity);
-
+			createPlanetOnType (manager, "Nebula", "NebulaTexture", "reverse.sphere.mesh");
 			radius = 3000.0f;
 			break;
 		}
 
 		// Finally Scale Our Node Properly
 		planetNode->scale(radius, radius, radius);
+		planetNode->setPosition(pos);
+	}
+
+	// Creates the Planet Type
+	void Planet::createPlanetOnType (Ogre::SceneManager* manager, Ogre::String entity_name, Ogre::String material_name, Ogre::String mesh_name) {
+		planetName = Ogre::String(entity_name +  Ogre::StringConverter::toString(planet_num++));
+		Ogre::Entity *entity = manager->createEntity(planetName, mesh_name);
+		entity->setMaterialName(material_name);
+
+		planetNode = manager->getRootSceneNode()->createChildSceneNode(planetName);
+		planetNode->attachObject(entity);
 	}
 
 	// Advances Planet By A Step In Animation When Called.

@@ -32,11 +32,14 @@ namespace Level_Space {
 	void Level::createLevel (Ogre::SceneManager* scene_manager) {
 		switch (levelNum) {
 		case 0: 
-			planets.push_back(new Planet_Space::Planet(scene_manager, VENUS)); 
+			planets.push_back(new Planet_Space::Planet(scene_manager, VENUS, Ogre::Vector3 (0.0f, 0.0f, 0.0f))); 
+			planets.push_back(new Planet_Space::Planet(scene_manager, NEPTUNE, Ogre::Vector3 (-150.0f, 150.0f, 500.0f))); 
+						planets.push_back(new Planet_Space::Planet(scene_manager, JUPITER, Ogre::Vector3 (100.0f, -75.0f, -320.0f))); 
 			enemies.push_back(new Enemy_Space::Enemy (scene_manager, Ogre::Vector3 (0.0f, 0.0f, 750.0f)));
 			break;
 		case 1:
 			planets.push_back(new Planet_Space::Planet(scene_manager, EARTH));
+			planets.push_back(new Planet_Space::Planet(scene_manager, JUPITER, Ogre::Vector3 (150.0f, 300.0f, -200.0f))); 
 			break;
 		} 
 	}
