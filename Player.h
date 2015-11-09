@@ -28,7 +28,7 @@ namespace Player_Space {
 
 	class Player: public Ship_Space::Ship {
 	public:
-		Player(Ogre::SceneManager* manager, Ogre::Camera* camera, Ogre::Vector3 pos = Ogre::Vector3(0.0f, 0.0f, 0.0f));
+		Player(Ogre::SceneManager* manager, Ogre::Camera* camera);
 		~Player(void);
 
 		// Movement Methods

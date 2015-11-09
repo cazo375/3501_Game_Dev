@@ -3,7 +3,7 @@
 namespace Player_Space {		
 
 	// Player Constructor
-	Player::Player(Ogre::SceneManager* manager, Ogre::Camera* camera, Ogre::Vector3 pos) {
+	Player::Player(Ogre::SceneManager* manager, Ogre::Camera* camera) {
 		scene_manager = manager;
 		player_camera = camera;
 		initialPosition = camera->getPosition();
