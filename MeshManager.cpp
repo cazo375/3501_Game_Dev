@@ -363,11 +363,436 @@ namespace Mesh_Manager_Space {
 		object->convertToMesh("reverse.sphere.mesh");
 	}
 
-	// Builds All Of Our Meshes When Called
+	void Mesh_Manager::createEnemy1(Ogre::SceneManager* scene_manager){
+		
+		/* Create a cube */
+
+		/* Retrieve scene manager and root scene node */
+		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
+
+		/* Create the 3D object */
+        Ogre::ManualObject* object = NULL;
+        Ogre::String object_name = "Enemy1";
+        object = scene_manager->createManualObject(object_name);
+        object->setDynamic(false);
+
+        /* Create triangle list for the object */
+		Ogre::String material_name = "ObjectMaterial";
+        object->begin(material_name, Ogre::RenderOperation::OT_TRIANGLE_LIST);
+
+		/* Vertices of a cube */
+		Ogre::Vector3 v0( 0.5, -0.5,  0.0);
+		Ogre::Vector3 v1( -0.5, -0.5,  0.0);
+		Ogre::Vector3 v2( 0.0, -0.5, -2.0);
+		Ogre::Vector3 v3( 0.0, 0.5, 0.0);
+		Ogre::Vector3 v4( 0.5, -0.5, 0.0);  //copy of v0
+		Ogre::Vector3 v5( -0.5, -0.5, 0.0);  //copy of v1
+
+		
+
+		/* Normal of each face of the cube */
+		Ogre::Vector3 n0( 1.0,  1.0,  0.0);
+		Ogre::Vector3 n1( -1.0,  1.0,  0.0);
+		Ogre::Vector3 n2( 0.0,  -1.0,  0.0);
+		Ogre::Vector3 n3( 0.0,  0.0,  1.0); //back
+		
+	   	/* Cube's color */
+		Ogre::ColourValue clr0(1.0, 0.0, 0.0);
+		Ogre::ColourValue clr1(1.0, 0.0, 1.0);
+		Ogre::ColourValue clr2(1.0, 1.0, 1.0);
+		Ogre::ColourValue clr3(0.0, 1.0, 0.0);
+		Ogre::ColourValue clr4(0.0, 0.0, 1.0);
+	
+		
+		/* This construction only partially uses shared vertices, so that we can assign appropriate vertex normals
+		   to each face */
+		/* Each face of the cube is defined by four vertices (with the same normal) and two triangles */
+		
+
+		//left side
+		object->position(v0);
+		object->normal(n0);
+		object->textureCoord(0.1, 0.2);
+		object->colour(clr4);
+
+		object->position(v2);
+		object->normal(n0);
+		object->textureCoord(0.2, 0.3);
+		object->colour(clr4);
+
+		object->position(v3);
+		object->normal(n0);
+		object->textureCoord(0.1, 0.4);
+		object->colour(clr4);
+		
+		object->position(v4);
+		object->normal(n0);
+		object->textureCoord(0.1, 0.2);
+		object->colour(clr1);
+
+		object->position(v1);
+		object->normal(n1);
+		object->textureCoord(0.2, 0.3);
+		object->colour(clr4);
+
+		object->position(v3);
+		object->normal(n1);
+		object->textureCoord(0.1, 0.3);
+		object->colour(clr3);
+
+		object->position(v2);
+		object->normal(n1);
+		object->textureCoord(0, 0);
+		object->colour(clr2);
+
+		object->position(v5);
+		object->normal(n1);
+		object->textureCoord(1, 0);
+		object->colour(clr4);
+	
+		//bottom
+		object->position(v1);
+		object->normal(n2);
+		object->textureCoord(1, 1);
+		object->colour(clr1);
+
+		object->position(v2);
+		object->normal(n2);
+		object->textureCoord(0, 0);
+		object->colour(clr4);
+
+		object->position(v4);
+		object->normal(n2);
+		object->textureCoord(1, 0);
+		object->colour(clr0);
+
+		object->position(v5);
+		object->normal(n2);
+		object->textureCoord(0, 1);
+		object->colour(clr2);
+
+		//back
+		object->position(v1);
+		object->normal(n3);
+		object->textureCoord(0, 0);
+		object->colour(clr3);
+
+		object->position(v4);
+		object->normal(n3);
+		object->textureCoord(1, 0);
+		object->colour(clr2);
+
+		object->position(v3);
+		object->normal(n3);
+		object->textureCoord(1, 1);
+		object->colour(clr1);
+
+		object->position(v5);
+		object->normal(n3);
+		object->textureCoord(1, 1);
+		object->colour(clr1);
+
+
+		for (int i = 0; i < 2; i++){
+			object->triangle(i*4 + 0, i*4 + 1, i*4 + 3);
+			object->triangle(i*4 + 1, i*4 + 2, i*4 + 3);
+		}
+   
+	
+
+		/* We finished the object */
+        object->end();
+		
+        /* Convert triangle list to a mesh */
+        Ogre::String mesh_name = "Enemy1";
+        object->convertToMesh(mesh_name);
+
+    
+
+	}
+	
+	void Mesh_Manager::createCylinder(Ogre::SceneManager* scene_manager){
+   
+		        /* Retrieve scene manager and root scene node */
+        Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
+
+		Ogre::ManualObject* object = NULL;
+        Ogre::String object_name = "Cylinder";
+        object = scene_manager->createManualObject(object_name);
+        object->setDynamic(false);
+		Ogre::String material_name = "ObjectMaterial";
+
+
+
+		//---Create a cylinder---//
+
+		Ogre::Real origin = 0.0;
+		Ogre::Real height = 5.0;
+		Ogre::Real radius = 0.5;
+		const int cylinder_circle_resolution = 120;
+		int loop_count;
+		Ogre::ColourValue cylinder_colour = Ogre::ColourValue(0.0, 0.2, 1.0);
+		Ogre::Degree theata = Ogre::Degree(0);
+		Ogre::Degree alpha = Ogre::Degree(360/cylinder_circle_resolution);
+		Ogre::Vector3 cylinder_circle_center1;
+		Ogre::Vector3 cylinder_circle_center2;
+		Ogre::Vector3 cylinder_circle1[cylinder_circle_resolution];
+		Ogre::Vector3 cylinder_circle2[cylinder_circle_resolution];
+
+		cylinder_circle_center1.x = 0;
+		cylinder_circle_center1.y = origin - height/2;
+		cylinder_circle_center1.z = 0;
+
+		cylinder_circle_center2.x = 0;
+		cylinder_circle_center2.y = origin + height/2;
+		cylinder_circle_center2.z = 0;
+
+		for(int loop_count = 0; loop_count < cylinder_circle_resolution; loop_count++){
+			theata = theata + alpha;
+			cylinder_circle1[loop_count].x = Ogre::Math::Cos(theata) * radius;
+			cylinder_circle1[loop_count].y = origin - height/2;
+			cylinder_circle1[loop_count].z = Ogre::Math::Sin(theata) * radius;
+
+			cylinder_circle2[loop_count].x = Ogre::Math::Cos(theata) * radius;
+			cylinder_circle2[loop_count].y = origin + height/2;
+			cylinder_circle2[loop_count].z = Ogre::Math::Sin
+				(theata) * radius;
+		}
+
+		//---bottom circle---//
+        object->begin(material_name, Ogre::RenderOperation::OT_TRIANGLE_FAN);
+		object->colour(Ogre::ColourValue(0.0, 0.0, 1.0));
+		object->position(cylinder_circle_center1);
+
+		for(loop_count = 0; loop_count < cylinder_circle_resolution; loop_count++){
+			object->position(cylinder_circle1[loop_count]);
+		}
+
+		object->position(cylinder_circle1[0]);
+		object-> end();
+
+		//---body of cylinder---//
+		object->begin(material_name, Ogre::RenderOperation::OT_TRIANGLE_LIST);
+		object->colour(Ogre::ColourValue(1.0, 0.0, 0.0));
+
+		for(loop_count = 0; loop_count < cylinder_circle_resolution-1; loop_count++){
+			object->position(cylinder_circle1[loop_count]);
+			object->position(cylinder_circle2[loop_count]);
+			object->position(cylinder_circle1[loop_count+1]);
+
+			object->position(cylinder_circle1[loop_count+1]);
+			object->position(cylinder_circle2[loop_count]);
+			object->position(cylinder_circle2[loop_count+1]);
+		}
+
+		object->position(cylinder_circle1[loop_count]);
+		object->position(cylinder_circle2[loop_count]);
+		object->position(cylinder_circle1[0]);
+
+		object->position(cylinder_circle1[0]);
+		object->position(cylinder_circle2[loop_count]);
+		object->position(cylinder_circle2[0]);
+
+		object->end();
+
+		//---top circle---//
+		object->begin(material_name, Ogre::RenderOperation::OT_TRIANGLE_FAN);
+		object->colour(Ogre::ColourValue(0.0, 1.0, 0.0));
+		object->position(cylinder_circle_center2);
+
+		for(loop_count = cylinder_circle_resolution-1; loop_count > 0; --loop_count){
+			object->position(cylinder_circle2[loop_count]);
+		}
+
+		object->position(cylinder_circle2[cylinder_circle_resolution-1]);
+		
+		/* We finished the object */
+        object->end();
+		
+        /* Convert triangle list to a mesh */
+        object->convertToMesh(object_name);
+
+		
+   
+}
+	
+    void Mesh_Manager::createPrism(Ogre::SceneManager* scene_manager){
+	
+	
+		/* Create a cube */
+
+		/* Retrieve scene manager and root scene node */
+		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
+
+		/* Create the 3D object */
+        Ogre::ManualObject* object = NULL;
+        Ogre::String object_name = "Prism";
+        object = scene_manager->createManualObject(object_name);
+        object->setDynamic(false);
+
+        /* Create triangle list for the object */
+		Ogre::String material_name = "ObjectMaterial";
+        object->begin(material_name, Ogre::RenderOperation::OT_TRIANGLE_LIST);
+
+		/* Vertices of a cube */
+		Ogre::Vector3 v0( 0.0, -0.5, 0.0);
+		Ogre::Vector3 v1( -1.0, -0.5, 0.0);
+		Ogre::Vector3 v2( -0.5, 0.5, 0.0);
+		Ogre::Vector3 v3(  0.0, -0.5, 0.0);   //same as v1
+		
+		Ogre::Vector3 v4( 0.0, -0.5, 1.0);
+		Ogre::Vector3 v5( -1.0,-0.5, 1.0);
+		Ogre::Vector3 v6( -0.5, 0.5, 1.0);
+		Ogre::Vector3 v7( 0.0, -0.5, 1.0);
+		
+		/* Normal of each face of the cube */
+		Ogre::Vector3 n0( 0.0,  0.0,  -1.0);
+		Ogre::Vector3 n1( 1.0,  1.0,  0.0);
+		Ogre::Vector3 n2( -1.0,  1.0,  0.0);
+		Ogre::Vector3 n3( 0.0,  -1.0,  0.0); //bottom
+		Ogre::Vector3 n4( 0.0,  0.0,  1.0); //back
+	  
+		/* Cube's color */
+		Ogre::ColourValue clr0(1.0, 0.0, 0.0);
+		Ogre::ColourValue clr1(1.0, 0.0, 1.0);
+		Ogre::ColourValue clr2(1.0, 1.0, 1.0);
+		Ogre::ColourValue clr3(0.0, 1.0, 0.0);
+		Ogre::ColourValue clr4(0.0, 0.0, 1.0);
+	
+		
+		/* This construction only partially uses shared vertices, so that we can assign appropriate vertex normals
+		   to each face */
+		/* Each face of the cube is defined by four vertices (with the same normal) and two triangles */
+		
+		//front face
+		object->position(v0);
+		object->normal(n0);
+		object->textureCoord(0.1, 0.2);
+		object->colour(clr4);
+
+		object->position(v1);
+		object->normal(n0);
+		object->textureCoord(0.2, 0.3);
+		object->colour(clr4);
+
+		object->position(v2);
+		object->normal(n0);
+		object->textureCoord(1, 1);
+		object->colour(clr2);
+
+		object->position(v3);
+		object->normal(n0);
+		object->textureCoord(0.1, 0.4);
+		object->colour(clr4);
+		
+		//left face
+		object->position(v4);
+		object->normal(n1);
+		object->textureCoord(0.1, 0.2);
+		object->colour(clr1);
+
+		object->position(v3);
+		object->normal(n1);
+		object->textureCoord(0.2, 0.3);
+		object->colour(clr4);
+
+		object->position(v2);
+		object->normal(n1);
+		object->textureCoord(0.1, 0.3);
+		object->colour(clr3);
+
+		object->position(v6);
+		object->normal(n1);
+		object->textureCoord(0, 0);
+		object->colour(clr2);
+		
+		//right side
+		object->position(v1);
+		object->normal(n2);
+		object->textureCoord(1, 0);
+		object->colour(clr4);
+		
+		object->position(v5);
+		object->normal(n2);
+		object->textureCoord(1, 1);
+		object->colour(clr1);
+
+		object->position(v6);
+		object->normal(n2);
+		object->textureCoord(0, 0);
+		object->colour(clr4);
+
+		object->position(v2);
+		object->normal(n2);
+		object->textureCoord(1, 0);
+		object->colour(clr0);
+		
+		//Bottom
+		object->position(v1);
+		object->normal(n3);
+		object->textureCoord(0, 1);
+		object->colour(clr2);
+
+		object->position(v3);
+		object->normal(n3);
+		object->textureCoord(0, 0);
+		object->colour(clr3);
+
+		object->position(v7);
+		object->normal(n3);
+		object->textureCoord(1, 0);
+		object->colour(clr2);
+
+		object->position(v5);
+		object->normal(n3);
+		object->textureCoord(1, 1);
+		object->colour(clr1);
+		
+		object->position(v4);
+		object->normal(n4);
+		object->textureCoord(0, 1);
+		object->colour(clr2);
+
+		object->position(v6);
+		object->normal(n4);
+		object->textureCoord(0, 0);
+		object->colour(clr3);
+
+		object->position(v5);
+		object->normal(n4);
+		object->textureCoord(1, 0);
+		object->colour(clr2);
+
+		object->position(v7);
+		object->normal(n4);
+		object->textureCoord(1, 1);
+		object->colour(clr1);
+
+		for (int i = 0; i < 5; i++){
+			object->triangle(i*4 + 0, i*4 + 1, i*4 + 3);
+			object->triangle(i*4 + 1, i*4 + 2, i*4 + 3);
+		}
+   
+	
+
+		/* We finished the object */
+        object->end();
+		
+        /* Convert triangle list to a mesh */
+        Ogre::String mesh_name = "Prism";
+        object->convertToMesh(mesh_name);
+		
+}
+
+
+     // Builds All Of Our Meshes When Called
 	void Mesh_Manager::buildAllMeshes(Ogre::SceneManager* manager) {
 		createCubeMesh(manager);
 		createIcohedron(manager);
 		createSphere(manager);
 		createReverseSphere(manager);
+		createEnemy1(manager);
+		createCylinder(manager);
+		createPrism(manager);
 	}
 }

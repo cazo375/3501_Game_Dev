@@ -68,14 +68,22 @@ namespace ogre_application {
 	public:
 		OgreApplication(void);
 		void Init(void);																// Call Init() before running the main loop
-		void MainLoop(void);															// Keep application active
+		void MainLoop(void);			// Keep application active
+
+		Ogre::Matrix4 RotationMatrix(Ogre::Vector3 axis, Ogre::Radian angle);
+		Ogre::Matrix4 TranslationMatrix(Ogre::Vector3 trans);
+		Ogre::Matrix4 ScalingMatrix(Ogre::Vector3 scale);
+		void AssignTransf(Ogre::SceneNode* node, Ogre::Matrix4 transf);
+
 
 		/* Camera demo */
 		void CreateAsteroidField(int num_asteroids); // Create asteroid field
 		void CreatePlanetField (void);
 		void TransformAsteroidField(void);
 		void TransformPlanetField (void);
-
+		void CreateEnemy1 (void);
+		void CreateEnemy2 (void);
+		void CreateEnemy3 (void);
 		/* Level Methods*/
 		void startGame(void);
 
@@ -129,6 +137,11 @@ namespace ogre_application {
 		Asteroid asteroid_[MAX_NUM_ASTEROIDS];
 		Ogre::SceneNode* cube_[MAX_NUM_ASTEROIDS];
 		enum Direction last_dir_;
+
+		Ogre::SceneNode* enemy1[1];
+		Ogre::SceneNode* enemy2[7];
+		Ogre::SceneNode* enemy3[7];
+
 
 		// Planets Within The Game
 		Planet_Space::Planet nebula;
