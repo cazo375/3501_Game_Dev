@@ -461,7 +461,7 @@ namespace Mesh_Manager_Space {
 		object->textureCoord(0, 0);
 		object->colour(clr4);
 
-		object->position(v4);
+		object->position(v0);
 		object->normal(n2);
 		object->textureCoord(1, 0);
 		object->colour(clr0);
@@ -477,7 +477,7 @@ namespace Mesh_Manager_Space {
 		object->textureCoord(0, 0);
 		object->colour(clr3);
 
-		object->position(v4);
+		object->position(v0);
 		object->normal(n3);
 		object->textureCoord(1, 0);
 		object->colour(clr2);

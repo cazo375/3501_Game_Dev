@@ -289,6 +289,123 @@ namespace Enemy_Space {
 		ship_node->setScale (boundingSphereRadius, boundingSphereRadius, boundingSphereRadius);
 	}
 	
+	void Enemy::CreateEnemy5(Ogre::SceneManager* scene_manager, Ogre::Vector3 pos){
+	
+		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
+		Ogre::Entity *entity;
+		Ogre::Matrix4 transformations;
+		Ogre::String entity_name;
+		
+
+		entity_name = "bodyone4";
+		entity = scene_manager->createEntity(entity_name, "Cube");
+		ship_node = root_scene_node->createChildSceneNode("bodyone4");
+        ship_node->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(2.0, 0.5, 2.0));
+		AssignTransf(ship_node, transformations);
+
+		entity_name = "bodytwo4";
+		entity = scene_manager->createEntity(entity_name, "Cube");
+		Ogre::SceneNode* shipbody2 = ship_node->createChildSceneNode("toparm3");
+        shipbody2 = root_scene_node->createChildSceneNode("bodytwo4");
+        shipbody2->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(2.0, 0.5, 2.0));
+		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, 1.0), Ogre::Radian(Ogre::Math::PI/2.0))) * transformations;
+		
+		AssignTransf(shipbody2, transformations);
+
+		entity_name = "rightwing4";
+		entity = scene_manager->createEntity(entity_name, "Prism");
+		Ogre::SceneNode* rightwing = ship_node->createChildSceneNode("rightwing4");
+        rightwing->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.5, 1.0, 2.4));
+		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, 1.0), Ogre::Radian(Ogre::Math::PI/2.0))) * transformations;
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(-1.5, 0.25, -1.0))) * transformations;
+		AssignTransf(rightwing, transformations);
+
+		entity_name = "leftwing4";
+		entity = scene_manager->createEntity(entity_name, "Prism");
+		Ogre::SceneNode* leftwing = ship_node->createChildSceneNode("leftwing");
+        leftwing->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.5, 1.0, 2.4));
+		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, -1.0), Ogre::Radian(Ogre::Math::PI/2.0))) * transformations;
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(1.5, -0.25, -1.0))) * transformations;
+		AssignTransf(leftwing, transformations);
+
+		entity_name = "topwing4";
+		entity = scene_manager->createEntity(entity_name, "Prism");
+		Ogre::SceneNode* topwing = ship_node->createChildSceneNode("topwing4");
+        topwing->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.5, 1.0, 2.4));
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(0.25, 1.5, -1.0))) * transformations;
+		AssignTransf(topwing, transformations);
+
+		entity_name = "bottomwing4";
+		entity = scene_manager->createEntity(entity_name, "Prism");
+		Ogre::SceneNode* bottomwing = ship_node->createChildSceneNode("bottomwing4");
+        bottomwing->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.5, 1.0, 2.4));
+		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, -1.0), Ogre::Radian(Ogre::Math::PI))) * transformations;
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(-0.25, -1.5, -1.0))) * transformations;
+		AssignTransf(bottomwing, transformations);
+
+		entity_name = "topgun4";
+		entity = scene_manager->createEntity(entity_name, "Cylinder");
+		Ogre::SceneNode* topgun = ship_node->createChildSceneNode("topgun4");
+        topgun->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.5, 0.25, 0.5));
+		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(1.0, 0.0, 0.0), Ogre::Radian(Ogre::Math::PI/2))) * transformations;
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(0.0, 0.65, -1.0))) * transformations;
+		AssignTransf(topgun, transformations);
+
+		entity_name = "bottomgun4";
+		entity = scene_manager->createEntity(entity_name, "Cylinder");
+		Ogre::SceneNode* bottomgun = ship_node->createChildSceneNode("bottomgun4");
+        bottomgun->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.5, 0.25, 0.5));
+		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(1.0, 0.0, 0.0), Ogre::Radian(Ogre::Math::PI/2))) * transformations;
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(0.0, -0.65, -1.0))) * transformations;
+		AssignTransf(bottomgun, transformations);
+
+		entity_name = "leftgun4";
+		entity = scene_manager->createEntity(entity_name, "Cylinder");
+		Ogre::SceneNode* leftgun = ship_node->createChildSceneNode("leftgun4");
+        leftgun->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.5, 0.25, 0.5));
+		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(1.0, 0.0, 0.0), Ogre::Radian(Ogre::Math::PI/2))) * transformations;
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(0.65, 0.0, -1.0))) * transformations;
+		AssignTransf(leftgun, transformations);
+
+		entity_name = "rightgun4";
+		entity = scene_manager->createEntity(entity_name, "Cylinder");
+		Ogre::SceneNode* rightgun = ship_node->createChildSceneNode("rightgun4");
+        rightgun->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.5, 0.25, 0.5));
+		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(1.0, 0.0, 0.0), Ogre::Radian(Ogre::Math::PI/2))) * transformations;
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(-0.65, 0.0, -1.0))) * transformations;
+		AssignTransf(rightgun, transformations);
+
+	}
 
 	/*-------------------------------------------- Helper Functions --------------------------------------*/
 	// Create a rotation matrix based on an angle and an axis

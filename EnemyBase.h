@@ -55,6 +55,8 @@ namespace Enemy_Space {
 		void CreateEnemy2 (Ogre::SceneManager*, Ogre::Vector3);
 		void CreateEnemy3 (Ogre::SceneManager*, Ogre::Vector3);
 		void CreateEnemy4 (Ogre::SceneManager*, Ogre::Vector3);
+		void CreateEnemy5 (Ogre::SceneManager*, Ogre::Vector3);
+
 
 		// Path Related Variables
 		std::vector<Ogre::Vector3> pathPoints;
