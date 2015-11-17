@@ -22,7 +22,7 @@ namespace Enemy_Space {
 	class Enemy : public Ship_Space::Ship {
 	public:
 		Enemy (void);
-		Enemy (Ogre::SceneManager* scene_manager, Ogre::Vector3 initalPosition, int enemy_num = 2);
+		Enemy (Ogre::SceneManager* scene_manager, Ogre::Vector3 initalPosition, int enemy_num = 4);
 		~Enemy (void);
 
 		void advance (void);							// Called On A Per Frame Basis... Causes The Enemy To Advance To It's Next Frame
@@ -50,7 +50,7 @@ namespace Enemy_Space {
 		Ogre::Matrix4 ScalingMatrix(Ogre::Vector3 scale);
 		void AssignTransf(Ogre::SceneNode* node, Ogre::Matrix4 transf);
 
-		void createEnemyByNum (Ogre::SceneManager*, Ogre::Vector3, int num = 3);	
+		void createEnemyByNum (Ogre::SceneManager*, Ogre::Vector3, int num = 4);	
 		void CreateEnemy1 (Ogre::SceneManager*, Ogre::Vector3);
 		void CreateEnemy2 (Ogre::SceneManager*, Ogre::Vector3);
 		void CreateEnemy3 (Ogre::SceneManager*, Ogre::Vector3);
