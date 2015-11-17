@@ -17,6 +17,7 @@
 #include "MeshManager.h"
 #include "Level_Manager.h"
 #include "Player.h"
+#include "Explosion.h"
 
 /* Thrust Constants */
 #define ACCELERATION_STEP 0.3f
@@ -113,6 +114,12 @@ namespace ogre_application {
 
 		// Enemies Shoot A Players
 		void haveEnemiesShootAtPlayer (void);
+
+		// Explosion Stuff
+		std::vector<Explosion_Space::Explosion*> active_explosions;
+		void spawnExplosionAt (Ogre::Vector3);
+		void deleteAllExpiredExplosions (void);
+		void advanceAllExplosions (Ogre::Real);
 
 
 		/*----------------------------------- Variables ------------------------------*/

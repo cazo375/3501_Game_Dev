@@ -175,8 +175,7 @@ namespace Mesh_Manager_Space {
 		object->end();
 
 		/* Convert triangle list to a mesh */
-		Ogre::String mesh_name = "cube.mesh";
-		object->convertToMesh(mesh_name);
+		object->convertToMesh("cube.mesh");
 	}
 
 	void Mesh_Manager::createIcohedron (Ogre::SceneManager* scene_manager) {
@@ -301,7 +300,7 @@ namespace Mesh_Manager_Space {
 
 	// Creates Our Reverse Triangle Sphere Mesh... Use When Y
 	void Mesh_Manager::createReverseSphere (Ogre::SceneManager* scene_manager) {
-		
+
 		/* Retrieve scene manager and root scene node */
 		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
 
@@ -364,21 +363,21 @@ namespace Mesh_Manager_Space {
 	}
 
 	void Mesh_Manager::createEnemy1(Ogre::SceneManager* scene_manager){
-		
+
 		/* Create a cube */
 
 		/* Retrieve scene manager and root scene node */
 		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
 
 		/* Create the 3D object */
-        Ogre::ManualObject* object = NULL;
-        Ogre::String object_name = "Enemy1";
-        object = scene_manager->createManualObject(object_name);
-        object->setDynamic(false);
+		Ogre::ManualObject* object = NULL;
+		Ogre::String object_name = "Enemy1";
+		object = scene_manager->createManualObject(object_name);
+		object->setDynamic(false);
 
-        /* Create triangle list for the object */
+		/* Create triangle list for the object */
 		Ogre::String material_name = "ObjectMaterial";
-        object->begin(material_name, Ogre::RenderOperation::OT_TRIANGLE_LIST);
+		object->begin(material_name, Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
 		/* Vertices of a cube */
 		Ogre::Vector3 v0( 0.5, -0.5,  0.0);
@@ -388,26 +387,26 @@ namespace Mesh_Manager_Space {
 		Ogre::Vector3 v4( 0.5, -0.5, 0.0);  //copy of v0
 		Ogre::Vector3 v5( -0.5, -0.5, 0.0);  //copy of v1
 
-		
+
 
 		/* Normal of each face of the cube */
 		Ogre::Vector3 n0( 1.0,  1.0,  0.0);
 		Ogre::Vector3 n1( -1.0,  1.0,  0.0);
 		Ogre::Vector3 n2( 0.0,  -1.0,  0.0);
 		Ogre::Vector3 n3( 0.0,  0.0,  1.0); //back
-		
-	   	/* Cube's color */
+
+		/* Cube's color */
 		Ogre::ColourValue clr0(1.0, 0.0, 0.0);
 		Ogre::ColourValue clr1(1.0, 0.0, 1.0);
 		Ogre::ColourValue clr2(1.0, 1.0, 1.0);
 		Ogre::ColourValue clr3(0.0, 1.0, 0.0);
 		Ogre::ColourValue clr4(0.0, 0.0, 1.0);
-	
-		
+
+
 		/* This construction only partially uses shared vertices, so that we can assign appropriate vertex normals
-		   to each face */
+		to each face */
 		/* Each face of the cube is defined by four vertices (with the same normal) and two triangles */
-		
+
 
 		//left side
 		object->position(v0);
@@ -424,7 +423,7 @@ namespace Mesh_Manager_Space {
 		object->normal(n0);
 		object->textureCoord(0.1, 0.4);
 		object->colour(clr4);
-		
+
 		object->position(v4);
 		object->normal(n0);
 		object->textureCoord(0.1, 0.2);
@@ -449,7 +448,7 @@ namespace Mesh_Manager_Space {
 		object->normal(n1);
 		object->textureCoord(1, 0);
 		object->colour(clr4);
-	
+
 		//bottom
 		object->position(v1);
 		object->normal(n2);
@@ -497,29 +496,29 @@ namespace Mesh_Manager_Space {
 			object->triangle(i*4 + 0, i*4 + 1, i*4 + 3);
 			object->triangle(i*4 + 1, i*4 + 2, i*4 + 3);
 		}
-   
-	
+
+
 
 		/* We finished the object */
-        object->end();
-		
-        /* Convert triangle list to a mesh */
-        Ogre::String mesh_name = "Enemy1";
-        object->convertToMesh(mesh_name);
+		object->end();
 
-    
+		/* Convert triangle list to a mesh */
+		Ogre::String mesh_name = "Enemy1";
+		object->convertToMesh(mesh_name);
+
+
 
 	}
-	
+
 	void Mesh_Manager::createCylinder(Ogre::SceneManager* scene_manager){
-   
-		        /* Retrieve scene manager and root scene node */
-        Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
+
+		/* Retrieve scene manager and root scene node */
+		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
 
 		Ogre::ManualObject* object = NULL;
-        Ogre::String object_name = "Cylinder";
-        object = scene_manager->createManualObject(object_name);
-        object->setDynamic(false);
+		Ogre::String object_name = "Cylinder";
+		object = scene_manager->createManualObject(object_name);
+		object->setDynamic(false);
 		Ogre::String material_name = "ObjectMaterial";
 
 
@@ -560,7 +559,7 @@ namespace Mesh_Manager_Space {
 		}
 
 		//---bottom circle---//
-        object->begin(material_name, Ogre::RenderOperation::OT_TRIANGLE_FAN);
+		object->begin(material_name, Ogre::RenderOperation::OT_TRIANGLE_FAN);
 		object->colour(Ogre::ColourValue(0.0, 0.0, 1.0));
 		object->position(cylinder_circle_center1);
 
@@ -605,65 +604,65 @@ namespace Mesh_Manager_Space {
 		}
 
 		object->position(cylinder_circle2[cylinder_circle_resolution-1]);
-		
-		/* We finished the object */
-        object->end();
-		
-        /* Convert triangle list to a mesh */
-        object->convertToMesh(object_name);
 
-		
-   
-}
-	
-    void Mesh_Manager::createPrism(Ogre::SceneManager* scene_manager){
-	
-	
+		/* We finished the object */
+		object->end();
+
+		/* Convert triangle list to a mesh */
+		object->convertToMesh(object_name);
+
+
+
+	}
+
+	void Mesh_Manager::createPrism(Ogre::SceneManager* scene_manager){
+
+
 		/* Create a cube */
 
 		/* Retrieve scene manager and root scene node */
 		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
 
 		/* Create the 3D object */
-        Ogre::ManualObject* object = NULL;
-        Ogre::String object_name = "Prism";
-        object = scene_manager->createManualObject(object_name);
-        object->setDynamic(false);
+		Ogre::ManualObject* object = NULL;
+		Ogre::String object_name = "Prism";
+		object = scene_manager->createManualObject(object_name);
+		object->setDynamic(false);
 
-        /* Create triangle list for the object */
+		/* Create triangle list for the object */
 		Ogre::String material_name = "ObjectMaterial";
-        object->begin(material_name, Ogre::RenderOperation::OT_TRIANGLE_LIST);
+		object->begin(material_name, Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
 		/* Vertices of a cube */
 		Ogre::Vector3 v0( 0.0, -0.5, 0.0);
 		Ogre::Vector3 v1( -1.0, -0.5, 0.0);
 		Ogre::Vector3 v2( -0.5, 0.5, 0.0);
 		Ogre::Vector3 v3(  0.0, -0.5, 0.0);   //same as v1
-		
+
 		Ogre::Vector3 v4( 0.0, -0.5, 1.0);
 		Ogre::Vector3 v5( -1.0,-0.5, 1.0);
 		Ogre::Vector3 v6( -0.5, 0.5, 1.0);
 		Ogre::Vector3 v7( 0.0, -0.5, 1.0);
-		
+
 		/* Normal of each face of the cube */
 		Ogre::Vector3 n0( 0.0,  0.0,  -1.0);
 		Ogre::Vector3 n1( 1.0,  1.0,  0.0);
 		Ogre::Vector3 n2( -1.0,  1.0,  0.0);
 		Ogre::Vector3 n3( 0.0,  -1.0,  0.0); //bottom
 		Ogre::Vector3 n4( 0.0,  0.0,  1.0); //back
-	  
+
 		/* Cube's color */
 		Ogre::ColourValue clr0(1.0, 0.0, 0.0);
 		Ogre::ColourValue clr1(1.0, 0.0, 1.0);
 		Ogre::ColourValue clr2(1.0, 1.0, 1.0);
 		Ogre::ColourValue clr3(0.0, 1.0, 0.0);
 		Ogre::ColourValue clr4(0.0, 0.0, 1.0);
-	
-		
+
+
 		/* This construction only partially uses shared vertices, so that we can assign appropriate vertex normals
-		   to each face */
+		to each face */
 		/* Each face of the cube is defined by four vertices (with the same normal) and two triangles */
-		
+
 		//front face
 		object->position(v0);
 		object->normal(n0);
@@ -684,7 +683,7 @@ namespace Mesh_Manager_Space {
 		object->normal(n0);
 		object->textureCoord(0.1, 0.4);
 		object->colour(clr4);
-		
+
 		//left face
 		object->position(v4);
 		object->normal(n1);
@@ -705,13 +704,13 @@ namespace Mesh_Manager_Space {
 		object->normal(n1);
 		object->textureCoord(0, 0);
 		object->colour(clr2);
-		
+
 		//right side
 		object->position(v1);
 		object->normal(n2);
 		object->textureCoord(1, 0);
 		object->colour(clr4);
-		
+
 		object->position(v5);
 		object->normal(n2);
 		object->textureCoord(1, 1);
@@ -726,7 +725,7 @@ namespace Mesh_Manager_Space {
 		object->normal(n2);
 		object->textureCoord(1, 0);
 		object->colour(clr0);
-		
+
 		//Bottom
 		object->position(v1);
 		object->normal(n3);
@@ -747,7 +746,7 @@ namespace Mesh_Manager_Space {
 		object->normal(n3);
 		object->textureCoord(1, 1);
 		object->colour(clr1);
-		
+
 		object->position(v4);
 		object->normal(n4);
 		object->textureCoord(0, 1);
@@ -772,20 +771,68 @@ namespace Mesh_Manager_Space {
 			object->triangle(i*4 + 0, i*4 + 1, i*4 + 3);
 			object->triangle(i*4 + 1, i*4 + 2, i*4 + 3);
 		}
-   
-	
+
+
 
 		/* We finished the object */
-        object->end();
-		
-        /* Convert triangle list to a mesh */
-        Ogre::String mesh_name = "Prism";
-        object->convertToMesh(mesh_name);
-		
-}
+		object->end();
 
+		/* Convert triangle list to a mesh */
+		Ogre::String mesh_name = "Prism";
+		object->convertToMesh(mesh_name);
 
-     // Builds All Of Our Meshes When Called
+	}
+
+	void Mesh_Manager::createExplosionParticleEffect(Ogre::SceneManager* scene_manager, int num_particles) {
+				/* Retrieve scene manager and root scene node */
+		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
+
+		/* Create the 3D object */
+		Ogre::ManualObject* object = NULL;
+		object = scene_manager->createManualObject("particle");
+		object->setDynamic(false);
+
+		/* Create point list for the object */
+		object->begin("", Ogre::RenderOperation::OT_POINT_LIST);
+
+		/* Initialize random numbers */
+		std::srand(std::time(0));
+
+		/* Create a set of points which will be the particles */
+		/* This is similar to drawing a sphere: we will sample points on a sphere, but will allow them to also
+		deviate a bit from the sphere along the normal (change of radius) */
+		float trad = 0.4; // Defines the starting point of the particles
+		float maxspray = 0.5; // This is how much we allow the points to deviate from the sphere
+		float u, v, w, theta, phi, spray; // Work variables
+		for (int i = 0; i < num_particles; i++){
+
+			// Randomly select three numbers to define a point in spherical coordinates
+			u = ((double) rand() / (RAND_MAX));
+			v = ((double) rand() / (RAND_MAX));
+			w = ((double) rand() / (RAND_MAX));
+
+			// Use u to define the angle theta along one direction of a sphere
+			theta = u * 2.0 * 3.1416;
+			// Use v to define the angle phi along the other direction of the sphere
+			phi = acos(2.0*v - 1.0);
+			// Use we to define how much we can deviate from the surface of the sphere (change of radius)
+			spray = maxspray*pow((float) w, (float) (1.0/3.0)); // Cubic root of w
+
+			// Define the normal and point based on theta, phi and the spray
+			Ogre::Vector3 normal = Ogre::Vector3(spray*cos(theta)*sin(phi), spray*sin(theta)*sin(phi), spray*cos(phi));
+			object->position(0.0, 0.0, 0.0);
+			object->normal(normal);
+			object->colour(Ogre::ColourValue(i/(float) num_particles, 0.0, 1.0 - (i/(float) num_particles))); // We can use the color for debug, if needed
+		}
+
+		/* We finished the object */
+		object->end();
+
+		/* Convert triangle list to a mesh */
+		object->convertToMesh("particle.mesh");
+	}
+
+	// Builds All Of Our Meshes When Called
 	void Mesh_Manager::buildAllMeshes(Ogre::SceneManager* manager) {
 		createCubeMesh(manager);
 		createIcohedron(manager);
@@ -794,5 +841,6 @@ namespace Mesh_Manager_Space {
 		createEnemy1(manager);
 		createCylinder(manager);
 		createPrism(manager);
+		createExplosionParticleEffect(manager);
 	}
 }
