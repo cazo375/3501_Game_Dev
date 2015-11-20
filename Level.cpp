@@ -26,6 +26,10 @@ namespace Level_Space {
 		for (; enemy_iter != enemy_iter_end; enemy_iter++ ) {
 			(*enemy_iter)->advance();
 		}
+
+		for (int i = 0; i < asteroids.size(); i++) {
+			asteroids[i]->advance();
+		}
 	}
 
 	// Creates Our Level With All It's Entites
@@ -42,6 +46,8 @@ namespace Level_Space {
 			planets.push_back(new Planet_Space::Planet(scene_manager, JUPITER, Ogre::Vector3 (150.0f, 300.0f, -200.0f))); 
 			break;
 		} 
+
+		createAsteroidField(scene_manager);
 	}
 
 	// Destroys Our Level With All Of It's Contents
@@ -57,6 +63,10 @@ namespace Level_Space {
 		for (; enemy_iter != enemy_iter_end; enemy_iter++ ) {
 			(*enemy_iter)->destoryEnemy();
 		}
+
+		for (int i = 0;i < asteroids.size(); i++) {
+			delete asteroids[i];
+		}
 	}
 
 	// Removes An Enemey At An Index
@@ -65,11 +75,27 @@ namespace Level_Space {
 		enemies.erase(enemies.begin() + index);
 	}
 
+	void Level::destoryAsteroidAt (int index) {
+		delete asteroids[index];
+		asteroids.erase(asteroids.begin() + index);
+	}
+
+	// Populate Our Asteroid Field
+	void Level::createAsteroidField (Ogre::SceneManager* scene_manager) {
+		for (int i = 0; i < NUM_ASTEROIDS_PER_LEVEL; i++) {
+			asteroids.push_back (new Asteroid_Space::Asteroid (scene_manager));
+		}
+	}
+
 	std::vector<Planet_Space::Planet*> Level::getPlanets(void) {
 		return planets;
 	}
 
 	std::vector<Enemy_Space::Enemy*> Level::getEnemies (void) {
 		return enemies;
+	}
+
+	std::vector<Asteroid_Space::Asteroid*> Level::getAsteroids (void) {
+		return asteroids;
 	}
 }

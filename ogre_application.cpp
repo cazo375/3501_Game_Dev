@@ -78,14 +78,9 @@ namespace ogre_application {
 		keyboard_ = NULL;
 		mouse_ = NULL;
 
-		/* Camera demo */
-		last_dir_ = Direction::Forward;
-
 		currentForwardThrust = 0.0f;
 		currentSideThrust = 0.0f;
 		currentUpDownThrust = 0.0f;
-
-		num_asteroids_ = 0;
 
 		/* Run all initialization steps */
 		InitRootNode();
@@ -401,7 +396,6 @@ namespace ogre_application {
 		/* Keep animating if flag is on */
 		if (animating_){
 			/* Animate transformation */
-			TransformAsteroidField();
 			TransformPlanetField();
 			level_manager.advanceCurrentLevel();
 			player->advance();
@@ -474,17 +468,19 @@ namespace ogre_application {
 		Weapon_Space::Weapon_Shot* lazer = player->getCurrentShot();
 		if (lazer) {
 			// Check Against Our Astorids
-			for (int i = 0; i < num_asteroids_; i++){
-				if (cube_[i]) {
-					if (Collision_Manager::CollisionManager::runRaySphereCollision (lazer->getPosition(), lazer->getDirection(), asteroid_[i].pos, 8.0f)) {
-						destoryAstroid(i);
+			Level_Space::Level* currentLevel = level_manager.getCurrentLevelObj();
+			if (currentLevel){
+				std::vector<Asteroid_Space::Asteroid*> levelAsteroids = currentLevel->getAsteroids();
+				for (int i = 0; i < levelAsteroids.size(); i++){
+					if (Collision_Manager::CollisionManager::runRaySphereCollision (lazer->getPosition(), lazer->getDirection(), levelAsteroids[i]->getPosition(), 8.0f)) {
+						spawnExplosionAt(levelAsteroids[i]->getPosition());
+						currentLevel->destoryAsteroidAt(i);
 						break;
 					}
-				}
-			}		
+				}		
+			}
 
 			// Check Against Our Enemies
-			Level_Space::Level* currentLevel = level_manager.getCurrentLevelObj();
 			if (currentLevel) {
 				std::vector<Enemy_Space::Enemy*> enemies = currentLevel->getEnemies();
 				for (int i = 0; i < enemies.size(); i++) {
@@ -551,72 +547,12 @@ namespace ogre_application {
 		ogre_window_->update();
 	}
 
-	void OgreApplication::destoryAstroid(int index) {
-		if (cube_[index]) {
-			spawnExplosionAt(cube_[index]->getPosition());
-
-			// Delete The Node
-			Ogre::SceneManager* scene_manager = ogre_root_->getSceneManager("MySceneManager");
-			Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
-			root_scene_node->removeAndDestroyChild(cube_[index]->getName());
-			cube_[index]= 0;
-		}
-	}
-
 	// Creates The Planetary Field
 	void OgreApplication::CreatePlanetField(void) {
 		Ogre::SceneManager* scene_manager = ogre_root_->getSceneManager("MySceneManager");
 		nebula = Planet_Space::Planet(scene_manager, NEBULA);
 	}
 
-	void OgreApplication::CreateAsteroidField(int num_asteroids){
-
-		try {
-			/* Check number of asteroids requested */
-			if (num_asteroids > MAX_NUM_ASTEROIDS){
-				num_asteroids_ = MAX_NUM_ASTEROIDS;
-			} else {
-				num_asteroids_ = num_asteroids;
-			}
-
-			/* Create asteroid field */
-			for (int i = 0; i < num_asteroids_; i++){
-				asteroid_[i].pos = Ogre::Vector3(-300 + 600 * (rand() % 1000) / 1000.0f, -300 + 600 * (rand() % 1000) / 1000.0f, 600 * (rand() % 1000) / 1000.0f);
-				asteroid_[i].ori = Ogre::Quaternion(1.0f, 3.14*(rand() % 1000) / 1000.0f, 3.14*(rand() % 1000) / 1000.0f, 3.14*(rand() % 1000) / 1000.0f);
-				asteroid_[i].lm = Ogre::Quaternion(1.0f, 0.005*3.14*(rand() % 1000) / 1000.0f, 0.005*3.14*(rand() % 1000) / 1000.0f, 0.005*3.14*(rand() % 1000) / 1000.0f);
-				asteroid_[i].drift = Ogre::Vector3(((double) rand() / RAND_MAX)*0.2, ((double) rand() / RAND_MAX)*0.2, ((double) rand() / RAND_MAX)*0.2);
-			}
-
-			/* Create multiple entities for the asteroids */
-
-			/* Retrieve scene manager and root scene node */
-			Ogre::SceneManager* scene_manager = ogre_root_->getSceneManager("MySceneManager");
-			Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
-
-			/* Create multiple entities of a mesh */
-			Ogre::String entity_name, prefix("Asteroid");
-			for (int i = 0; i < num_asteroids_; i++){
-
-				/* Create entity */
-				entity_name = prefix + Ogre::StringConverter::toString(i);
-				//Ogre::Entity *entity = scene_manager->createEntity(entity_name, "Cube");
-				Ogre::Entity *entity = scene_manager->createEntity(entity_name, "Icosahedron");
-				entity->setMaterialName("ShinyBlueMaterial");
-
-				/* Create a scene node for the entity */
-				/* The scene node keeps track of the entity's position */
-				cube_[i] = root_scene_node->createChildSceneNode(entity_name);
-				cube_[i]->attachObject(entity);
-			}
-
-		}
-		catch (Ogre::Exception &e){
-			throw(OgreAppException(std::string("Ogre::Exception: ") + std::string(e.what())));
-		}
-		catch(std::exception &e){
-			throw(OgreAppException(std::string("std::Exception: ") + std::string(e.what())));
-		}
-	}
 	void OgreApplication::CreateEnemy1(void){
 
 		Ogre::SceneManager* scene_manager = ogre_root_->getSceneManager("MySceneManager");
@@ -785,22 +721,6 @@ namespace ogre_application {
 		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(-1.25, -2.25, -1.0))) * transformations;
 		AssignTransf(enemy3[6], transformations);
 
-	}
-
-	void OgreApplication::TransformAsteroidField(void){
-
-		// Rotate asteroids
-		for (int i = 0; i < num_asteroids_; i++){
-
-			if (cube_[i]) {
-				// Set orientation
-				asteroid_[i].ori = asteroid_[i].lm * asteroid_[i].ori;
-				cube_[i]->setOrientation(asteroid_[i].ori);
-
-				// Set the position every time
-				cube_[i]->setPosition(asteroid_[i].pos);
-			}
-		}
 	}
 
 	// Transform Our Planet Field

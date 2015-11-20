@@ -5,11 +5,11 @@ project(CameraDemo)
 
 # Specify project files: header files and source files
 set(HDRS
-	./ogre_application.h ./Player.h ./WeaponBase.h ./CollisionDetector.h ./MeshManager.h ./Level.h ./Level_Manager.h ./EnemyBase.h ./Planet.h ./Ship.h ./Explosion.h
+	./ogre_application.h ./Player.h ./WeaponBase.h ./CollisionDetector.h ./MeshManager.h ./Level.h ./Level_Manager.h ./EnemyBase.h ./Planet.h ./Ship.h ./Explosion.h ./Asteroid.h
 )
  
 set(SRCS
-	./ogre_application.cpp ./Player.cpp ./WeaponBase.cpp ./CollisionDetector.cpp ./Planet.cpp ./Level.cpp ./Level_Manager.cpp ./EnemyBase.cpp ./MeshManager.cpp ./main.cpp ./EarthTexture.material ./EarthTextureMaterialFp.glsl ./EarthTextureMaterialVp.glsl ./MaterialVp.glsl ./MaterialFp.glsl MaterialFile.material ./ShinyMaterialVp.glsl ./ShinyMaterialFp.glsl ./ShinyBlueMaterialVp.glsl ./ShinyBlueMaterialFp.glsl ./ShinyBlue.material ./Shiny.material ./Ship.cpp ./Explosion.cpp  ./ParticleMaterialVp.glsl ./ParticleMaterialFp.glsl ./ParticleMaterialGp.glsl ./Particle.material
+	./ogre_application.cpp ./Player.cpp ./WeaponBase.cpp ./CollisionDetector.cpp ./Planet.cpp ./Level.cpp ./Level_Manager.cpp ./EnemyBase.cpp ./MeshManager.cpp ./main.cpp ./EarthTexture.material ./EarthTextureMaterialFp.glsl ./EarthTextureMaterialVp.glsl ./MaterialVp.glsl ./MaterialFp.glsl MaterialFile.material ./ShinyMaterialVp.glsl ./ShinyMaterialFp.glsl ./ShinyBlueMaterialVp.glsl ./ShinyBlueMaterialFp.glsl ./ShinyBlue.material ./Shiny.material ./Ship.cpp ./Explosion.cpp  ./ParticleMaterialVp.glsl ./ParticleMaterialFp.glsl ./ParticleMaterialGp.glsl ./Particle.material ./Asteroid.cpp
 )
 
 # The rules here are specific to Windows Systems

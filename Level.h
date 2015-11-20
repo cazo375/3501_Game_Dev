@@ -9,6 +9,9 @@
 
 #include "EnemyBase.h"
 #include "Planet.h"
+#include "Asteroid.h"
+
+#define NUM_ASTEROIDS_PER_LEVEL 150
 
 // The Actual Space For Levels... They Will Be Cycled Through The Level_Manager
 namespace Level_Space {
@@ -22,13 +25,19 @@ namespace Level_Space {
 		void advance (void);
 		void createLevel (Ogre::SceneManager* scene_manager);
 		void destoryLevel (Ogre::SceneManager* scene_manager);
+		
 		void destoryEnemyAt (int index);
+		void destoryAsteroidAt (int index);
 
 		std::vector<Planet_Space::Planet*> getPlanets(void);
 		std::vector<Enemy_Space::Enemy*> getEnemies (void);
+		std::vector<Asteroid_Space::Asteroid*> getAsteroids (void);
 	private:
 		int levelNum;
 		std::vector<Enemy_Space::Enemy*> enemies;
 		std::vector<Planet_Space::Planet*> planets;
+		std::vector<Asteroid_Space::Asteroid*> asteroids;
+
+		void createAsteroidField (Ogre::SceneManager*);
 	};
 }

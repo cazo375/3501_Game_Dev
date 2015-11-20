@@ -49,14 +49,6 @@ namespace ogre_application {
 		virtual const char* what() const throw() { return message_.c_str(); };
 	};
 
-	/* An asteroid */
-	struct Asteroid {
-		Ogre::Vector3 pos; // Position
-		Ogre::Quaternion ori; // Orientation
-		Ogre::Quaternion lm; // Angular momentum (use as velocity)
-		Ogre::Vector3 drift; // Drift direction
-	};
-
 	/* Possible directions of the ship */
 	enum Direction { Forward, Backward, Up, Down, Left, Right };
 
@@ -78,9 +70,7 @@ namespace ogre_application {
 
 
 		/* Camera demo */
-		void CreateAsteroidField(int num_asteroids); // Create asteroid field
 		void CreatePlanetField (void);
-		void TransformAsteroidField(void);
 		void TransformPlanetField (void);
 		void CreateEnemy1 (void);
 		void CreateEnemy2 (void);
@@ -140,11 +130,6 @@ namespace ogre_application {
 		float currentPitchChange;		// Current Pitch Thruster
 		float currentYawChange;			// Current Yaw Thruster
 		float currentRollChange;		// Current Roll Thruster
-
-		int num_asteroids_;
-		Asteroid asteroid_[MAX_NUM_ASTEROIDS];
-		Ogre::SceneNode* cube_[MAX_NUM_ASTEROIDS];
-		enum Direction last_dir_;
 
 		Ogre::SceneNode* enemy1[1];
 		Ogre::SceneNode* enemy2[7];

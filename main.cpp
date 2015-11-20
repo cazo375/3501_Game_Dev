@@ -12,9 +12,9 @@ int main(void){
 
 	try {
 		application.Init();
-		application.CreateAsteroidField(200);
+		//application.CreateAsteroidField(200);
 		application.CreatePlanetField();
-		application.TransformAsteroidField();
+		//application.TransformAsteroidField();
 		application.startGame();
 		application.MainLoop();
 	}
