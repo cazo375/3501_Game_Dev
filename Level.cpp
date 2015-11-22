@@ -14,7 +14,7 @@ namespace Level_Space {
 	}
 
 	// Advances Our Level A Frame
-	void Level::advance (void) {
+	void Level::advance (Player_Space::Player* player) {
 		std::vector<Planet_Space::Planet*>::iterator iter = planets.begin();
 		std::vector<Planet_Space::Planet*>::iterator iter_end = planets.end();
 		for (; iter != iter_end; iter++ ) {
@@ -24,7 +24,7 @@ namespace Level_Space {
 		std::vector<Enemy_Space::Enemy*>::iterator enemy_iter = enemies.begin();
 		std::vector<Enemy_Space::Enemy*>::iterator enemy_iter_end = enemies.end();
 		for (; enemy_iter != enemy_iter_end; enemy_iter++ ) {
-			(*enemy_iter)->advance();
+			(*enemy_iter)->advance(player);
 		}
 
 		for (int i = 0; i < asteroids.size(); i++) {

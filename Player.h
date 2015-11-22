@@ -17,8 +17,8 @@
 #define LAZER_THRUST 6.0f
 #define LAZER_LIFE_SPAN 12.0f
 #define ROTATION_THRUST 1.0f
-#define MAX_FORWARD_THRUST 4.0f // Number of elements in the chain
-#define MAX_REVRESE_THRUST -4.0f // Number of elements in the chain
+#define MAX_FORWARD_THRUST 2.0f // Number of elements in the chain
+#define MAX_REVRESE_THRUST -2.0f // Number of elements in the chain
 #define COLLISION_DETECTION_RAD 1.0f
 
 #ifndef PLAYER_H

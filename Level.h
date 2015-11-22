@@ -22,7 +22,7 @@ namespace Level_Space {
 		Level(int levelNum);
 		~Level(void);
 
-		void advance (void);
+		void advance (Player_Space::Player* player);
 		void createLevel (Ogre::SceneManager* scene_manager);
 		void destoryLevel (Ogre::SceneManager* scene_manager);
 		

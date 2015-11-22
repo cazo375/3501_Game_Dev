@@ -66,6 +66,7 @@ namespace ogre_application {
 		Ogre::Matrix4 RotationMatrix(Ogre::Vector3 axis, Ogre::Radian angle);
 		Ogre::Matrix4 TranslationMatrix(Ogre::Vector3 trans);
 		Ogre::Matrix4 ScalingMatrix(Ogre::Vector3 scale);
+		Ogre::Vector3 getVectorFromTwoPoints(Ogre::Vector3 playerpos, Ogre::Vector3 Enemypos);
 		void AssignTransf(Ogre::SceneNode* node, Ogre::Matrix4 transf);
 
 

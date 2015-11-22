@@ -20,7 +20,7 @@ namespace Level_Manager_Space {
 		int getCurrentLevel (void);
 
 		void createAllLevels (void);
-		void advanceCurrentLevel (void);
+		void advanceCurrentLevel (Player_Space::Player* player);
 		void cycleNextLevel (Ogre::SceneManager* scene_manager);
 		void incrementLevelTicker (void);
 

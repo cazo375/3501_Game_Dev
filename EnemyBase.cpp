@@ -18,6 +18,7 @@ namespace Enemy_Space {
 		currentDirection = Ogre::Vector3(0.0,0.0,0.0);
 		createEnemyByNum(scene_man, initalPosition, enemy_rep);
 		buildPointGraph();
+		STATE = PURSUE;
 	}
 
 	// Builds The Graph That This Enemy Will Use To Move
@@ -28,17 +29,31 @@ namespace Enemy_Space {
 	}
 
 	// Moves The Enemey One Frame In It's Cycle
-	void Enemy::advance(void) {
+	void Enemy::advance(Player_Space::Player* player) {
 		if (ship_node) {
-			currentDirection = pathPoints[currentPathIndex  % pathPoints.size()] - ship_node->getPosition();
-			currentDirection.normalise();
-			ship_node->translate(currentDirection * ENEMY_MOVE_SPEED);
+			if(STATE == IDLE){
+				currentDirection = pathPoints[currentPathIndex  % pathPoints.size()] - ship_node->getPosition();
+				currentDirection.normalise();
+				ship_node->translate(currentDirection * ENEMY_MOVE_SPEED);
 
 			// Call The Graph Cycler 
-			cycleGraphPointIfNeeded();
+				cycleGraphPointIfNeeded();
 
 			// Finally Move Our Lazer If It Exists
-			moveLazer();
+				moveLazer();
+			}
+			else if(STATE == PURSUE){
+
+			// Finally Move Our Lazer If It Exists
+				moveLazer();
+				pursue(player->getPosition());
+			}
+			else if(STATE == FLEE){
+
+			// Finally Move Our Lazer If It Exists
+				moveLazer();
+				flee(player->getPosition());
+			}
 		}
 	}
 
@@ -408,10 +423,73 @@ namespace Enemy_Space {
 
 		boundingSphereRadius = 10;
 		ship_node->setPosition(pos);
-				ship_node->setScale (3, 3, 3);
+		ship_node->setScale (3, 3, 3);
 	}
 
+
+
+	void Enemy::pursue(Ogre::Vector3 playerPos){
+		Ogre::Vector3 newDirection = GetVectorFromTwoPoints(playerPos, ship_node->getPosition());
+		newDirection.normalise();
+		Ogre::Vector3 axis = currentDirection.crossProduct(newDirection);
+		axis.normalise();
+		Ogre::Radian angle = Ogre::Radian(currentDirection.dotProduct(newDirection));
+
+		currentDirection = newDirection;
+		//RotateShip(axis, angle);
+		ship_node->translate(currentDirection * ENEMY_MOVE_SPEED);
+		
+		
+	}
+	void Enemy::flee(Ogre::Vector3 playerPos){
+		Ogre::Vector3 newDirection = GetVectorFromTwoPoints(playerPos, ship_node->getPosition());
+		newDirection.normalise();
+		Ogre::Vector3 axis = currentDirection.crossProduct(newDirection);
+		axis.normalise();
+		Ogre::Radian angle = Ogre::Radian(currentDirection.dotProduct(newDirection));
+
+		currentDirection = newDirection;
+		//RotateShip(axis, angle);
+		ship_node->translate(currentDirection * ENEMY_MOVE_SPEED * (-1));
+		
+	}
+	
+
+
 	/*-------------------------------------------- Helper Functions --------------------------------------*/
+
+	// Rotate enemy ship using an orbit transformation
+	void Enemy::RotateShip(Ogre::Vector3 axis, Ogre::Radian  degree){
+		Ogre::Vector3 playerPos = ship_node->getPosition();
+		Ogre::Vector3 zeroVector = Ogre::Vector3(0.0, 0.0, 0.0);
+		Ogre::Vector3 displacement = zeroVector - playerPos;
+		Ogre::Matrix4 transformations;
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = Ogre::Matrix4(TranslationMatrix(displacement)) * transformations;
+		UpdateTransf(ship_node, transformations);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = Ogre::Matrix4(RotationMatrix(axis, Ogre::Radian(degree))) * transformations;
+		UpdateTransf(ship_node, transformations);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = Ogre::Matrix4(TranslationMatrix(playerPos)) * transformations;
+		UpdateTransf(ship_node, transformations);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = Ogre::Matrix4(RotationMatrix(axis, Ogre::Radian(degree))) * transformations;
+		UpdateTransf(ship_node, transformations);
+
+	}
+
+
+	// Create a vector from two points
+	Ogre::Vector3 Enemy::GetVectorFromTwoPoints(Ogre::Vector3 playerpos, Ogre::Vector3 Enemypos){
+		Ogre::Vector3  playerdirection = (playerpos - Enemypos);
+		return playerdirection;
+	}
+
 	// Create a rotation matrix based on an angle and an axis
 	Ogre::Matrix4 Enemy::RotationMatrix(Ogre::Vector3 axis, Ogre::Radian angle){
 
@@ -452,5 +530,20 @@ namespace Enemy_Space {
 		node->setScale(scale);
 		node->setOrientation(quat);
 		node->setPosition(trans);
+	}
+
+	void Enemy::UpdateTransf(Ogre::SceneNode* node, Ogre::Matrix4 transf){
+
+		/* In many graphic frameworks, we would simply multiply our geometry by the transformation matrix.
+		However, OGRE stores the transformations of a node in a more efficient manner.
+		So, we need to decompose the transformation first into three components and then assign them
+		to the scene node.*/
+		Ogre::Vector3 trans, scale;
+		Ogre::Quaternion quat;
+
+		transf.decomposition(trans, scale, quat);
+		node->scale(scale);
+		node->rotate(quat);
+		node->translate(trans);
 	}
 }

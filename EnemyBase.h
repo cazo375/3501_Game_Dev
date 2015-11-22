@@ -18,6 +18,9 @@ Our Generic Enemy Class. Holds The Data That Is Relevant To The Enemy.
 #define PLAYER_HOSTILE_RADIUS 50.0f
 
 namespace Enemy_Space {
+	
+		enum Ai_State {PURSUE, IDLE, FLEE};
+
 
 	class Enemy : public Ship_Space::Ship {
 	public:
@@ -25,12 +28,15 @@ namespace Enemy_Space {
 		Enemy (Ogre::SceneManager* scene_manager, Ogre::Vector3 initalPosition, int enemy_num = 4);
 		~Enemy (void);
 
-		void advance (void);							// Called On A Per Frame Basis... Causes The Enemy To Advance To It's Next Frame
+		void advance (Player_Space::Player* player);							// Called On A Per Frame Basis... Causes The Enemy To Advance To It's Next Frame
 		void destoryEnemy (void);						// Destroys Our Enemy And Removes Them From The Game
 		void registerHit (int damageAmount);			// Registers The Hit On The Enemy
 		void fireShot (void);
+		void pursue(Ogre::Vector3 playerPos);
+		void flee(Ogre::Vector3 playerPos);
 		void shouldFireShot (Player_Space::Player*);
 
+		void RotateShip(Ogre::Vector3 axis, Ogre::Radian degree);
 		// Getters And Setters
 		int getEnemyHealth(void);
 		float getBoundingCircleRadius(void);
@@ -48,7 +54,9 @@ namespace Enemy_Space {
 		Ogre::Matrix4 RotationMatrix(Ogre::Vector3 axis, Ogre::Radian angle);
 		Ogre::Matrix4 TranslationMatrix(Ogre::Vector3 trans);
 		Ogre::Matrix4 ScalingMatrix(Ogre::Vector3 scale);
+		Ogre::Vector3 GetVectorFromTwoPoints(Ogre::Vector3 playerpos, Ogre::Vector3 Enemypos);
 		void AssignTransf(Ogre::SceneNode* node, Ogre::Matrix4 transf);
+		void UpdateTransf(Ogre::SceneNode* node, Ogre::Matrix4 transf);
 
 		void createEnemyByNum (Ogre::SceneManager*, Ogre::Vector3, int num = 4);	
 		void CreateEnemy1 (Ogre::SceneManager*, Ogre::Vector3);
@@ -63,6 +71,8 @@ namespace Enemy_Space {
 		void buildPointGraph(void);
 		void cycleGraphPointIfNeeded(void);
 		int currentPathIndex;
+
+		int STATE;
 
 		// Collision Related Variables
 		int enemyHealth;
