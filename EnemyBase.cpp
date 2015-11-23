@@ -13,12 +13,14 @@ namespace Enemy_Space {
 	}
 
 	// Enemy Constructor
-	Enemy::Enemy (Ogre::SceneManager* scene_man, Ogre::Vector3 initalPosition, int enemy_rep) : scene_manager(scene_man), alive(true), enemyHealth(10), original_position(initalPosition){
+	Enemy::Enemy (Ogre::SceneManager* scene_man, Ogre::String name, Ogre::Vector3 initalPosition, int enemy_rep) : scene_manager(scene_man), alive(true), enemyHealth(10), original_position(initalPosition){
 		shot = nullptr;
 		currentDirection = Ogre::Vector3(0.0,0.0,0.0);
-		createEnemyByNum(scene_man, initalPosition, enemy_rep);
+		createEnemyByNum(scene_man, name, initalPosition, enemy_rep);
 		buildPointGraph();
-		STATE = PURSUE;
+		STATE = PROWL;
+		wait = 0.0;
+		lifeSpan = 0.0;
 	}
 
 	// Builds The Graph That This Enemy Will Use To Move
@@ -31,31 +33,102 @@ namespace Enemy_Space {
 	// Moves The Enemey One Frame In It's Cycle
 	void Enemy::advance(Player_Space::Player* player) {
 		if (ship_node) {
+			if(lifeSpan > 1000){
+				maintainFiringRange(player->getPosition());
+			}
+
+			//maintainFiringRange(player->getPosition());
+			// Finally Move Our Lazer If It Exists
+			moveLazer();
+
 			if(STATE == IDLE){
 				currentDirection = pathPoints[currentPathIndex  % pathPoints.size()] - ship_node->getPosition();
 				currentDirection.normalise();
 				ship_node->translate(currentDirection * ENEMY_MOVE_SPEED);
 
-			// Call The Graph Cycler 
+				// Call The Graph Cycler 
 				cycleGraphPointIfNeeded();
 
-			// Finally Move Our Lazer If It Exists
-				moveLazer();
 			}
-			else if(STATE == PURSUE){
+			else if(STATE == PROWL){
+				prowl();
+				spotPlayer(player->getPosition());
+			}
 
-			// Finally Move Our Lazer If It Exists
-				moveLazer();
+			else if(STATE == PURSUE){				
 				pursue(player->getPosition());
+				maintainFiringRange(player->getPosition());
 			}
 			else if(STATE == FLEE){
-
-			// Finally Move Our Lazer If It Exists
-				moveLazer();
 				flee(player->getPosition());
+				maintainFiringRange(player->getPosition());
 			}
+			else if(STATE == HALT){
+
+			}
+
+			lifeSpan += 1;
+			wait -= 1;
 		}
 	}
+
+	void Enemy::prowl(){
+		if( wait <= 0 ){
+			currentDirection = RandomVector3();
+			currentDirection.normalise();
+			wait = 100;
+		}
+		ship_node->translate(currentDirection * ENEMY_MOVE_SPEED);
+
+	}
+
+	void Enemy::spotPlayer(Ogre::Vector3 playerPos){
+		float distance = GetMagnatude(GetVectorFromTwoPoints(playerPos, ship_node->getPosition()));
+		if(distance <= 100.0){
+			STATE = PURSUE;
+		}
+	}
+
+	void Enemy::pursue(Ogre::Vector3 playerPos){
+		Ogre::Vector3 newDirection = GetVectorFromTwoPoints(playerPos, ship_node->getPosition());
+		newDirection.normalise();
+		Ogre::Vector3 axis = currentDirection.crossProduct(newDirection);
+		axis.normalise();
+		Ogre::Radian angle = Ogre::Radian(currentDirection.dotProduct(newDirection));
+
+		currentDirection = newDirection;
+		//RotateShip(axis, angle);
+		ship_node->translate(currentDirection * ENEMY_MOVE_SPEED);
+		
+		
+	}
+	void Enemy::flee(Ogre::Vector3 playerPos){
+		Ogre::Vector3 newDirection = GetVectorFromTwoPoints(playerPos, ship_node->getPosition());
+		newDirection.normalise();
+		Ogre::Vector3 axis = currentDirection.crossProduct(newDirection);
+		axis.normalise();
+		Ogre::Radian angle = Ogre::Radian(currentDirection.dotProduct(newDirection));
+
+		currentDirection = newDirection;
+		//RotateShip(axis, angle);
+		ship_node->translate(currentDirection * ENEMY_MOVE_SPEED * (-1));
+		
+	}
+
+	void Enemy::maintainFiringRange(Ogre::Vector3 playerPos){
+		float distance = GetMagnatude(GetVectorFromTwoPoints(playerPos, ship_node->getPosition()));
+		if(distance <= 15.0 && distance > 10.0 ){
+			STATE = HALT;
+		}
+		else if( distance <= 15.0){
+			STATE = FLEE;
+		}
+		else if( distance > 10.0 ){
+			STATE = PURSUE;
+		}
+		
+	}
+	
 
 	// Cycles To The Next  Graph Point
 	void Enemy::cycleGraphPointIfNeeded(void) {
@@ -113,18 +186,18 @@ namespace Enemy_Space {
 	}
 
 	/*-------------------------------------------- Enemy Node Functions ----------------------------------*/
-	void Enemy::createEnemyByNum (Ogre::SceneManager* scene_manager, Ogre::Vector3 pos, int num) {
+	void Enemy::createEnemyByNum (Ogre::SceneManager* scene_manager, Ogre::String name, Ogre::Vector3 pos, int num) {
 		switch (num) {
-		case 0: CreateEnemy1(scene_manager, pos); break;
-		case 1: CreateEnemy2(scene_manager, pos); break;
-		case 2: CreateEnemy3(scene_manager, pos); break;
-		case 3: CreateEnemy4(scene_manager, pos); break;
-		case 4: CreateEnemy5(scene_manager, pos); break;
+		case 0: CreateEnemy1(scene_manager, name, pos); break;
+		case 1: CreateEnemy2(scene_manager, name, pos); break;
+		case 2: CreateEnemy3(scene_manager, name, pos); break;
+		case 3: CreateEnemy4(scene_manager, name, pos); break;
+		case 4: CreateEnemy5(scene_manager, name, pos); break;
 		}
 	}
 
 	// Creates The Enemy When Called
-	void Enemy::CreateEnemy1 (Ogre::SceneManager* manager, Ogre::Vector3 initalPosition) {
+	void Enemy::CreateEnemy1 (Ogre::SceneManager* manager, Ogre::String name, Ogre::Vector3 initalPosition) {
 		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
 		Ogre::Entity *entity = scene_manager->createEntity("test" + enemy_num++, "cube.mesh");
 
@@ -138,7 +211,7 @@ namespace Enemy_Space {
 	}
 
 	// Create Our Second Entity Mesh
-	void Enemy::CreateEnemy2(Ogre::SceneManager* scene_manager, Ogre::Vector3 pos){
+	void Enemy::CreateEnemy2(Ogre::SceneManager* scene_manager, Ogre::String name, Ogre::Vector3 pos){
 		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
 		Ogre::Entity *entity;
 
@@ -153,7 +226,7 @@ namespace Enemy_Space {
 	}
 
 	// Create Our Third Type Of Enemy
-	void Enemy::CreateEnemy3(Ogre::SceneManager* scene_manager, Ogre::Vector3 pos){
+	void Enemy::CreateEnemy3(Ogre::SceneManager* scene_manager, Ogre::String name, Ogre::Vector3 pos){
 		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
 		Ogre::Entity *entity;
 		Ogre::Matrix4 transformations;
@@ -215,14 +288,14 @@ namespace Enemy_Space {
 		ship_node->setPosition(pos);
 	}
 
-	void Enemy::CreateEnemy4(Ogre::SceneManager* scene_manager, Ogre::Vector3 pos){
+	void Enemy::CreateEnemy4(Ogre::SceneManager* scene_manager, Ogre::String name, Ogre::Vector3 pos){
 
 		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
 		Ogre::Entity *entity;
 		Ogre::Matrix4 transformations;
 		Ogre::String entity_name;
 
-		entity_name = "body3";
+		entity_name = name + " " + "body3";
 		entity = scene_manager->createEntity(entity_name, "Prism");  //mesh name on the right, entity on the left
 		ship_node = root_scene_node->createChildSceneNode("body3");
 		ship_node->attachObject(entity);
@@ -232,7 +305,7 @@ namespace Enemy_Space {
 		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, -1.0), Ogre::Radian(Ogre::Math::PI))) * transformations;
 		AssignTransf(ship_node, transformations);
 
-		entity_name = "toparm3";
+		entity_name = name + " " + "toparm3";
 		entity = scene_manager->createEntity(entity_name, "Cylinder");  //mesh name on the right, entity on the left
 		Ogre::SceneNode* topArm = ship_node->createChildSceneNode("toparm3");
 		topArm->attachObject(entity);
@@ -242,7 +315,7 @@ namespace Enemy_Space {
 		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(1.0, 1.5, 1.75))) * transformations;
 		AssignTransf(topArm, transformations);
 
-		entity_name = "bottomleftarm3";
+		entity_name = name + " " + "bottomleftarm3";
 		entity = scene_manager->createEntity(entity_name, "Cylinder");  //mesh name on the right, entity on the left
 		Ogre::SceneNode* bottomLeftArm = ship_node->createChildSceneNode("bottomleftarm3");
 		bottomLeftArm->attachObject(entity);
@@ -254,7 +327,7 @@ namespace Enemy_Space {
 		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(2.5, -1.0, 1.75))) * transformations;
 		AssignTransf(bottomLeftArm, transformations);
 
-		entity_name = "bottomrightarm3";
+		entity_name = name + " " + "bottomrightarm3";
 		entity = scene_manager->createEntity(entity_name, "Cylinder");  //mesh name on the right, entity on the left
 		Ogre::SceneNode* bottomRightArm = ship_node->createChildSceneNode("bottomrightarm3");
 		bottomRightArm->attachObject(entity);
@@ -266,7 +339,7 @@ namespace Enemy_Space {
 		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(0.0, -1.0, 1.75))) * transformations;
 		AssignTransf(bottomRightArm, transformations);
 
-		entity_name = "topgun3";
+		entity_name = name + " " + "topgun3";
 		entity = scene_manager->createEntity(entity_name, "Prism");  //mesh name on the right, entity on the left
 		Ogre::SceneNode* topGun = ship_node->createChildSceneNode("topgun3");
 		topGun->attachObject(entity);
@@ -276,7 +349,7 @@ namespace Enemy_Space {
 		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(1.30, 2.5, -1.0))) * transformations;
 		AssignTransf(topGun, transformations);
 
-		entity_name = "bottomleftgun3";
+		entity_name = name + " " + "bottomleftgun3";
 		entity = scene_manager->createEntity(entity_name, "Prism");  //mesh name on the right, entity on the left
 		Ogre::SceneNode* bottomLeftGun = ship_node->createChildSceneNode("bottomleftgun3");
 		bottomLeftGun->attachObject(entity);
@@ -288,7 +361,7 @@ namespace Enemy_Space {
 		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(3.0, -1.5, -1.0))) * transformations;
 		AssignTransf(bottomLeftGun, transformations);
 
-		entity_name = "bottomrightgun3";
+		entity_name = name + " " + "bottomrightgun3";
 		entity = scene_manager->createEntity(entity_name, "Prism");  //mesh name on the right, entity on the left
 		Ogre::SceneNode* bottomRightGun = ship_node->createChildSceneNode("bottomrightgun3");
 		bottomRightGun->attachObject(entity);
@@ -305,7 +378,7 @@ namespace Enemy_Space {
 		ship_node->setScale (boundingSphereRadius, boundingSphereRadius, boundingSphereRadius);
 	}
 
-	void Enemy::CreateEnemy5(Ogre::SceneManager* scene_manager, Ogre::Vector3 pos){
+	void Enemy::CreateEnemy5(Ogre::SceneManager* scene_manager, Ogre::String name, Ogre::Vector3 pos){
 
 		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
 		Ogre::Entity *entity;
@@ -428,33 +501,6 @@ namespace Enemy_Space {
 
 
 
-	void Enemy::pursue(Ogre::Vector3 playerPos){
-		Ogre::Vector3 newDirection = GetVectorFromTwoPoints(playerPos, ship_node->getPosition());
-		newDirection.normalise();
-		Ogre::Vector3 axis = currentDirection.crossProduct(newDirection);
-		axis.normalise();
-		Ogre::Radian angle = Ogre::Radian(currentDirection.dotProduct(newDirection));
-
-		currentDirection = newDirection;
-		//RotateShip(axis, angle);
-		ship_node->translate(currentDirection * ENEMY_MOVE_SPEED);
-		
-		
-	}
-	void Enemy::flee(Ogre::Vector3 playerPos){
-		Ogre::Vector3 newDirection = GetVectorFromTwoPoints(playerPos, ship_node->getPosition());
-		newDirection.normalise();
-		Ogre::Vector3 axis = currentDirection.crossProduct(newDirection);
-		axis.normalise();
-		Ogre::Radian angle = Ogre::Radian(currentDirection.dotProduct(newDirection));
-
-		currentDirection = newDirection;
-		//RotateShip(axis, angle);
-		ship_node->translate(currentDirection * ENEMY_MOVE_SPEED * (-1));
-		
-	}
-	
-
 
 	/*-------------------------------------------- Helper Functions --------------------------------------*/
 
@@ -483,6 +529,18 @@ namespace Enemy_Space {
 
 	}
 
+	Ogre::Vector3 Enemy::RandomVector3(void){
+		Ogre::Vector3 direction;
+		direction.x = rand() % 200 + (-100);
+		direction.y = rand() % 200 + (-100);
+		direction.z = rand() % 200 + (-100);
+		return direction;
+	}
+
+	float Enemy::GetMagnatude(Ogre::Vector3 v){
+		float r = sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
+		return r;
+	}
 
 	// Create a vector from two points
 	Ogre::Vector3 Enemy::GetVectorFromTwoPoints(Ogre::Vector3 playerpos, Ogre::Vector3 Enemypos){
