@@ -7,7 +7,8 @@
 #include "OGRE/OgreManualObject.h"
 #include "OGRE/OgreEntity.h"
 #include "OIS/OIS.h"
-#include "WeaponBase.h"
+#include "WeaponShot.h"
+#include "Weapon.h"
 #include "Ship.h"
 
 #define ACCELERATION_STEP 0.3f
@@ -15,6 +16,7 @@
 #define MAX_ORIENTATION_THRUST 2.0f
 #define MIN_ORIENTATION_THRUST -2.0f	
 #define LAZER_THRUST 6.0f
+#define WEAPON_SWITCH_DELAY 1.0f
 #define LAZER_LIFE_SPAN 12.0f
 #define ROTATION_THRUST 1.0f
 #define MAX_FORWARD_THRUST 2.0f // Number of elements in the chain
@@ -34,8 +36,9 @@ namespace Player_Space {
 		// Movement Methods
 		void applyKeyEvent (OIS::Keyboard* keyboard);
 		void createPlayer(void);
-		void advance(void);
+		void advance(Ogre::Real);
 		void fireShot(void);
+		void cycle_shot(void);
 
 		// Collision Detection Variables
 		void resetPosition(void);
@@ -56,6 +59,9 @@ namespace Player_Space {
 		float currentPitchChange;		// Current Pitch Thruster
 		float currentYawChange;			// Current Yaw Thruster
 		float currentRollChange;		// Current Roll Thruster
+
+		// Weapon Variables
+		float weaponTimer;
 
 		// Functions
 		void applyRotation (Ogre::Quaternion& quat);

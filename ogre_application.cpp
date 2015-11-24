@@ -403,7 +403,7 @@ namespace ogre_application {
 			/* Animate transformation */
 			TransformPlanetField();
 			level_manager.advanceCurrentLevel(player);
-			player->advance();
+			player->advance(fe.timeSinceLastFrame);
 		}
 
 		/* Capture input */
@@ -470,38 +470,44 @@ namespace ogre_application {
 
 	// Runs the Lazer Collision Detection
 	void OgreApplication::runLazerCollisionDetection(void) {
-		Weapon_Space::Weapon_Shot* lazer = player->getCurrentShot();
-		if (lazer) {
-			// Check Against Our Astorids
-			Level_Space::Level* currentLevel = level_manager.getCurrentLevelObj();
-			if (currentLevel){
-				std::vector<Asteroid_Space::Asteroid*> levelAsteroids = currentLevel->getAsteroids();
-				for (int i = 0; i < levelAsteroids.size(); i++){
-					if (Collision_Manager::CollisionManager::runRaySphereCollision (lazer->getPosition(), lazer->getDirection(), levelAsteroids[i]->getPosition(), 8.0f)) {
-						spawnExplosionAt(levelAsteroids[i]->getPosition());
-						currentLevel->destoryAsteroidAt(i);
-						break;
-					}
-				}		
-			}
+		std::vector<Weapon_Shot_Space::Weapon_Shot*> lazers = player->getCurrentShots();
 
-			// Check Against Our Enemies
-			if (currentLevel) {
-				std::vector<Enemy_Space::Enemy*> enemies = currentLevel->getEnemies();
-				for (int i = 0; i < enemies.size(); i++) {
-					Enemy_Space::Enemy* nextEnemy = enemies[i];
-					if (Collision_Manager::CollisionManager::runBoundingSphereCollision (nextEnemy->getPosition(), lazer->getPosition(), nextEnemy->getBoundingCircleRadius(), 1.0f)) {
-						nextEnemy->registerHit(lazer->getDamageAmount());
+		for (int i = 0; i < lazers.size(); i++) {
+			Weapon_Shot_Space::Weapon_Shot* lazer = lazers[i];
 
-						// If The Enemy Was Killed Remove Them From The Level
-						if (nextEnemy ->enemyDead()) {
-							Level_Space::Level* currentLevel = level_manager.getCurrentLevelObj();
-							if (currentLevel) {
-								spawnExplosionAt (nextEnemy->getPosition());
-								currentLevel->destoryEnemyAt(i);
-							}
+			if (lazer) {
+
+				// Check Against Our Astorids
+				Level_Space::Level* currentLevel = level_manager.getCurrentLevelObj();
+				if (currentLevel){
+					std::vector<Asteroid_Space::Asteroid*> levelAsteroids = currentLevel->getAsteroids();
+					for (int i = 0; i < levelAsteroids.size(); i++){
+						if (Collision_Manager::CollisionManager::runRaySphereCollision (lazer->getPosition(), lazer->getDirection(), levelAsteroids[i]->getPosition(), 8.0f)) {
+							spawnExplosionAt(levelAsteroids[i]->getPosition());
+							currentLevel->destoryAsteroidAt(i);
+							break;
 						}
-						break;
+					}		
+				}
+
+				// Check Against Our Enemies
+				if (currentLevel) {
+					std::vector<Enemy_Space::Enemy*> enemies = currentLevel->getEnemies();
+					for (int i = 0; i < enemies.size(); i++) {
+						Enemy_Space::Enemy* nextEnemy = enemies[i];
+						if (Collision_Manager::CollisionManager::runBoundingSphereCollision (nextEnemy->getPosition(), lazer->getPosition(), nextEnemy->getBoundingCircleRadius(), 1.0f)) {
+							nextEnemy->registerHit(lazer->getDamageAmount());
+
+							// If The Enemy Was Killed Remove Them From The Level
+							if (nextEnemy ->enemyDead()) {
+								Level_Space::Level* currentLevel = level_manager.getCurrentLevelObj();
+								if (currentLevel) {
+									spawnExplosionAt (nextEnemy->getPosition());
+									currentLevel->destoryEnemyAt(i);
+								}
+							}
+							break;
+						}
 					}
 				}
 			}

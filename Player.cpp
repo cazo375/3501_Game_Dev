@@ -9,6 +9,13 @@ namespace Player_Space {
 		initialPosition = camera->getPosition();
 		initialOrientation = camera->getOrientation();
 		shot = nullptr;
+		weaponTimer = 0;
+		currentWeaponIndex = 0;
+
+		// Weapon Bank
+		weapons.push_back(new Weapon_Space::Lazer("player"));
+		weapons.push_back(new Weapon_Space::Bomb("player"));
+
 		initialize();
 	}
 
@@ -16,11 +23,17 @@ namespace Player_Space {
 	}
 
 	// Advances the player by a frame
-	void Player::advance (void) {
+	void Player::advance (Ogre::Real time) {
 		player_camera->setPosition(player_camera->getPosition() + player_camera->getDirection()*currentForwardThrust);
 		player_camera->setPosition(player_camera->getPosition() + player_camera->getUp()*currentUpDownThrust);
 		player_camera->setPosition(player_camera->getPosition() + player_camera->getRight()*currentSideThrust);
 		ship_node->setPosition(player_camera->getPosition());
+
+		weapons[currentWeaponIndex]->advance(time);
+
+		if (weaponTimer < WEAPON_SWITCH_DELAY) {
+			weaponTimer += time;
+		}
 
 		moveLazer();
 	}
@@ -90,6 +103,24 @@ namespace Player_Space {
 			fireShot();
 		}
 
+		if (keyboard_->isKeyDown (OIS::KC_C)) {
+			cycle_shot();
+		}
+
+	}
+
+	// Cycles The Player's Gun When Called
+	void Player::cycle_shot (void) {
+		if (weaponTimer >= WEAPON_SWITCH_DELAY) {
+			weaponTimer = 0;
+			currentWeaponIndex++;
+
+			if (currentWeaponIndex >= weapons.size()) {
+				currentWeaponIndex = 0;
+			}
+
+			std::cout << "Current Weapon: " << weapons[currentWeaponIndex]->getWeaponName() << std::endl;
+		}
 	}
 
 	void Player::initialize (void) {
@@ -99,6 +130,7 @@ namespace Player_Space {
 		currentPitchChange = 0;	
 		currentYawChange = 0;	
 		currentRollChange = 0;	
+		currentWeaponIndex = 0;
 	}
 
 	// Creates Our Player For Our Came
@@ -116,8 +148,11 @@ namespace Player_Space {
 	// Fires The Weapon If Hasn't Been Fired
 	void Player::fireShot (void) {
 		if (!shot) {
-			shot = new Weapon_Space::Weapon_Shot (scene_manager, ship_node->getPosition(), (targetCube->_getDerivedPosition() - ship_node->getPosition()).normalisedCopy(), "player.shot");
+			shot = new Weapon_Shot_Space::Weapon_Shot((targetCube->_getDerivedPosition() - ship_node->getPosition()).normalisedCopy(), "player.shot");
+			shot->createEntity(scene_manager, ship_node->getPosition());
 		}
+
+		weapons[currentWeaponIndex]->fire_weapon(scene_manager, ship_node->getPosition(), (targetCube->_getDerivedPosition() - ship_node->getPosition()).normalisedCopy());
 	}
 
 

@@ -6,10 +6,8 @@
 #include "OGRE/OgreManualObject.h"
 #include "OGRE/OgreEntity.h"
 #include "OIS/OIS.h"
-#include "WeaponBase.h"
-
-#define LAZER_THRUST 6.0f
-#define LAZER_LIFE_SPAN 12.0f
+#include "WeaponShot.h"
+#include "Weapon.h"
 
 #ifndef Ship_h
 #define Ship_h
@@ -22,14 +20,19 @@ namespace Ship_Space {
 
 		// Projectile Mechanics
 		void moveLazer (void);
-		Weapon_Space::Weapon_Shot* getCurrentShot(void);
+		std::vector <Weapon_Shot_Space::Weapon_Shot*> getCurrentShots(void);
 
 		// Abstract Methods
 		virtual float getBoundingCircleRadius(void) = 0;
 		virtual void fireShot (void) = 0;
 
 	protected:
-		Weapon_Space::Weapon_Shot* shot;
+		// Weapons Attached To This Ship
+		int currentWeaponIndex;
+		std::vector<Weapon_Space::BaseWeapon*> weapons;
+		Weapon_Shot_Space::Weapon_Shot* shot;
+
+		// Entity Variables
 		Ogre::SceneNode* ship_node;
 	};
 }

@@ -22,6 +22,8 @@ namespace Enemy_Space {
 		STATE = PROWL;
 		wait = 0.0;
 		lifeSpan = 0.0;
+		currentWeaponIndex = 0;
+		weapons.push_back(new Weapon_Space::Lazer());
 	}
 
 	// Builds The Graph That This Enemy Will Use To Move
@@ -184,7 +186,8 @@ namespace Enemy_Space {
 	// Fires A Shot When Called
 	void Enemy::fireShot(void) {
 		if (!shot) {
-			shot = new Weapon_Space::Weapon_Shot (scene_manager, ship_node->getPosition(), currentDirection, entity_name);
+			shot = new Weapon_Shot_Space::Weapon_Shot (currentDirection, entity_name);
+			shot->createEntity(scene_manager, ship_node->getPosition());
 		}
 	}
 

@@ -11,31 +11,37 @@ Our Generic Weapon Class. Holds The Data That Is Relevant To The Weapons.
 #include "OIS/OIS.h"
 #include <vector>
 
-#define LAZER_THRUST 6.0f
-#define LAZER_LIFE_SPAN 12.0f
+#include "Explosion.h"
 
 #ifndef WeaponBase_H
-#define WeaponBase_H
 
-namespace Weapon_Space {
+#define WeaponBase_H
+#define LAZER_THRUST 6.0f
+#define LAZER_LIFE_SPAN 0.5f
+#define EXPLOSION_DELAY 0.5f
+#define EXPLOSION_LIFE_SPAN 4.0f
+
+namespace Weapon_Shot_Space {
 	class Weapon_Shot {
 	public:
 		Weapon_Shot(void);
-		Weapon_Shot(Ogre::SceneManager* manager, Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::String);
+		Weapon_Shot(Ogre::Vector3 direction, Ogre::String, int damage = 1);
 		~Weapon_Shot(void);
 
 		// Public Methods For Moving The Shots In The Game
-		void moveShot (void);
+		virtual void moveShot (Ogre::Real time = 0);
 		void destoryFiredWeapon (void);
-		boolean shouldDestoryShot (void);
+		virtual boolean shouldDestoryShot (void);
 
 		// Getters And Setters For The Object
 		Ogre::Vector3 getPosition (void);
 		Ogre::Vector3 getDirection (void);
 		float getDamageAmount (void);
 
+		// For Actually Creating Our Entity
+		void createEntity (Ogre::SceneManager* manager, Ogre::Vector3 pos);
+
 	protected:
-		void createEntity (Ogre::Vector3 pos);
 
 		// Variables For Creation
 		Ogre::String weapon_mesh;
@@ -43,15 +49,31 @@ namespace Weapon_Space {
 		Ogre::SceneNode* weapon_shot_node;
 		Ogre::SceneManager* scene_manager;
 
+		// Identifer Variables
+		Ogre::String weapon_name;
+
 		// Values That Need To Be Know For Where The Object Is Going
 		Ogre::Vector3 direction;
 		Ogre::Quaternion ori;
 
 		// Values For Movement
 		float lifeCounter;
-
 		float damageAmount;
+	};
 
+	// An Explosive Shot
+	class Explosive_Shot : public Weapon_Shot {
+	public:
+		Explosive_Shot(void);
+		Explosive_Shot(Ogre::Vector3, Ogre::String, int damage = 1);
+		~Explosive_Shot(void);
+
+		void moveShot (Ogre::Real time = 0);
+		boolean shouldDestoryShot (void);
+	protected:
+		boolean exploded;
+		float explosion_timer;
+		Explosion_Space::Explosion* explosion;
 	};
 }
 

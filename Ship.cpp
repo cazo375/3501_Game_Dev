@@ -19,7 +19,7 @@ namespace Ship_Space {
 	}
 
 	// Returns The Current Shot
-	Weapon_Space::Weapon_Shot* Ship::getCurrentShot(void) {
-		return shot;
+	std::vector<Weapon_Shot_Space::Weapon_Shot*> Ship::getCurrentShots(void) {
+		return weapons[currentWeaponIndex]->getShotsFired();
 	}
 }
