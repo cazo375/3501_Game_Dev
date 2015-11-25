@@ -11,7 +11,7 @@
 #ifndef WEAPON_H
 #define WEAPON_H
 
-#define SCATTER_RADIUS 0.01f
+#define SCATTER_RADIUS 0.1f
 #define NUM_OF_SCATTER_PELLETS 5
 
 namespace Weapon_Space {
@@ -21,7 +21,10 @@ namespace Weapon_Space {
 		BaseWeapon(void);
 		~BaseWeapon(void);
 
+		
 		void advance(Ogre::Real);
+		void removeAllShots (void);
+
 		boolean getOrientationNeeded(void);
 		Ogre::String getWeaponName(void);
 		std::vector<Weapon_Shot_Space::Weapon_Shot*> getShotsFired(void);
@@ -29,6 +32,7 @@ namespace Weapon_Space {
 		// Abstract Function
 		virtual void fire_weapon(Ogre::SceneManager*, Ogre::Vector3, Ogre::Vector3);
 		virtual void fire_weapon(Ogre::SceneManager*, Ogre::Vector3, Ogre::Vector3, Ogre::Quaternion);
+
 	protected:
 		// Weapon Values
 		int weapon_damage;

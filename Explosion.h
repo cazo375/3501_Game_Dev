@@ -10,7 +10,7 @@
 #ifndef EXPLOSION_H
 #define EXPLOSION_H
 #define EXPLOSION_LIFE_SPAN 2.0f
-
+#define EXPLOSION_RADIUS 30.0f
 namespace Explosion_Space {
 	class Explosion {
 	public:
@@ -19,6 +19,8 @@ namespace Explosion_Space {
 		~Explosion(void);
 
 		void advance (Ogre::Real);
+		float getExplosionTimer(void);
+		Ogre::Vector3 getPosition(void);
 		boolean shouldDeleteExplosion (void);
 
 	private:

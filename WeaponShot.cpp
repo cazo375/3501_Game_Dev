@@ -10,6 +10,7 @@ namespace Weapon_Shot_Space {
 	// Constructor For The Weapons Shot
 	Weapon_Shot::Weapon_Shot(Ogre::Vector3 dir, Ogre::String shotName, int damage_amount) {
 		lifeCounter = 0;
+		boundingSphereRadius = 1;
 		damageAmount = damage_amount;
 		direction = dir;
 		entity_name = shotName + "shot" + Ogre::StringConverter::toString(playerShot++);
@@ -55,6 +56,7 @@ namespace Weapon_Shot_Space {
 		}
 	}
 
+	// Returns Wheither Or Not The Shot ShouldBe 
 	boolean Weapon_Shot::shouldDestoryShot (void) {
 		return lifeCounter >= LAZER_LIFE_SPAN;
 	}
@@ -71,6 +73,10 @@ namespace Weapon_Shot_Space {
 		return damageAmount;
 	}
 
+	float Weapon_Shot::getBoundingSphereRadius (void) {
+		return boundingSphereRadius;
+	}
+
 	/*------------------------------------------------- Exposive Shell ----------------------------------*/
 	Explosive_Shot::Explosive_Shot (Ogre::Vector3 dir, Ogre::String shotName, int damage_amount) : Weapon_Shot (dir, shotName, damage_amount){
 		exploded = false;
@@ -85,20 +91,46 @@ namespace Weapon_Shot_Space {
 		}
 	}
 
+	// Only Destory The Shot When The Explosion Has Expired
 	boolean Explosive_Shot::shouldDestoryShot (void) {
 		return lifeCounter >= LAZER_LIFE_SPAN + EXPLOSION_LIFE_SPAN;
 	}
 
+	// Get The Position Of The Node... If Exploded Get Position Of The Explosion
+	Ogre::Vector3 Explosive_Shot::getPosition (void) {
+		Ogre::Vector3 returnVal = Ogre::Vector3 (0.0f);
+		if (explosion) {
+			returnVal = explosion->getPosition();
+		} else if (weapon_shot_node) {
+			returnVal = weapon_shot_node->getPosition();
+		}
+		return returnVal;
+	}
+
+	// Gets The Bounding Sphere Radius... If Exploding Factor That In
+	float Explosive_Shot::getBoundingSphereRadius (void) {
+
+		if (explosion) {
+			return boundingSphereRadius + (explosion->getExplosionTimer() * EXPLOSION_RADIUS);
+		}
+
+		return boundingSphereRadius;
+	}
+
+	// Moves The Explosive Shot Through The World
 	void Explosive_Shot::moveShot(Ogre::Real time) {
+		lifeCounter += time;
+
 		if (weapon_shot_node) {
 			weapon_shot_node->translate(direction * LAZER_THRUST);
-			lifeCounter += time;
 
 			// If The Shot Has Traveled
 			if (lifeCounter > EXPLOSION_DELAY && !exploded) {
 				exploded = true;
 				explosion_timer = 0;
 				explosion = new Explosion_Space::Explosion(scene_manager, weapon_shot_node->getPosition());
+
+				destoryFiredWeapon();
 			}
 		}
 

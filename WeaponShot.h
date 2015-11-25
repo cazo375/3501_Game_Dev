@@ -19,7 +19,6 @@ Our Generic Weapon Class. Holds The Data That Is Relevant To The Weapons.
 #define LAZER_THRUST 6.0f
 #define LAZER_LIFE_SPAN 0.5f
 #define EXPLOSION_DELAY 0.5f
-#define EXPLOSION_LIFE_SPAN 4.0f
 
 namespace Weapon_Shot_Space {
 	class Weapon_Shot {
@@ -34,9 +33,11 @@ namespace Weapon_Shot_Space {
 		virtual boolean shouldDestoryShot (void);
 
 		// Getters And Setters For The Object
-		Ogre::Vector3 getPosition (void);
 		Ogre::Vector3 getDirection (void);
 		float getDamageAmount (void);
+
+		virtual Ogre::Vector3 getPosition (void);
+		virtual float getBoundingSphereRadius (void);
 
 		// For Actually Creating Our Entity
 		void createEntity (Ogre::SceneManager* manager, Ogre::Vector3 pos);
@@ -59,6 +60,7 @@ namespace Weapon_Shot_Space {
 		// Values For Movement
 		float lifeCounter;
 		float damageAmount;
+		float boundingSphereRadius;
 	};
 
 	// An Explosive Shot
@@ -70,6 +72,9 @@ namespace Weapon_Shot_Space {
 
 		void moveShot (Ogre::Real time = 0);
 		boolean shouldDestoryShot (void);
+
+		Ogre::Vector3 getPosition (void);
+		float getBoundingSphereRadius (void);
 	protected:
 		boolean exploded;
 		float explosion_timer;

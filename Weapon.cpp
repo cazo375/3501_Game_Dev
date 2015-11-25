@@ -38,6 +38,14 @@ namespace Weapon_Space {
 		}
 	}
 
+	void BaseWeapon::removeAllShots(void) {
+		for (int i = 0; i < shotsFired.size(); i++) {
+			delete shotsFired[i];
+		}
+
+		shotsFired.clear();
+	}
+
 	// Returns The Number Of Shots Fired
 	std::vector<Weapon_Shot_Space::Weapon_Shot*> BaseWeapon::getShotsFired(void) {
 		return shotsFired;
@@ -153,16 +161,16 @@ namespace Weapon_Space {
 			for (int i = 0; i < NUM_OF_SCATTER_PELLETS; i++) {
 
 				// Randomly select three numbers to define a point in spherical coordinates
-				float radiiPlacement = ((double) rand() / (RAND_MAX)) * 2.0 * Ogre::Math::TWO_PI;
-				float percentIn = ((double) rand() / (RAND_MAX));
+				float xDisplacement = (-0.5 + ((double) rand() / (RAND_MAX))) * SCATTER_RADIUS;
+				float yDisplacement = (-0.5 + ((double) rand() / (RAND_MAX))) * SCATTER_RADIUS;
 
 				// Define the normal and point based on theta, phi and the spray
-				Ogre::Vector3 normal = Ogre::Vector3(SCATTER_RADIUS * cos(radiiPlacement) * percentIn, SCATTER_RADIUS * sin (radiiPlacement) * percentIn, dir.normalisedCopy().z);
-				normal.normalise();
-				normal = ort * normal;
+				Ogre::Vector3 baseDir = dir.normalisedCopy();
+				Ogre::Vector3 newDir = Ogre::Vector3(baseDir.x + xDisplacement, baseDir.y + yDisplacement, dir.normalisedCopy().z);
+				newDir.normalise();
 
 				// Create Our Weapon Shot
-				Weapon_Shot_Space::Weapon_Shot* newShot = new Weapon_Shot_Space::Weapon_Shot (normal, owner_object, weapon_damage);
+				Weapon_Shot_Space::Weapon_Shot* newShot = new Weapon_Shot_Space::Weapon_Shot (newDir, owner_object, weapon_damage);
 				newShot->createEntity(man, pos);
 				shotsFired.push_back(newShot);
 			}

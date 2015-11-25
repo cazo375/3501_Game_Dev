@@ -18,8 +18,6 @@ namespace Player_Space {
 		weapons.push_back(new Weapon_Space::Scatter_Shot("player"));
 
 		initialize();
-
-		Ogre::Overlay
 	}
 
 	Player::~Player() {
@@ -116,6 +114,8 @@ namespace Player_Space {
 	void Player::cycle_shot (void) {
 		if (weaponTimer >= WEAPON_SWITCH_DELAY) {
 			weaponTimer = 0;
+
+			weapons[currentWeaponIndex]->removeAllShots();
 			currentWeaponIndex++;
 
 			if (currentWeaponIndex >= weapons.size()) {

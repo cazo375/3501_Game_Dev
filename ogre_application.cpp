@@ -479,23 +479,27 @@ namespace ogre_application {
 
 				// Check Against Our Astorids
 				Level_Space::Level* currentLevel = level_manager.getCurrentLevelObj();
+
 				if (currentLevel){
+
+					Ogre::Vector3 lazerPosition = lazer->getPosition();
+					float lazerBoundingSphereRadius = lazer->getBoundingSphereRadius();
+
+					// Check Against Our Asteroids
 					std::vector<Asteroid_Space::Asteroid*> levelAsteroids = currentLevel->getAsteroids();
 					for (int i = 0; i < levelAsteroids.size(); i++){
-						if (Collision_Manager::CollisionManager::runRaySphereCollision (lazer->getPosition(), lazer->getDirection(), levelAsteroids[i]->getPosition(), 8.0f)) {
+						if (Collision_Manager::CollisionManager::runBoundingSphereCollision (lazerPosition, levelAsteroids[i]->getPosition(), lazerBoundingSphereRadius, 8.0f)) {
 							spawnExplosionAt(levelAsteroids[i]->getPosition());
 							currentLevel->destoryAsteroidAt(i);
 							break;
 						}
 					}		
-				}
 
-				// Check Against Our Enemies
-				if (currentLevel) {
+					// Check Against Our Enemies
 					std::vector<Enemy_Space::Enemy*> enemies = currentLevel->getEnemies();
 					for (int i = 0; i < enemies.size(); i++) {
 						Enemy_Space::Enemy* nextEnemy = enemies[i];
-						if (Collision_Manager::CollisionManager::runBoundingSphereCollision (nextEnemy->getPosition(), lazer->getPosition(), nextEnemy->getBoundingCircleRadius(), 1.0f)) {
+						if (Collision_Manager::CollisionManager::runBoundingSphereCollision (nextEnemy->getPosition(), lazerPosition, nextEnemy->getBoundingCircleRadius(), lazerBoundingSphereRadius)) {
 							nextEnemy->registerHit(lazer->getDamageAmount());
 
 							// If The Enemy Was Killed Remove Them From The Level

@@ -71,6 +71,19 @@ namespace Explosion_Space {
 		}
 	}
 
+	// Returns The Position Of The Explosion, Whil
+	Ogre::Vector3 Explosion::getPosition (void) {
+		if (explosionNode) {
+			return explosionNode->getPosition();
+		} else {
+			return Ogre::Vector3 (0.0f,0.0f, 0.0f);
+		}
+	}
+
+	float Explosion::getExplosionTimer(void) {
+		return currentExplosionTimer;
+	}
+
 	// Advances Our Explosion In Time
 	void Explosion::advance (Ogre::Real timeSinceLastFrame) {
 		updateMaterialWithTimer(timeSinceLastFrame);
