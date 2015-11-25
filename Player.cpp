@@ -15,8 +15,11 @@ namespace Player_Space {
 		// Weapon Bank
 		weapons.push_back(new Weapon_Space::Lazer("player"));
 		weapons.push_back(new Weapon_Space::Bomb("player"));
+		weapons.push_back(new Weapon_Space::Scatter_Shot("player"));
 
 		initialize();
+
+		Ogre::Overlay
 	}
 
 	Player::~Player() {
@@ -147,12 +150,13 @@ namespace Player_Space {
 
 	// Fires The Weapon If Hasn't Been Fired
 	void Player::fireShot (void) {
-		if (!shot) {
-			shot = new Weapon_Shot_Space::Weapon_Shot((targetCube->_getDerivedPosition() - ship_node->getPosition()).normalisedCopy(), "player.shot");
-			shot->createEntity(scene_manager, ship_node->getPosition());
+		if (weapons[currentWeaponIndex]->getOrientationNeeded()) {
+			weapons[currentWeaponIndex]->fire_weapon(scene_manager, ship_node->getPosition(), 
+													(targetCube->_getDerivedPosition() - ship_node->getPosition()).normalisedCopy(), ship_node->getOrientation());
 		}
-
-		weapons[currentWeaponIndex]->fire_weapon(scene_manager, ship_node->getPosition(), (targetCube->_getDerivedPosition() - ship_node->getPosition()).normalisedCopy());
+		else {
+			weapons[currentWeaponIndex]->fire_weapon(scene_manager, ship_node->getPosition(), (targetCube->_getDerivedPosition() - ship_node->getPosition()).normalisedCopy());
+		}
 	}
 
 
