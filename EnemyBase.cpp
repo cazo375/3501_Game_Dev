@@ -36,7 +36,7 @@ namespace Enemy_Space {
 	// Moves The Enemey One Frame In It's Cycle
 	void Enemy::advance(Player_Space::Player* player) {
 		if (ship_node) {
-			if(lifeSpan > 1000){
+			if(lifeSpan > 3000){
 				maintainFiringRange(player->getPosition());
 			}
 
@@ -53,8 +53,11 @@ namespace Enemy_Space {
 				cycleGraphPointIfNeeded();
 
 			}
+			else if(STATE == INTIMIDATE){
+				intimidate(player->getPosition());
+			}
 			else if(STATE == PROWL){
-				prowl();
+				prowl(player->getPosition());
 				spotPlayer(player->getPosition());
 			}
 
@@ -67,7 +70,7 @@ namespace Enemy_Space {
 				maintainFiringRange(player->getPosition());
 			}
 			else if(STATE == HALT){
-
+				
 			}
 
 			lifeSpan += 1;
@@ -75,22 +78,42 @@ namespace Enemy_Space {
 		}
 	}
 
+	void Enemy::intimidate(Ogre::Vector3 playerPos){
+		if(inIntimidateRange(playerPos)){
+			if( wait <= 0 ){
+				Ogre::Vector3 playerDirection = GetVectorFromTwoPoints(playerPos, ship_node->getPosition());
+				playerDirection.normalise();
+				Ogre::Vector3 newDirection = GetVectorFromTwoPoints(playerPos, playerDirection.crossProduct(RandomVector3()));
+				newDirection.normalise();
+				currentDirection = newDirection;
+				wait = 5;
+			}
+			ship_node->translate(currentDirection * ENEMY_MOVE_SUPER_SPEED * (1));
+		}
+		else{
+			int randomToggler = rand() % 1 + 1;
+			if( randomToggler == 1){
+				STATE == PROWL;
+			}
+			else {
+				STATE = PURSUE;
+			}
+		}
+	}
 	// Have the enemy prowl in a random direction
-	void Enemy::prowl(){
+	void Enemy::prowl(Ogre::Vector3 playerPos){
 		if( wait <= 0 ){
 			currentDirection = RandomVector3();
 			currentDirection.normalise();
 			wait = 100;
 		}
 		ship_node->translate(currentDirection * ENEMY_MOVE_SPEED);
-
 	}
 
 	// Checks To See If The Player Is Within Prowl Distance
 	void Enemy::spotPlayer(Ogre::Vector3 playerPos){
-		float distance = GetMagnatude(GetVectorFromTwoPoints(playerPos, ship_node->getPosition()));
-		if(distance <= 100.0){
-			STATE = PURSUE;
+		if(inIntimidateRange(playerPos)){
+			STATE = INTIMIDATE;
 		}
 	}
 
@@ -124,18 +147,24 @@ namespace Enemy_Space {
 	// Have The Enemy Maintain The Firing Range
 	void Enemy::maintainFiringRange(Ogre::Vector3 playerPos){
 		float distance = GetMagnatude(GetVectorFromTwoPoints(playerPos, ship_node->getPosition()));
-		if(distance <= 15.0 && distance > 10.0 ){
-			STATE = HALT;
+		if(distance < PLAYER_HOSTILE_RADIUS/2 ){
+			STATE == FLEE;
 		}
-		else if( distance <= 15.0){
-			STATE = FLEE;
-		}
-		else if( distance > 10.0 ){
+		else if(distance > PLAYER_HOSTILE_RADIUS*2){
 			STATE = PURSUE;
+		}
+		else {
+			STATE = INTIMIDATE;
+		}
+	}
+
+	void Enemy::yWave(){
+		int wait_time = 200;
+		if(wait<= 0){
+			wait = wait_time;
 		}
 
 	}
-
 
 	// Cycles To The Next Graph Point
 	void Enemy::cycleGraphPointIfNeeded(void) {
@@ -189,6 +218,20 @@ namespace Enemy_Space {
 			shot = new Weapon_Shot_Space::Weapon_Shot (currentDirection, entity_name);
 			shot->createEntity(scene_manager, ship_node->getPosition());
 		}
+	}
+	
+	boolean Enemy::inIntimidateRange(Ogre::Vector3 playerPos) {
+		float distance = GetMagnatude(GetVectorFromTwoPoints(playerPos, ship_node->getPosition()));
+		if(distance <= PLAYER_HOSTILE_RADIUS*2 && distance > PLAYER_HOSTILE_RADIUS/2 ){
+			return true;
+		}
+		else if(distance < PLAYER_HOSTILE_RADIUS/2){
+			STATE = FLEE;
+		}
+		else if(distance > PLAYER_HOSTILE_RADIUS*2){
+			STATE = PROWL;
+		}
+		return false;
 	}
 
 	boolean Enemy::enemyDead(void) {

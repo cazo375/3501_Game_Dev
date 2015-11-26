@@ -1,5 +1,5 @@
 #include "ogre_application.h"
-#include "bin/path_config.h"
+#include "path_config.h"
 
 /*
 this is a test//delete me
@@ -12,7 +12,10 @@ Player Ship Controls:
 - A = Engage left strafe thruster
 - D = Enage right strafe thruster
 - E = Move ship up
-- X = Move ship down
+- Q = Move ship down
+- F = Fire Lazer
+- C = Cycle Weapons
+- L = Next Level
 - F = Fire Lazer
 - Up Arrow: Rotate ship upwards
 - Downward Arrow: Rotate ship downwards

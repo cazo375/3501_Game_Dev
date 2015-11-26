@@ -14,12 +14,15 @@ Our Generic Enemy Class. Holds The Data That Is Relevant To The Enemy.
 #include "Player.h"
 
 #define NODE_MIN_RADIUS 1.0f 
+#define ENEMY_MOVE_SUPER_SPEED 2.2f
+#define ENEMY_MOVE_FAST_SPEED 1.8f
+#define ENEMY_MOVE_SLOW_SPEED 0.5f
 #define ENEMY_MOVE_SPEED 1.0f
 #define PLAYER_HOSTILE_RADIUS 50.0f
 
 namespace Enemy_Space {
 
-	enum Ai_State {PROWL, PURSUE, IDLE, FLEE, HALT};
+	enum Ai_State {PROWL, PURSUE, IDLE, FLEE, HALT, INTIMIDATE};
 
 
 	class Enemy : public Ship_Space::Ship {
@@ -34,9 +37,11 @@ namespace Enemy_Space {
 		void registerHit (int damageAmount);			// Registers The Hit On The Enemy
 		void fireShot (void);
 		void spotPlayer(Ogre::Vector3 playerPos);
-		void prowl();
+		void intimidate(Ogre::Vector3 playerPos);
+		void prowl(Ogre::Vector3 playerPos);
 		void pursue(Ogre::Vector3 playerPos);
 		void flee(Ogre::Vector3 playerPos);
+		void yWave();
 		void maintainFiringRange(Ogre::Vector3 playerPos);
 		void shouldFireShot (Player_Space::Player*);
 
@@ -45,6 +50,7 @@ namespace Enemy_Space {
 		// Getters And Setters
 		int getEnemyHealth(void);
 		float getBoundingCircleRadius(void);
+		boolean inIntimidateRange(Ogre::Vector3 playerPos);
 		boolean enemyDead (void);
 
 	protected:
