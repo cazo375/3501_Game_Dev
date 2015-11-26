@@ -83,6 +83,7 @@ namespace Enemy_Space {
 			if( wait <= 0 ){
 				Ogre::Vector3 playerDirection = GetVectorFromTwoPoints(playerPos, ship_node->getPosition());
 				playerDirection.normalise();
+				RotateShip(playerDirection);
 				Ogre::Vector3 newDirection = GetVectorFromTwoPoints(playerPos, playerDirection.crossProduct(RandomVector3()));
 				newDirection.normalise();
 				currentDirection = newDirection;
@@ -105,6 +106,7 @@ namespace Enemy_Space {
 		if( wait <= 0 ){
 			currentDirection = RandomVector3();
 			currentDirection.normalise();
+			RotateShip(currentDirection);
 			wait = 100;
 		}
 		ship_node->translate(currentDirection * ENEMY_MOVE_SPEED);
@@ -126,7 +128,7 @@ namespace Enemy_Space {
 		Ogre::Radian angle = Ogre::Radian(currentDirection.dotProduct(newDirection));
 
 		currentDirection = newDirection;
-		//RotateShip(axis, angle);
+		RotateShip(currentDirection);
 		ship_node->translate(currentDirection * ENEMY_MOVE_SPEED);
 	}
 
@@ -139,7 +141,7 @@ namespace Enemy_Space {
 		Ogre::Radian angle = Ogre::Radian(currentDirection.dotProduct(newDirection));
 
 		currentDirection = newDirection;
-		//RotateShip(axis, angle);
+		RotateShip(currentDirection);
 		ship_node->translate(currentDirection * ENEMY_MOVE_SPEED * (-1));
 
 	}
@@ -571,7 +573,7 @@ namespace Enemy_Space {
 
 	// Rotate enemy ship using an orbit transformation
 	void Enemy::RotateShip(Ogre::Vector3 target){
-		ship_node->lookAt(target, Ogre::Node::TS_WORLD);
+		ship_node->lookAt(target, Ogre::Node::TS_LOCAL);
 
 	}
 
