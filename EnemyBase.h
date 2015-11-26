@@ -45,7 +45,7 @@ namespace Enemy_Space {
 		void maintainFiringRange(Ogre::Vector3 playerPos);
 		void shouldFireShot (Player_Space::Player*);
 
-		void RotateShip(Ogre::Vector3 axis, Ogre::Radian degree);
+		void RotateShip(Ogre::Vector3 target);
 
 		// Getters And Setters
 		int getEnemyHealth(void);

@@ -12,6 +12,10 @@
 #include "OGRE/OgreManualObject.h"
 #include "OGRE/OgreEntity.h"
 #include "OIS/OIS.h"
+#include "OGRE/Overlay/OgreFontManager.h"
+#include "OGRE/Overlay/OgreTextAreaOverlayElement.h"
+#include "OGRE/Overlay/OgreOverlayManager.h"
+#include "OGRE/Overlay/OgreOverlaySystem.h"
 
 #include "CollisionDetector.h"
 #include "MeshManager.h"
@@ -81,6 +85,8 @@ namespace ogre_application {
 	private:
 
 		/*----------------------------------- Functions ------------------------------*/
+		void InitOverlay(void);
+
 		/* Methods to initialize the application */
 		void InitRootNode(void);
 		void InitPlugins(void);

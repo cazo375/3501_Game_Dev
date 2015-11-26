@@ -163,6 +163,12 @@ namespace Enemy_Space {
 		if(wait<= 0){
 			wait = wait_time;
 		}
+		else if(wait > wait_time/2){
+		
+		}
+		else if(wait < wait_time/2){
+
+		}
 
 	}
 
@@ -564,27 +570,8 @@ namespace Enemy_Space {
 	/*-------------------------------------------- Helper Functions --------------------------------------*/
 
 	// Rotate enemy ship using an orbit transformation
-	void Enemy::RotateShip(Ogre::Vector3 axis, Ogre::Radian  degree){
-		Ogre::Vector3 playerPos = ship_node->getPosition();
-		Ogre::Vector3 zeroVector = Ogre::Vector3(0.0, 0.0, 0.0);
-		Ogre::Vector3 displacement = zeroVector - playerPos;
-		Ogre::Matrix4 transformations;
-
-		transformations = Ogre::Matrix4::IDENTITY;
-		transformations = Ogre::Matrix4(TranslationMatrix(displacement)) * transformations;
-		UpdateTransf(ship_node, transformations);
-
-		transformations = Ogre::Matrix4::IDENTITY;
-		transformations = Ogre::Matrix4(RotationMatrix(axis, Ogre::Radian(degree))) * transformations;
-		UpdateTransf(ship_node, transformations);
-
-		transformations = Ogre::Matrix4::IDENTITY;
-		transformations = Ogre::Matrix4(TranslationMatrix(playerPos)) * transformations;
-		UpdateTransf(ship_node, transformations);
-
-		transformations = Ogre::Matrix4::IDENTITY;
-		transformations = Ogre::Matrix4(RotationMatrix(axis, Ogre::Radian(degree))) * transformations;
-		UpdateTransf(ship_node, transformations);
+	void Enemy::RotateShip(Ogre::Vector3 target){
+		ship_node->lookAt(target, Ogre::Node::TS_WORLD);
 
 	}
 
