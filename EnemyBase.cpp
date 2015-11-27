@@ -2,7 +2,7 @@
 
 // Enemy Implementation
 namespace Enemy_Space {
-
+	// one bag of insert_profaine_item_here
 	static int enemy_num = 0;
 
 	Enemy::Enemy(void) : enemyHealth(10), boundingSphereRadius(4) {
@@ -36,7 +36,7 @@ namespace Enemy_Space {
 	// Moves The Enemey One Frame In It's Cycle
 	void Enemy::advance(Player_Space::Player* player) {
 		if (ship_node) {
-			if(lifeSpan > 3000){
+			if(lifeSpan > 3000 || STATE != PROWL){
 				maintainFiringRange(player->getPosition());
 			}
 
@@ -58,16 +58,13 @@ namespace Enemy_Space {
 			}
 			else if(STATE == PROWL){
 				prowl(player->getPosition());
-				spotPlayer(player->getPosition());
 			}
 
 			else if(STATE == PURSUE){				
 				pursue(player->getPosition());
-				maintainFiringRange(player->getPosition());
 			}
 			else if(STATE == FLEE){
 				flee(player->getPosition());
-				maintainFiringRange(player->getPosition());
 			}
 			else if(STATE == HALT){
 				
@@ -364,13 +361,15 @@ namespace Enemy_Space {
 		Ogre::Matrix4 transformations;
 		Ogre::String part_name;
 
-		entity = scene_manager->createEntity(entity_name, "Prism");  //mesh name on the right, entity on the left
-		ship_node = root_scene_node->createChildSceneNode(entity_name);
+		part_name = "body3";
+		entity = scene_manager->createEntity(entity_name + part_name, "Prism");  //mesh name on the right, entity on the left
+		ship_node = root_scene_node->createChildSceneNode(entity_name + part_name);
 		ship_node->attachObject(entity);
 
 		transformations = Ogre::Matrix4::IDENTITY;
 		transformations = transformations * ScalingMatrix(Ogre::Vector3(2.0, 2.0, 2.0));
 		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, -1.0), Ogre::Radian(Ogre::Math::PI))) * transformations;
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(0.0, 0.0, 1.0))) * transformations;
 		AssignTransf(ship_node, transformations);
 
 		part_name = "toparm3";
@@ -379,8 +378,8 @@ namespace Enemy_Space {
 		topArm->attachObject(entity);
 
 		transformations = Ogre::Matrix4::IDENTITY;
-		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.6, 0.3, 0.6));
-		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(1.0, 1.5, 1.75))) * transformations;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.3, 0.20, 0.3));
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(-0.5, -1.0, 0.5))) * transformations;
 		AssignTransf(topArm, transformations);
 
 		part_name = "bottomleftarm3";
@@ -389,10 +388,10 @@ namespace Enemy_Space {
 		bottomLeftArm->attachObject(entity);
 
 		transformations = Ogre::Matrix4::IDENTITY;
-		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.6, 0.6, 0.6));
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.3, 0.20, 0.3));
 		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, -1.0), Ogre::Radian(Ogre::Math::PI/2))) * transformations;
 		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, -1.0), Ogre::Radian(Ogre::Math::PI/4))) * transformations;
-		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(2.5, -1.0, 1.75))) * transformations;
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(-1.0, 0.5, 0.5))) * transformations;
 		AssignTransf(bottomLeftArm, transformations);
 
 		part_name = "bottomrightarm3";
@@ -401,10 +400,10 @@ namespace Enemy_Space {
 		bottomRightArm->attachObject(entity);
 
 		transformations = Ogre::Matrix4::IDENTITY;
-		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.6, 0.6, 0.6));
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.3, 0.20, 0.3));
 		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, 1.0), Ogre::Radian(Ogre::Math::PI/2))) * transformations;
 		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, 1.0), Ogre::Radian(Ogre::Math::PI/4))) * transformations;
-		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(0.0, -1.0, 1.75))) * transformations;
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(0.0, 0.5, 0.5))) * transformations;
 		AssignTransf(bottomRightArm, transformations);
 
 		part_name = "topgun3";
@@ -413,8 +412,9 @@ namespace Enemy_Space {
 		topGun->attachObject(entity);
 
 		transformations = Ogre::Matrix4::IDENTITY;
-		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.8, 0.8, 4.0));		
-		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(1.30, 2.5, -1.0))) * transformations;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.6, 0.6, 4.0));		
+		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, 1.0), Ogre::Radian(Ogre::Math::PI))) * transformations;
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(-0.8, -1.9, -1.0))) * transformations;
 		AssignTransf(topGun, transformations);
 
 		part_name = "bottomleftgun3";
@@ -423,10 +423,9 @@ namespace Enemy_Space {
 		bottomLeftGun->attachObject(entity);
 
 		transformations = Ogre::Matrix4::IDENTITY;
-		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.8, 0.8, 4.0));		
-		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, 1.0), Ogre::Radian(Ogre::Math::PI/2))) * transformations;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.6, 0.6, 4.0));		
 		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, 1.0), Ogre::Radian(Ogre::Math::PI/4))) * transformations;
-		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(3.0, -1.5, -1.0))) * transformations;
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(-1.25, 1.25, -1.0))) * transformations;
 		AssignTransf(bottomLeftGun, transformations);
 
 		part_name = "bottomrightgun3";
@@ -435,16 +434,16 @@ namespace Enemy_Space {
 		bottomRightGun->attachObject(entity);
 
 		transformations = Ogre::Matrix4::IDENTITY;
-		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.8, 0.8, 4.0));		
-		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, -1.0), Ogre::Radian(Ogre::Math::PI/2))) * transformations;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.6, 0.6, 4.0));		
 		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, -1.0), Ogre::Radian(Ogre::Math::PI/4))) * transformations;
-		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(-1.25, -2.25, -1.0))) * transformations;
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(0.75, 0.75, -1.0))) * transformations;
 		AssignTransf(bottomRightGun, transformations);
 
 		boundingSphereRadius = 10;
 		ship_node->setPosition(pos);
 		ship_node->setScale (boundingSphereRadius, boundingSphereRadius, boundingSphereRadius);
 	}
+
 
 	// Our 5th enemy type
 	void Enemy::CreateEnemy5(Ogre::SceneManager* scene_manager, Ogre::Vector3 pos){

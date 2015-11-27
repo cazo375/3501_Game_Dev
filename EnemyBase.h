@@ -29,7 +29,7 @@ namespace Enemy_Space {
 
 	public:
 		Enemy (void);
-		Enemy (Ogre::SceneManager* scene_manager, Ogre::Vector3 initalPosition, int enemy_num = 4);
+		Enemy (Ogre::SceneManager* scene_manager, Ogre::Vector3 initalPosition, int enemy_num = 1);
 		~Enemy (void);
 
 		void advance (Player_Space::Player* player);							// Called On A Per Frame Basis... Causes The Enemy To Advance To It's Next Frame
