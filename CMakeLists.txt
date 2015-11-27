@@ -9,7 +9,7 @@ set(HDRS
 )
  
 set(SRCS
-	./ogre_application.cpp ./Player.cpp ./WeaponShot.cpp ./Weapon.cpp ./CollisionDetector.cpp ./Planet.cpp ./Level.cpp ./Level_Manager.cpp ./EnemyBase.cpp ./MeshManager.cpp ./main.cpp ./EarthTexture.material ./EarthTextureMaterialFp.glsl ./EarthTextureMaterialVp.glsl ./MaterialVp.glsl ./MaterialFp.glsl MaterialFile.material ./ShinyMaterialVp.glsl ./ShinyMaterialFp.glsl ./ShinyBlueMaterialVp.glsl ./ShinyBlueMaterialFp.glsl ./ShinyBlue.material ./Shiny.material ./Ship.cpp ./Explosion.cpp  ./ParticleMaterialVp.glsl ./ParticleMaterialFp.glsl ./ParticleMaterialGp.glsl ./Particle.material ./Asteroid.cpp
+	./ogre_application.cpp ./Player.cpp ./WeaponShot.cpp ./Weapon.cpp ./CollisionDetector.cpp ./Planet.cpp ./Level.cpp ./Level_Manager.cpp ./EnemyBase.cpp ./MeshManager.cpp ./main.cpp ./EarthTexture.material ./EarthTextureMaterialFp.glsl ./EarthTextureMaterialVp.glsl ./MaterialVp.glsl ./MaterialFp.glsl MaterialFile.material ./ShinyMaterialVp.glsl ./ShinyMaterialFp.glsl ./ShinyBlueMaterialVp.glsl ./ShinyBlueMaterialFp.glsl ./ShinyBlue.material ./Shiny.material ./Ship.cpp ./Explosion.cpp  ./ParticleMaterialVp.glsl ./ParticleMaterialFp.glsl ./ParticleMaterialGp.glsl ./Particle.material ./Asteroid.cpp ./crosshair.material ./crosshairFp.glsl ./crosshairVp.glsl ./NoLightEarthTextureVp.glsl
 )
 
 # The rules here are specific to Windows Systems
