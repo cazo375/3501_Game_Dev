@@ -21,7 +21,7 @@ namespace Weapon_Space {
 		BaseWeapon(void);
 		~BaseWeapon(void);
 
-		
+
 		void advance(Ogre::Real);
 		void removeAllShots (void);
 
@@ -70,12 +70,34 @@ namespace Weapon_Space {
 		void fire_weapon(Ogre::SceneManager*, Ogre::Vector3, Ogre::Vector3);
 	};
 
+	// Scatter Base Class
+	class Scatter_Base : public BaseWeapon {
+	public:
+		Ogre::Vector3 create_spray_dir (Ogre::Vector3);
+		virtual void initialize_weapon(void) = 0;
+		virtual void fire_weapon(Ogre::SceneManager*, Ogre::Vector3, Ogre::Vector3, Ogre::Quaternion) = 0;
+	protected:
+		float scatter_range;
+	};
+
+
 	// Basic Bomb Weapon
-	class Scatter_Shot : public BaseWeapon {
+	class Scatter_Shot : public Scatter_Base {
 	public:
 		Scatter_Shot (void);
 		Scatter_Shot (Ogre::String);
 		~Scatter_Shot (void);
+
+		void initialize_weapon(void);
+		void fire_weapon(Ogre::SceneManager*, Ogre::Vector3, Ogre::Vector3, Ogre::Quaternion);
+	};
+
+	// Basic Bomb Weapon
+	class Scatter_Bomb_Shot : public Scatter_Base {
+	public:
+		Scatter_Bomb_Shot (void);
+		Scatter_Bomb_Shot (Ogre::String);
+		~Scatter_Bomb_Shot (void);
 
 		void initialize_weapon(void);
 		void fire_weapon(Ogre::SceneManager*, Ogre::Vector3, Ogre::Vector3, Ogre::Quaternion);

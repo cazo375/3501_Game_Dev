@@ -1,0 +1,47 @@
+vertex_program crosshair_texture_shader/vs glsl 
+{
+    source crosshairVp.glsl 
+
+    default_params
+    {
+        param_named_auto world_mat world_matrix
+        param_named_auto view_mat view_matrix
+        param_named_auto projection_mat projection_matrix
+		param_named_auto normal_mat inverse_transpose_worldview_matrix
+    }
+}
+
+
+fragment_program crosshair_texture_shader/fs glsl 
+{
+    source crosshairFp.glsl 
+
+	default_params
+	{
+		 param_named diffuse_map int 0
+	}
+}
+material CrosshairMaterial
+{
+    technique
+    {
+        pass
+        {
+		    lighting off
+			scene_blend alpha_blend
+			depth_check off
+		 
+            vertex_program_ref crosshair_texture_shader/vs
+            {
+            }
+
+            fragment_program_ref crosshair_texture_shader/fs
+            {
+            }
+			
+			texture_unit {
+				texture crosshair.png 2d
+			}
+        } 
+    }
+}

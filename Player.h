@@ -6,21 +6,25 @@
 #include "OGRE/OgreWindowEventUtilities.h"
 #include "OGRE/OgreManualObject.h"
 #include "OGRE/OgreEntity.h"
+#include "OGRE/Overlay/OgreFontManager.h"
+#include "OGRE/Overlay/OgreTextAreaOverlayElement.h"
+#include "OGRE/Overlay/OgreOverlayManager.h"
+#include "OGRE/Overlay/OgreOverlaySystem.h"
 #include "OIS/OIS.h"
 #include "WeaponShot.h"
 #include "Weapon.h"
 #include "Ship.h"
 
-#define ACCELERATION_STEP 0.3f
+#define ACCELERATION_STEP 0.15f
 #define ORIENTATION_STEP 2.0f
 #define MAX_ORIENTATION_THRUST 2.0f
 #define MIN_ORIENTATION_THRUST -2.0f	
 #define LAZER_THRUST 6.0f
-#define WEAPON_SWITCH_DELAY 1.0f
+#define WEAPON_SWITCH_DELAY 0.25f
 #define LAZER_LIFE_SPAN 12.0f
 #define ROTATION_THRUST 1.0f
-#define MAX_FORWARD_THRUST 2.0f // Number of elements in the chain
-#define MAX_REVRESE_THRUST -2.0f // Number of elements in the chain
+#define MAX_FORWARD_THRUST 1.5f // Number of elements in the chain
+#define MAX_REVRESE_THRUST -1.5f // Number of elements in the chain
 #define COLLISION_DETECTION_RAD 1.0f
 
 #ifndef PLAYER_H
@@ -51,6 +55,7 @@ namespace Player_Space {
 		Ogre::SceneNode* targetCube;
 		Ogre::Vector3 initialPosition;
 		Ogre::Quaternion initialOrientation;
+		Ogre::TextAreaOverlayElement* text_area;
 
 		// Movement Variables		
 		float currentForwardThrust;		// The current thrust of the ship
@@ -67,6 +72,7 @@ namespace Player_Space {
 		void applyRotation (Ogre::Quaternion& quat);
 		void destroyFiredWeapon (void);
 		void initialize(void);
+		void initOverlay(void);
 	};
 }
 

@@ -132,6 +132,20 @@ namespace Weapon_Space {
 		}
 	}
 
+	/*------------------------ Scatter Shot Base -------------------*/
+	Ogre::Vector3 Scatter_Base:: create_spray_dir (Ogre::Vector3 originalDir) {
+		// Randomly select three numbers to define a point in spherical coordinates
+		float xDisplacement = (-0.5 + ((double) rand() / (RAND_MAX))) * scatter_range;
+		float yDisplacement = (-0.5 + ((double) rand() / (RAND_MAX))) * scatter_range;
+
+		// Define the normal and point based on theta, phi and the spray
+		Ogre::Vector3 baseDir = originalDir.normalisedCopy();
+		Ogre::Vector3 newDir = Ogre::Vector3(baseDir.x + xDisplacement, baseDir.y + yDisplacement, baseDir.z);
+		newDir.normalise();
+
+		return newDir;
+	}
+
 	/*------------------------ Scatter Shot Weapon  -------------------*/
 	Scatter_Shot::Scatter_Shot(void) {
 		initialize_weapon();
@@ -149,6 +163,7 @@ namespace Weapon_Space {
 		weapon_damage = 1;
 		fireRate = 30;
 		timeRemainingBeforeShot = 0;
+		scatter_range = 0.1f;
 		needsOrientation = true;
 		weapon_name = "Scatter Shooter";
 		owner_object = "unknown";
@@ -159,18 +174,50 @@ namespace Weapon_Space {
 		if (timeRemainingBeforeShot > fireRate) {
 
 			for (int i = 0; i < NUM_OF_SCATTER_PELLETS; i++) {
-
-				// Randomly select three numbers to define a point in spherical coordinates
-				float xDisplacement = (-0.5 + ((double) rand() / (RAND_MAX))) * SCATTER_RADIUS;
-				float yDisplacement = (-0.5 + ((double) rand() / (RAND_MAX))) * SCATTER_RADIUS;
-
-				// Define the normal and point based on theta, phi and the spray
-				Ogre::Vector3 baseDir = dir.normalisedCopy();
-				Ogre::Vector3 newDir = Ogre::Vector3(baseDir.x + xDisplacement, baseDir.y + yDisplacement, dir.normalisedCopy().z);
-				newDir.normalise();
+				Ogre::Vector3 newDir = create_spray_dir(dir);
 
 				// Create Our Weapon Shot
 				Weapon_Shot_Space::Weapon_Shot* newShot = new Weapon_Shot_Space::Weapon_Shot (newDir, owner_object, weapon_damage);
+				newShot->createEntity(man, pos);
+				shotsFired.push_back(newShot);
+			}
+			timeRemainingBeforeShot = 0;
+		}
+	}
+
+
+	/*------------------------ Scatter Bomb Shot Weapon  -------------------*/
+	Scatter_Bomb_Shot::Scatter_Bomb_Shot(void) {
+		initialize_weapon();
+	}
+
+	Scatter_Bomb_Shot::Scatter_Bomb_Shot(Ogre::String owner) {
+		initialize_weapon();
+		owner_object = owner;
+	}
+
+	Scatter_Bomb_Shot::~Scatter_Bomb_Shot(void) {
+	}
+
+	void Scatter_Bomb_Shot::initialize_weapon(void) {
+		weapon_damage = 10;
+		fireRate = 70;
+		timeRemainingBeforeShot = 0;
+		scatter_range = 0.5f;
+		needsOrientation = true;
+		weapon_name = "Scatter Bomb Launcher";
+		owner_object = "unknown";
+	}
+
+	// Fires The Scatter Shot
+	void Scatter_Bomb_Shot::fire_weapon(Ogre::SceneManager* man, Ogre::Vector3 pos, Ogre::Vector3 dir, Ogre::Quaternion ort) {
+		if (timeRemainingBeforeShot > fireRate) {
+
+			for (int i = 0; i < NUM_OF_SCATTER_PELLETS; i++) {
+				Ogre::Vector3 newDir = create_spray_dir(dir);
+
+				// Create Our Weapon Shot
+				Weapon_Shot_Space::Weapon_Shot* newShot = new Weapon_Shot_Space::Explosive_Shot (newDir, owner_object, weapon_damage);
 				newShot->createEntity(man, pos);
 				shotsFired.push_back(newShot);
 			}

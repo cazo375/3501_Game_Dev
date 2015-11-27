@@ -53,7 +53,7 @@ namespace Mesh_Manager_Space {
 
 		object->position(v1);
 		object->normal(n0);
-		object->textureCoord(1, 1);
+		object->textureCoord(1, 0);
 		object->colour(clr1);
 
 		object->position(v2);

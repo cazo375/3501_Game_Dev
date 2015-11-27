@@ -15,6 +15,7 @@ namespace Weapon_Shot_Space {
 		direction = dir;
 		entity_name = shotName + "shot" + Ogre::StringConverter::toString(playerShot++);
 		weapon_mesh = "cube.mesh";
+		destory = false;
 		weapon_shot_node = nullptr;
 	}
 
@@ -58,7 +59,7 @@ namespace Weapon_Shot_Space {
 
 	// Returns Wheither Or Not The Shot ShouldBe 
 	boolean Weapon_Shot::shouldDestoryShot (void) {
-		return lifeCounter >= LAZER_LIFE_SPAN;
+		return (lifeCounter >= LAZER_LIFE_SPAN) || destory;
 	}
 
 	Ogre::Vector3 Weapon_Shot::getPosition(void) {
@@ -75,6 +76,10 @@ namespace Weapon_Shot_Space {
 
 	float Weapon_Shot::getBoundingSphereRadius (void) {
 		return boundingSphereRadius;
+	}
+
+	void Weapon_Shot::registerImpact(void) {
+		destory = true;
 	}
 
 	/*------------------------------------------------- Exposive Shell ----------------------------------*/
@@ -109,11 +114,9 @@ namespace Weapon_Shot_Space {
 
 	// Gets The Bounding Sphere Radius... If Exploding Factor That In
 	float Explosive_Shot::getBoundingSphereRadius (void) {
-
 		if (explosion) {
 			return boundingSphereRadius + (explosion->getExplosionTimer() * EXPLOSION_RADIUS);
 		}
-
 		return boundingSphereRadius;
 	}
 
@@ -121,22 +124,31 @@ namespace Weapon_Shot_Space {
 	void Explosive_Shot::moveShot(Ogre::Real time) {
 		lifeCounter += time;
 
+		// If We Still Have Our Weapon
 		if (weapon_shot_node) {
 			weapon_shot_node->translate(direction * LAZER_THRUST);
-
-			// If The Shot Has Traveled
 			if (lifeCounter > EXPLOSION_DELAY && !exploded) {
-				exploded = true;
-				explosion_timer = 0;
-				explosion = new Explosion_Space::Explosion(scene_manager, weapon_shot_node->getPosition());
-
-				destoryFiredWeapon();
+				explodeRound();
 			}
 		}
 
 		// If The Explosion Exists Then Progress
 		if (explosion) {
 			explosion->advance(time);
+		}
+	}
+
+	void Explosive_Shot::registerImpact(void) {
+		explodeRound();
+	}
+
+	// Explodes The Round When Called
+	void Explosive_Shot::explodeRound (void) {
+		if (!exploded) {
+			exploded = true;
+			explosion_timer = 0;
+			explosion = new Explosion_Space::Explosion(scene_manager, weapon_shot_node->getPosition());
+			destoryFiredWeapon();
 		}
 	}
 }

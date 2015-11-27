@@ -36,6 +36,7 @@ namespace Weapon_Shot_Space {
 		Ogre::Vector3 getDirection (void);
 		float getDamageAmount (void);
 
+		virtual void registerImpact (void);
 		virtual Ogre::Vector3 getPosition (void);
 		virtual float getBoundingSphereRadius (void);
 
@@ -61,6 +62,9 @@ namespace Weapon_Shot_Space {
 		float lifeCounter;
 		float damageAmount;
 		float boundingSphereRadius;
+
+		// Booleans
+		boolean destory;
 	};
 
 	// An Explosive Shot
@@ -71,6 +75,7 @@ namespace Weapon_Shot_Space {
 		~Explosive_Shot(void);
 
 		void moveShot (Ogre::Real time = 0);
+		void registerImpact (void);
 		boolean shouldDestoryShot (void);
 
 		Ogre::Vector3 getPosition (void);
@@ -79,6 +84,9 @@ namespace Weapon_Shot_Space {
 		boolean exploded;
 		float explosion_timer;
 		Explosion_Space::Explosion* explosion;
+
+		// Functions
+		void explodeRound (void);
 	};
 }
 
