@@ -48,22 +48,22 @@ namespace Mesh_Manager_Space {
 		to each face */
 		object->position(v0);
 		object->normal(n0);
-		object->textureCoord(0, 0);
+		object->textureCoord(0.0, 0.0);
 		object->colour(clr0);
 
 		object->position(v1);
 		object->normal(n0);
-		object->textureCoord(1, 1);
+		object->textureCoord(0.2, 0.0);
 		object->colour(clr1);
 
 		object->position(v2);
 		object->normal(n0);
-		object->textureCoord(1, 1);
+		object->textureCoord(0.2, 0.2);
 		object->colour(clr2);
 
 		object->position(v3);
 		object->normal(n0);
-		object->textureCoord(0, 1);
+		object->textureCoord(0.0, 0.2);
 		object->colour(clr3);
 
 		object->position(v1);
@@ -73,97 +73,97 @@ namespace Mesh_Manager_Space {
 
 		object->position(v5);
 		object->normal(n1);
-		object->textureCoord(1, 0);
+		object->textureCoord(0.2, 0.0);
 		object->colour(clr5);
 
 		object->position(v6);
 		object->normal(n1);
-		object->textureCoord(1, 1);
+		object->textureCoord(0.2, 0.2);
 		object->colour(clr6);
 
 		object->position(v2);
 		object->normal(n1);
-		object->textureCoord(0, 1);
+		object->textureCoord(0.0, 0.2);
 		object->colour(clr2);
 
 		object->position(v5);
 		object->normal(n2);
-		object->textureCoord(0, 0);
+		object->textureCoord(0.0, 0.0);
 		object->colour(clr5);
 
 		object->position(v4);
 		object->normal(n2);
-		object->textureCoord(1, 0);
+		object->textureCoord(0.2, 0.0);
 		object->colour(clr4);
 
 		object->position(v7);
 		object->normal(n2);
-		object->textureCoord(1, 1);
+		object->textureCoord(0.2, 0.2);
 		object->colour(clr7);
 
 		object->position(v6);
 		object->normal(n2);
-		object->textureCoord(0, 1);
+		object->textureCoord(0.0, 0.2);
 		object->colour(clr6);
 
 		object->position(v4);
 		object->normal(n3);
-		object->textureCoord(0, 0);
+		object->textureCoord(0.0, 0.0);
 		object->colour(clr4);
 
 		object->position(v0);
 		object->normal(n3);
-		object->textureCoord(1, 0);
+		object->textureCoord(0.2, 0.0);
 		object->colour(clr0);
 
 		object->position(v3);
 		object->normal(n3);
-		object->textureCoord(1, 1);
+		object->textureCoord(0.2, 0.2);
 		object->colour(clr3);
 
 		object->position(v7);
 		object->normal(n3);
-		object->textureCoord(0, 1);
+		object->textureCoord(0.0, 0.2);
 		object->colour(clr7);
 
 		object->position(v3);
 		object->normal(n4);
-		object->textureCoord(0, 0);
+		object->textureCoord(0.0, 0.0);
 		object->colour(clr3);
 
 		object->position(v2);
 		object->normal(n4);
-		object->textureCoord(1, 0);
+		object->textureCoord(0.2, 0.0);
 		object->colour(clr2);
 
 		object->position(v6);
 		object->normal(n4);
-		object->textureCoord(1, 1);
+		object->textureCoord(0.2, 0.2);
 		object->colour(clr6);
 
 		object->position(v7);
 		object->normal(n4);
-		object->textureCoord(0, 1);
+		object->textureCoord(0.0, 0.2);
 		object->colour(clr7);
 
 		object->position(v1);
 		object->normal(n5);
-		object->textureCoord(0, 0);
+		object->textureCoord(0.0, 0.0);
 		object->colour(clr1);
 
 		object->position(v0);
 		object->normal(n5);
-		object->textureCoord(1, 0);
+		object->textureCoord(0.2, 0.0);
 		object->colour(clr0);
 
 		object->position(v4);
 		object->normal(n5);
-		object->textureCoord(1, 1);
+		object->textureCoord(0.2, 0.2);
 		object->colour(clr4);
 
 		object->position(v5);
 		object->normal(n5);
-		object->textureCoord(0, 1);
+		object->textureCoord(0.0, 0.2);
 		object->colour(clr5);
 
 		for (int i = 0; i < 6; i++){
@@ -177,6 +177,7 @@ namespace Mesh_Manager_Space {
 		/* Convert triangle list to a mesh */
 		object->convertToMesh("cube.mesh");
 	}
+
 
 	void Mesh_Manager::createIcohedron (Ogre::SceneManager* scene_manager) {
 		/* Retrieve scene manager and root scene node */
@@ -672,100 +673,101 @@ namespace Mesh_Manager_Space {
 
 		object->position(v1);
 		object->normal(n0);
-		object->textureCoord(0.2, 0.3);
+		object->textureCoord(0.2, 0.0);
 		object->colour(clr4);
 
 		object->position(v2);
 		object->normal(n0);
-		object->textureCoord(1, 1);
+		object->textureCoord(0.0, 0.2);
 		object->colour(clr2);
 
 		object->position(v3);
 		object->normal(n0);
-		object->textureCoord(0.1, 0.2);
+		object->textureCoord(0.0, 0.0);
 		object->colour(clr4);
 
 		//left face
 		object->position(v4);
 		object->normal(n1);
-		object->textureCoord(0.1, 0.2);
+		object->textureCoord(0.0, 0.0);
 		object->colour(clr1);
 
 		object->position(v3);
 		object->normal(n1);
-		object->textureCoord(0.2, 0.3);
+		object->textureCoord(0.2, 0.0);
 		object->colour(clr4);
 
 		object->position(v2);
 		object->normal(n1);
-		object->textureCoord(0.1, 0.3);
+		object->textureCoord(0.2, 0.2);
 		object->colour(clr3);
 
 		object->position(v6);
 		object->normal(n1);
-		object->textureCoord(0, 0);
+		object->textureCoord(0.0, 0.2);
 		object->colour(clr2);
 
 		//right side
 		object->position(v1);
 		object->normal(n2);
-		object->textureCoord(1, 0);
+		object->textureCoord(0.0, 0.0);
 		object->colour(clr4);
 
 		object->position(v5);
 		object->normal(n2);
-		object->textureCoord(1, 1);
+		object->textureCoord(0.2, 0.0);
 		object->colour(clr1);
 
 		object->position(v6);
 		object->normal(n2);
-		object->textureCoord(0, 0);
+		object->textureCoord(0.2, 0.2);
 		object->colour(clr4);
 
 		object->position(v2);
 		object->normal(n2);
-		object->textureCoord(1, 0);
+		object->textureCoord(0.0, 0.2);
 		object->colour(clr0);
 
 		//Bottom
 		object->position(v1);
 		object->normal(n3);
-		object->textureCoord(0, 1);
+		object->textureCoord(0.0, 0.0);
 		object->colour(clr2);
 
 		object->position(v3);
 		object->normal(n3);
-		object->textureCoord(0, 0);
+		object->textureCoord(0.2, 0.0);
 		object->colour(clr3);
 
 		object->position(v7);
 		object->normal(n3);
-		object->textureCoord(1, 0);
+		object->textureCoord(0.2, 0.2);
 		object->colour(clr2);
 
 		object->position(v5);
 		object->normal(n3);
-		object->textureCoord(1, 1);
+		object->textureCoord(0.0, 0.2);
 		object->colour(clr1);
-
+		
+		//back
 		object->position(v4);
 		object->normal(n4);
-		object->textureCoord(0, 1);
+		object->textureCoord(0.0, 0.0);
 		object->colour(clr2);
 
 		object->position(v6);
 		object->normal(n4);
-		object->textureCoord(0, 0);
+		object->textureCoord(0.2, 0.3);
 		object->colour(clr3);
 
 		object->position(v5);
 		object->normal(n4);
-		object->textureCoord(1, 0);
+		object->textureCoord(0.2, 0.0);
 		object->colour(clr2);
 
 		object->position(v7);
 		object->normal(n4);
-		object->textureCoord(1, 1);
+		object->textureCoord(0.0, 0.0);
 		object->colour(clr1);
 
 		for (int i = 0; i < 5; i++){
