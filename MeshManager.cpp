@@ -408,88 +408,89 @@ namespace Mesh_Manager_Space {
 		/* Each face of the cube is defined by four vertices (with the same normal) and two triangles */
 
 
-		//left side
+	//left side
 		object->position(v0);
 		object->normal(n0);
-		object->textureCoord(0.1, 0.2);
+		object->textureCoord(0,0);
 		object->colour(clr4);
 
 		object->position(v2);
 		object->normal(n0);
-		object->textureCoord(0.2, 0.3);
+		object->textureCoord(0.2,0.0);
 		object->colour(clr4);
 
 		object->position(v3);
 		object->normal(n0);
-		object->textureCoord(0.1, 0.4);
+		object->textureCoord(0.0, 0.2);
 		object->colour(clr4);
 
 		object->position(v4);
 		object->normal(n0);
-		object->textureCoord(0.1, 0.2);
+		object->textureCoord(0,0);
 		object->colour(clr1);
 
 		object->position(v1);
 		object->normal(n1);
-		object->textureCoord(0.2, 0.3);
+		object->textureCoord(0.0,0.0);
 		object->colour(clr4);
 
 		object->position(v3);
 		object->normal(n1);
-		object->textureCoord(0.1, 0.3);
+		object->textureCoord(0.2,0.0);
 		object->colour(clr3);
 
 		object->position(v2);
 		object->normal(n1);
-		object->textureCoord(0, 0);
+		object->textureCoord(0.0, 0.2);
 		object->colour(clr2);
 
 		object->position(v5);
 		object->normal(n1);
-		object->textureCoord(1, 0);
+		object->textureCoord(0.0,0.0);
 		object->colour(clr4);
 
 		//bottom
 		object->position(v1);
 		object->normal(n2);
-		object->textureCoord(1, 1);
+		object->textureCoord(0.0,0.0);
 		object->colour(clr1);
-
-		object->position(v2);
-		object->normal(n2);
-		object->textureCoord(0, 0);
-		object->colour(clr4);
 
 		object->position(v0);
 		object->normal(n2);
-		object->textureCoord(1, 0);
+		object->textureCoord(0.2,0.0);
+		object->colour(clr4);
+
+		object->position(v2);
+		object->normal(n2);
+		object->textureCoord(0.0, 0.2);
 		object->colour(clr0);
 
 		object->position(v5);
 		object->normal(n2);
-		object->textureCoord(0, 1);
+		object->textureCoord(0.0,0.0 );
 		object->colour(clr2);
 
 		//back
-		object->position(v1);
-		object->normal(n3);
-		object->textureCoord(0, 0);
-		object->colour(clr3);
-
 		object->position(v0);
 		object->normal(n3);
-		object->textureCoord(1, 0);
-		object->colour(clr2);
+		object->textureCoord(0.0,0.0);
+		object->colour(clr3);
 
 		object->position(v3);
 		object->normal(n3);
-		object->textureCoord(1, 1);
+		object->textureCoord(0.2, 0.0);
+		object->colour(clr2);
+
+		object->position(v1);
+		object->normal(n3);
+		object->textureCoord(0.0, 0.2);
 		object->colour(clr1);
 
-		object->position(v5);
+		object->position(v4);
 		object->normal(n3);
-		object->textureCoord(1, 1);
+		object->textureCoord(0.0, 0.0);
 		object->colour(clr1);
+
 
 
 		for (int i = 0; i < 2; i++){
@@ -666,7 +667,7 @@ namespace Mesh_Manager_Space {
 		//front face
 		object->position(v0);
 		object->normal(n0);
-		object->textureCoord(0.1, 0.2);
+		object->textureCoord(0.0, 0.0);
 		object->colour(clr4);
 
 		object->position(v1);
@@ -681,7 +682,7 @@ namespace Mesh_Manager_Space {
 
 		object->position(v3);
 		object->normal(n0);
-		object->textureCoord(0.1, 0.4);
+		object->textureCoord(0.1, 0.2);
 		object->colour(clr4);
 
 		//left face
