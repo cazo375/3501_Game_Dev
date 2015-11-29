@@ -20,8 +20,8 @@ namespace Level_Manager_Space {
 	}
 
 	// Advances Our Current Level A Frame When Called 
-	void Level_Manager::advanceCurrentLevel (Player_Space::Player* player) {
-		levels[currentLevel % levels.size()]->advance(player);
+	void Level_Manager::advanceCurrentLevel (Player_Space::Player* player, Ogre::Real time) {
+		levels[currentLevel % levels.size()]->advance(player, time);
 	}
 
 	// Cylces The Levels When Called

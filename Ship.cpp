@@ -22,4 +22,13 @@ namespace Ship_Space {
 	std::vector<Weapon_Shot_Space::Weapon_Shot*> Ship::getCurrentShots(void) {
 		return weapons[currentWeaponIndex]->getShotsFired();
 	}
+
+	// Destorys All Weaposn When Called
+	void Ship::clearWeapons(void) {
+		for (int i = 0; i < weapons.size(); i++) {
+			delete weapons[i];
+		}
+
+		weapons.empty();
+	}
 }

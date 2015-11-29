@@ -447,7 +447,7 @@ namespace ogre_application {
 		if (animating_){
 			/* Animate transformation */
 			TransformPlanetField();
-			level_manager.advanceCurrentLevel(player);
+			level_manager.advanceCurrentLevel(player, fe.timeSinceLastFrame);
 			player->advance(fe.timeSinceLastFrame);
 		}
 
@@ -558,6 +558,24 @@ namespace ogre_application {
 							}
 							break;
 						}
+					}
+				}
+			}
+		}
+
+		Level_Space::Level* currentLevel = level_manager.getCurrentLevelObj();
+		std::vector<Enemy_Space::Enemy*> enemies = currentLevel->getEnemies();
+
+		// Finally Check Our Enemies Bullets With Us
+		for (int i = 0; i < enemies.size(); i++) {
+			if (enemies[i]->should_run_collision()) {
+				for (int j = 0; j < enemies[i]->getCurrentShots().size(); j++) {
+					Weapon_Shot_Space::Weapon_Shot* nextShot = enemies[i]->getCurrentShots()[j];
+					Collision_Manager::CollisionManager::runBoundingSphereCollision (nextShot->getPosition(), player->getPosition(), nextShot->getBoundingSphereRadius(), player->getBoundingCircleRadius());
+
+					if (Collision_Manager::CollisionManager::runBoundingSphereCollision (nextShot->getPosition(), player->getPosition(), nextShot->getBoundingSphereRadius(), player->getBoundingCircleRadius())) {
+						player->registerHit(nextShot->getDamageAmount());
+						nextShot->registerImpact();
 					}
 				}
 			}

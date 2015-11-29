@@ -43,6 +43,7 @@ namespace Player_Space {
 		void advance(Ogre::Real);
 		void fireShot(void);
 		void cycle_shot(void);
+		void registerHit(int damageAmount);
 
 		// Collision Detection Variables
 		void resetPosition(void);
@@ -67,6 +68,9 @@ namespace Player_Space {
 
 		// Weapon Variables
 		float weaponTimer;
+
+		// Player Variables
+		int player_health;
 
 		// Functions
 		void applyRotation (Ogre::Quaternion& quat);

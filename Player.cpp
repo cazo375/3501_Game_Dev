@@ -11,6 +11,7 @@ namespace Player_Space {
 		shot = nullptr;
 		text_area = nullptr;
 		weaponTimer = 0;
+		health = 50;
 		currentWeaponIndex = 0;
 
 		// Weapon Bank
@@ -218,5 +219,11 @@ namespace Player_Space {
 		Ogre::Overlay* overlay = overlay_manager.create("MyOverlay");
 		overlay->add2D(panel);
 		overlay->show();
+	}
+
+	// Registers A Hit On The Player
+	void Player::registerHit (int damageAmount) {
+		health = std::max (health - damageAmount, 0);
+		std::cout << "Player Has Been Hit... Health Now: " << health << std::endl;
 	}
 }

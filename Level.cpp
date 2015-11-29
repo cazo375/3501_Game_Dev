@@ -14,17 +14,13 @@ namespace Level_Space {
 	}
 
 	// Advances Our Level A Frame
-	void Level::advance (Player_Space::Player* player) {
-		std::vector<Planet_Space::Planet*>::iterator iter = planets.begin();
-		std::vector<Planet_Space::Planet*>::iterator iter_end = planets.end();
-		for (; iter != iter_end; iter++ ) {
-			(*iter)->advance();
+	void Level::advance (Player_Space::Player* player, Ogre::Real time) {
+		for (int i = 0; i < planets.size(); i++ ) {
+			planets[i]->advance();
 		}
 
-		std::vector<Enemy_Space::Enemy*>::iterator enemy_iter = enemies.begin();
-		std::vector<Enemy_Space::Enemy*>::iterator enemy_iter_end = enemies.end();
-		for (; enemy_iter != enemy_iter_end; enemy_iter++ ) {
-			(*enemy_iter)->advance(player);
+		for (int i = 0; i < enemies.size(); i++ ) {
+			enemies[i]->advance(player, time);
 		}
 
 		for (int i = 0; i < asteroids.size(); i++) {
@@ -41,12 +37,12 @@ namespace Level_Space {
 			planets.push_back(new Planet_Space::Planet(scene_manager, JUPITER, Ogre::Vector3 (100.0f, -75.0f, -320.0f))); 
 			enemies.push_back(new Enemy_Space::Enemy (scene_manager, Ogre::Vector3 (0.0f, 0.0f, 650.0f), 5));
 			enemies.push_back(new Enemy_Space::Enemy (scene_manager, Ogre::Vector3 (200.0f, 100.0f, 650.0f), 5));
-			enemies.push_back(new Enemy_Space::Enemy (scene_manager, Ogre::Vector3 (0.0f, 10.0f, 650.0f), 5));
-			enemies.push_back(new Enemy_Space::Enemy (scene_manager, Ogre::Vector3 (0.0f, -5.0f, 650.0f), 5));
-			enemies.push_back(new Enemy_Space::Enemy (scene_manager, Ogre::Vector3 (0.0f, -10.0f, 650.0f), 5));
-			enemies.push_back(new Enemy_Space::Enemy (scene_manager, Ogre::Vector3 (0.0f, -20.0f, 650.0f), 5));
-			
-		break;
+			enemies.push_back(new Enemy_Space::Enemy (scene_manager, Ogre::Vector3 (0.0f, 10.0f, 0.0), 5));
+			enemies.push_back(new Enemy_Space::Enemy (scene_manager, Ogre::Vector3 (0.0f, -5.0f, 0.0f), 5));
+			enemies.push_back(new Enemy_Space::Enemy (scene_manager, Ogre::Vector3 (0.0f, -10.0f, 0.0f), 5));
+			enemies.push_back(new Enemy_Space::Enemy (scene_manager, Ogre::Vector3 (0.0f, -20.0f, 0.0f), 5));
+
+			break;
 		case 1:
 			planets.push_back(new Planet_Space::Planet(scene_manager, EARTH));
 			planets.push_back(new Planet_Space::Planet(scene_manager, JUPITER, Ogre::Vector3 (150.0f, 300.0f, -200.0f))); 
