@@ -18,7 +18,7 @@ Our Generic Enemy Class. Holds The Data That Is Relevant To The Enemy.
 #define ENEMY_MOVE_FAST_SPEED 1.8f
 #define ENEMY_MOVE_SLOW_SPEED 0.5f
 #define ENEMY_MOVE_SPEED 1.0f
-#define PLAYER_HOSTILE_RADIUS 50.0f
+#define PLAYER_HOSTILE_RADIUS 120.0f
 
 namespace Enemy_Space {
 
@@ -32,26 +32,26 @@ namespace Enemy_Space {
 		Enemy (Ogre::SceneManager* scene_manager, Ogre::Vector3 initalPosition, int enemy_num = 1);
 		~Enemy (void);
 
-		void advance (Player_Space::Player* player);							// Called On A Per Frame Basis... Causes The Enemy To Advance To It's Next Frame
-		void destoryEnemy (void);						// Destroys Our Enemy And Removes Them From The Game
-		void registerHit (int damageAmount);			// Registers The Hit On The Enemy
-		void fireShot (void);
-		void spotPlayer(Ogre::Vector3 playerPos);
-		void intimidate(Ogre::Vector3 playerPos);
+		void yWave();
+		void fireShot (void);			
+		void destoryEnemy (void);											
+		void flee(Ogre::Vector3 playerPos);
+		void registerHit (int damageAmount);
 		void prowl(Ogre::Vector3 playerPos);
 		void pursue(Ogre::Vector3 playerPos);
-		void flee(Ogre::Vector3 playerPos);
-		void yWave();
-		void maintainFiringRange(Ogre::Vector3 playerPos);
-		void shouldFireShot (Player_Space::Player*);
-
 		void RotateShip(Ogre::Vector3 target);
+		void spotPlayer(Ogre::Vector3 playerPos);
+		void intimidate(Ogre::Vector3 playerPos);
+		void shouldFireShot (Player_Space::Player*);\
+		void maintainFiringRange(Ogre::Vector3 playerPos);
+		void advance (Player_Space::Player* player, Ogre::Real);				
 
 		// Getters And Setters
 		int getEnemyHealth(void);
 		float getBoundingCircleRadius(void);
 		boolean inIntimidateRange(Ogre::Vector3 playerPos);
 		boolean enemyDead (void);
+		boolean should_run_collision (void);
 
 	protected:
 		Ogre::SceneNode* enemy_node;
@@ -90,7 +90,6 @@ namespace Enemy_Space {
 		Ogre::Real lifeSpan;
 
 		// Collision Related Variables
-		int enemyHealth;
 		float boundingSphereRadius;
 	};
 }

@@ -10,6 +10,7 @@ namespace Weapon_Space {
 	}
 
 	BaseWeapon::~BaseWeapon (void) {
+		removeAllShots();
 	}
 
 	// Moves All Shots By Another Frame
@@ -95,6 +96,28 @@ namespace Weapon_Space {
 	void Lazer::initialize_weapon(void) {
 		weapon_damage = 1;
 		fireRate = 4;
+		timeRemainingBeforeShot = 0;
+		weapon_name = "Lazer Cannon";
+		needsOrientation = false;
+		owner_object = "unknown";
+	}
+
+	/*------------------------ Enemy Based Lazer Cannon -------------------*/
+	Enemy_Lazer_Cannon::Enemy_Lazer_Cannon(void) {
+		initialize_weapon();
+	}
+
+	Enemy_Lazer_Cannon::Enemy_Lazer_Cannon(Ogre::String owner) {
+		initialize_weapon();
+		owner_object = owner;
+	}
+
+	Enemy_Lazer_Cannon::~Enemy_Lazer_Cannon(void) {
+	}
+
+	void Enemy_Lazer_Cannon::initialize_weapon(void) {
+		weapon_damage = 1;
+		fireRate = 20.0f;
 		timeRemainingBeforeShot = 0;
 		weapon_name = "Lazer Cannon";
 		needsOrientation = false;

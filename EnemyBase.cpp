@@ -5,7 +5,8 @@ namespace Enemy_Space {
 	// one bag of insert_profaine_item_here
 	static int enemy_num = 0;
 
-	Enemy::Enemy(void) : enemyHealth(10), boundingSphereRadius(4) {
+	Enemy::Enemy(void) : boundingSphereRadius(4) {
+		health = 10;
 	}
 
 	Enemy::~Enemy (void) {
@@ -13,8 +14,9 @@ namespace Enemy_Space {
 	}
 
 	// Enemy Constructor
-	Enemy::Enemy (Ogre::SceneManager* scene_man, Ogre::Vector3 initalPosition, int enemy_rep) : scene_manager(scene_man), alive(true), enemyHealth(10), original_position(initalPosition){
+	Enemy::Enemy (Ogre::SceneManager* scene_man, Ogre::Vector3 initalPosition, int enemy_rep) : scene_manager(scene_man), alive(true), original_position(initalPosition){
 		shot = nullptr;
+		health = 10;
 		currentDirection = Ogre::Vector3(0.0,0.0,0.0);
 		entity_name = "enemey" + Ogre::StringConverter::toString(enemy_num++);
 		createEnemyByNum(scene_man, initalPosition, enemy_rep);
@@ -23,7 +25,8 @@ namespace Enemy_Space {
 		wait = 0.0;
 		lifeSpan = 0.0;
 		currentWeaponIndex = 0;
-		weapons.push_back(new Weapon_Space::Lazer());
+
+		weapons.push_back(new Weapon_Space::Enemy_Lazer_Cannon(entity_name));
 	}
 
 	// Builds The Graph That This Enemy Will Use To Move
@@ -34,7 +37,7 @@ namespace Enemy_Space {
 	}
 
 	// Moves The Enemey One Frame In It's Cycle
-	void Enemy::advance(Player_Space::Player* player) {
+	void Enemy::advance(Player_Space::Player* player, Ogre::Real time) {
 		if (ship_node) {
 			if(lifeSpan > 3000 || STATE != PROWL){
 				maintainFiringRange(player->getPosition());
@@ -66,27 +69,27 @@ namespace Enemy_Space {
 			else if(STATE == FLEE){
 				flee(player->getPosition());
 			}
-			else if(STATE == HALT){
-				
+			else if(STATE == HALT){	
 			}
+
+			weapons[currentWeaponIndex]->advance(time);
 
 			lifeSpan += 1;
 			wait -= 1;
 		}
 	}
 
+	// Uses The Intimdate Player Method
 	void Enemy::intimidate(Ogre::Vector3 playerPos){
 		if(inIntimidateRange(playerPos)){
 			if( wait <= 0 ){
 				Ogre::Vector3 playerDirection = GetVectorFromTwoPoints(playerPos, ship_node->getPosition());
 				playerDirection.normalise();
 				RotateShip(playerDirection);
-				Ogre::Vector3 newDirection = GetVectorFromTwoPoints(playerPos, playerDirection.crossProduct(RandomVector3()));
-				newDirection.normalise();
-				currentDirection = newDirection;
+				currentDirection = playerDirection;
 				wait = 5;
 			}
-			ship_node->translate(currentDirection * ENEMY_MOVE_SUPER_SPEED * (1));
+			ship_node->translate(currentDirection * ENEMY_MOVE_SUPER_SPEED);
 		}
 		else{
 			int randomToggler = rand() % 1 + 1;
@@ -106,7 +109,9 @@ namespace Enemy_Space {
 			RotateShip(currentDirection);
 			wait = 100;
 		}
+
 		ship_node->translate(currentDirection * ENEMY_MOVE_SPEED);
+		spotPlayer (playerPos);
 	}
 
 	// Checks To See If The Player Is Within Prowl Distance
@@ -120,12 +125,8 @@ namespace Enemy_Space {
 	void Enemy::pursue(Ogre::Vector3 playerPos){
 		Ogre::Vector3 newDirection = GetVectorFromTwoPoints(playerPos, ship_node->getPosition());
 		newDirection.normalise();
-		Ogre::Vector3 axis = currentDirection.crossProduct(newDirection);
-		axis.normalise();
-		Ogre::Radian angle = Ogre::Radian(currentDirection.dotProduct(newDirection));
-
 		currentDirection = newDirection;
-		RotateShip(currentDirection);
+		RotateShip(playerPos);
 		ship_node->translate(currentDirection * ENEMY_MOVE_SPEED);
 	}
 
@@ -143,13 +144,18 @@ namespace Enemy_Space {
 
 	}
 
+	// Checks To See If We Should Actually Run The Collision Detection Or Not
+	boolean Enemy::should_run_collision(void) {
+		return weapons[currentWeaponIndex]->getShotsFired().size() > 0;
+	}
+
 	// Have The Enemy Maintain The Firing Range
 	void Enemy::maintainFiringRange(Ogre::Vector3 playerPos){
 		float distance = GetMagnatude(GetVectorFromTwoPoints(playerPos, ship_node->getPosition()));
 		if(distance < PLAYER_HOSTILE_RADIUS/2 ){
 			STATE == FLEE;
 		}
-		else if(distance > PLAYER_HOSTILE_RADIUS*2){
+		else if(distance > PLAYER_HOSTILE_RADIUS * 2){
 			STATE = PURSUE;
 		}
 		else {
@@ -205,8 +211,8 @@ namespace Enemy_Space {
 
 	// Registers A Hit On The Enemy 
 	void Enemy::registerHit (int damageAmount) {
-		enemyHealth = std::max (enemyHealth - damageAmount, 0);
-		std::cout << "Hit Enemy... Current Health Is: " << enemyHealth << std::endl;
+		health = std::max (health - damageAmount, 0);
+		std::cout << "Hit Enemy... Current Health Is: " << health << std::endl;
 	}
 
 	// Fires A Shot If Player Is Within The Bubble
@@ -219,12 +225,10 @@ namespace Enemy_Space {
 
 	// Fires A Shot When Called
 	void Enemy::fireShot(void) {
-		if (!shot) {
-			shot = new Weapon_Shot_Space::Weapon_Shot (currentDirection, entity_name);
-			shot->createEntity(scene_manager, ship_node->getPosition());
-		}
+		weapons[currentWeaponIndex]->fire_weapon(scene_manager, ship_node->getPosition(), currentDirection);
 	}
 	
+	// Check To See If The Player Is In The Intimiate Range
 	boolean Enemy::inIntimidateRange(Ogre::Vector3 playerPos) {
 		float distance = GetMagnatude(GetVectorFromTwoPoints(playerPos, ship_node->getPosition()));
 		if(distance <= PLAYER_HOSTILE_RADIUS*2 && distance > PLAYER_HOSTILE_RADIUS/2 ){
@@ -240,11 +244,11 @@ namespace Enemy_Space {
 	}
 
 	boolean Enemy::enemyDead(void) {
-		return enemyHealth == 0;
+		return health == 0;
 	}
 
 	int Enemy::getEnemyHealth(void) {
-		return enemyHealth;
+		return health;
 	}
 
 	float Enemy::getBoundingCircleRadius(void) {
@@ -572,8 +576,7 @@ namespace Enemy_Space {
 
 	// Rotate enemy ship using an orbit transformation
 	void Enemy::RotateShip(Ogre::Vector3 target){
-		ship_node->lookAt(target, Ogre::Node::TS_LOCAL);
-
+		ship_node->lookAt(target, Ogre::Node::TS_WORLD, currentDirection);
 	}
 
 	Ogre::Vector3 Enemy::RandomVector3(void){

@@ -59,6 +59,17 @@ namespace Weapon_Space {
 		void initialize_weapon(void);
 	};
 
+	// Enemy Lazer Cannon... Don't Want Them Having Something Too Powerful
+	class Enemy_Lazer_Cannon : public BaseWeapon {
+	public:
+		Enemy_Lazer_Cannon(void);
+		Enemy_Lazer_Cannon (Ogre::String);
+		~Enemy_Lazer_Cannon(void);
+
+		void initialize_weapon(void);
+	};
+
+
 	// Basic Bomb Weapon
 	class Bomb : public BaseWeapon {
 	public:
@@ -92,7 +103,7 @@ namespace Weapon_Space {
 		void fire_weapon(Ogre::SceneManager*, Ogre::Vector3, Ogre::Vector3, Ogre::Quaternion);
 	};
 
-	// Basic Bomb Weapon
+	// Scatter Bomb Launcher
 	class Scatter_Bomb_Shot : public Scatter_Base {
 	public:
 		Scatter_Bomb_Shot (void);

@@ -25,7 +25,7 @@ namespace Weapon_Shot_Space {
 	public:
 		Weapon_Shot(void);
 		Weapon_Shot(Ogre::Vector3 direction, Ogre::String, int damage = 1);
-		~Weapon_Shot(void);
+		virtual ~Weapon_Shot(void);
 
 		// Public Methods For Moving The Shots In The Game
 		virtual void moveShot (Ogre::Real time = 0);

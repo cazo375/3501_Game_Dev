@@ -90,6 +90,8 @@ namespace Weapon_Shot_Space {
 	}
 
 	Explosive_Shot::~Explosive_Shot(void) {
+		Weapon_Shot::destoryFiredWeapon();
+
 		if (explosion) {
 			delete explosion;
 			explosion = nullptr;
