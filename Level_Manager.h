@@ -8,7 +8,11 @@
 #include "OIS/OIS.h"
 #include "Level.h"
 
+#ifndef LEVEL_MANAGER_H
+
+#define LEVEL_MANAGER_H
 #define TIME_GAP_LEVEL_SWITCH 60
+#define MAX_LEVEL_AMOUNT 10
 
 namespace Level_Manager_Space {
 	class Level_Manager  {
@@ -33,3 +37,5 @@ namespace Level_Manager_Space {
 		std::vector<Level_Space::Level*> levels;
 	};
 }
+
+#endif

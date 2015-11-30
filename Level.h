@@ -11,7 +11,10 @@
 #include "Planet.h"
 #include "Asteroid.h"
 
-#define NUM_ASTEROIDS_PER_LEVEL 150
+#ifndef LEVEL_H
+#define LEVEL_H
+
+#define NUM_ASTEROIDS_PER_LEVEL 100
 
 // The Actual Space For Levels... They Will Be Cycled Through The Level_Manager
 namespace Level_Space {
@@ -25,7 +28,8 @@ namespace Level_Space {
 		void advance (Player_Space::Player* player, Ogre::Real);
 		void createLevel (Ogre::SceneManager* scene_manager);
 		void destoryLevel (Ogre::SceneManager* scene_manager);
-		
+		void createRandomEnemySpray (Ogre::SceneManager* scene_manager);
+
 		void destoryEnemyAt (int index);
 		void destoryAsteroidAt (int index);
 
@@ -41,3 +45,5 @@ namespace Level_Space {
 		void createAsteroidField (Ogre::SceneManager*);
 	};
 }
+
+#endif

@@ -19,6 +19,7 @@ Our Generic Enemy Class. Holds The Data That Is Relevant To The Enemy.
 #define ENEMY_MOVE_SLOW_SPEED 0.5f
 #define ENEMY_MOVE_SPEED 1.0f
 #define PLAYER_HOSTILE_RADIUS 120.0f
+#define NUM_OF_ENEMY_TYPES 6
 
 namespace Enemy_Space {
 

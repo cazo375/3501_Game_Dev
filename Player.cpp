@@ -8,11 +8,14 @@ namespace Player_Space {
 		player_camera = camera;
 		initialPosition = camera->getPosition();
 		initialOrientation = camera->getOrientation();
-		shot = nullptr;
-		text_area = nullptr;
 		weaponTimer = 0;
-		health = 50;
+		health = PLAYER_STARTING_HEALTH;
 		currentWeaponIndex = 0;
+
+		// Pointers
+		shot = nullptr;
+		current_weapon_text = nullptr;
+		amount_of_enemies_text = nullptr;
 
 		// Weapon Bank
 		weapons.push_back(new Weapon_Space::Lazer("player"));
@@ -126,7 +129,7 @@ namespace Player_Space {
 				currentWeaponIndex = 0;
 			}
 
-			text_area->setCaption("Current Weapon: " + weapons[currentWeaponIndex]->getWeaponName());
+			current_weapon_text->setCaption("Current Weapon: " + weapons[currentWeaponIndex]->getWeaponName());
 			std::cout << "Current Weapon: " << weapons[currentWeaponIndex]->getWeaponName() << std::endl;
 		}
 	}
@@ -138,7 +141,6 @@ namespace Player_Space {
 		currentPitchChange = 0;	
 		currentYawChange = 0;	
 		currentRollChange = 0;	
-		currentWeaponIndex = 0;
 	}
 
 	// Creates Our Player For Our Came
@@ -171,12 +173,15 @@ namespace Player_Space {
 		return COLLISION_DETECTION_RAD;
 	}
 
+	// Resets The Player When Called
 	void Player::resetPosition(void) {
 		ship_node->setPosition(initialPosition);
 		ship_node->setOrientation(initialOrientation);
 
 		player_camera->setPosition(initialPosition);
 		player_camera->setOrientation(initialOrientation);
+
+		health = PLAYER_STARTING_HEALTH;
 
 		initialize();
 	}
@@ -205,15 +210,29 @@ namespace Player_Space {
 		panel->setDimensions(200, 100);
 
 		// Create a text area and add it to the panel
-		text_area = static_cast<Ogre::TextAreaOverlayElement*>(overlay_manager.createOverlayElement("TextArea", "MyTextArea"));
-		text_area->setMetricsMode(Ogre::GMM_PIXELS);
-		text_area->setPosition(0, 0);
-		text_area->setDimensions(200, 100);
-		text_area->setFontName("MyFont");
-		text_area->setCaption("Current Weapon: " + weapons[currentWeaponIndex]->getWeaponName());
-		text_area->setCharHeight(26);
-		text_area->setColour(Ogre::ColourValue(0.8, 0.0, 0.0));
-		panel->addChild(text_area);
+		current_weapon_text = static_cast<Ogre::TextAreaOverlayElement*>(overlay_manager.createOverlayElement("TextArea", "MyTextArea"));
+		current_weapon_text->setPosition(0, 90);
+		current_weapon_text->setCaption("Current Weapon: " + weapons[currentWeaponIndex]->getWeaponName());
+		initTextArea(current_weapon_text);
+		panel->addChild(current_weapon_text);
+
+		amount_of_enemies_text = static_cast<Ogre::TextAreaOverlayElement*>(overlay_manager.createOverlayElement("TextArea", "amount_of_enemies"));
+		amount_of_enemies_text->setPosition(0, 60);
+		amount_of_enemies_text->setCaption("Remaining Enemies: " + Ogre::StringConverter::toString(0));
+		initTextArea(amount_of_enemies_text);
+		panel->addChild(amount_of_enemies_text);
+
+		current_player_health_text = static_cast<Ogre::TextAreaOverlayElement*>(overlay_manager.createOverlayElement("TextArea", "current_player_health"));
+		current_player_health_text->setPosition(0, 30);
+		current_player_health_text->setCaption("Current Health: " + Ogre::StringConverter::toString(health) + "/" + Ogre::StringConverter::toString(PLAYER_STARTING_HEALTH));
+		initTextArea(current_player_health_text);
+		panel->addChild(current_player_health_text);
+
+		current_level_text = static_cast<Ogre::TextAreaOverlayElement*>(overlay_manager.createOverlayElement("TextArea", "current_level_text"));
+		current_level_text->setPosition(0, 0);
+		current_level_text->setCaption("Level = " + Ogre::StringConverter::toString(0) + "/" + Ogre::StringConverter::toString(PLAYER_STARTING_HEALTH));
+		initTextArea(current_level_text);
+		panel->addChild(current_level_text);
 
 		// Create an overlay using the panel
 		Ogre::Overlay* overlay = overlay_manager.create("MyOverlay");
@@ -221,9 +240,27 @@ namespace Player_Space {
 		overlay->show();
 	}
 
+	// Inits The Text Area
+	void Player::initTextArea(Ogre::TextAreaOverlayElement* text_area) {
+		text_area->setMetricsMode(Ogre::GMM_PIXELS);
+		text_area->setDimensions(200, 100);
+		text_area->setFontName("MyFont");
+		text_area->setCharHeight(26);
+		text_area->setColour(Ogre::ColourValue(0.8, 0.0, 0.0));
+	}
+
 	// Registers A Hit On The Player
 	void Player::registerHit (int damageAmount) {
 		health = std::max (health - damageAmount, 0);
-		std::cout << "Player Has Been Hit... Health Now: " << health << std::endl;
+		current_player_health_text->setCaption("Current Health: " + Ogre::StringConverter::toString(health) + "/" + Ogre::StringConverter::toString(PLAYER_STARTING_HEALTH));
+		if (health == 0) {
+			resetPosition();
+		}
+	}
+
+	// Updates The Player UI When Called
+	void Player::updatePlayerUI (int enemies_remaining, int level_num) {
+		current_level_text->setCaption("Level = " + Ogre::StringConverter::toString(level_num + 1));
+		amount_of_enemies_text->setCaption("Remaining Enemies: " + Ogre::StringConverter::toString(enemies_remaining));
 	}
 }

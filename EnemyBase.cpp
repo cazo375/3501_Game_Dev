@@ -202,10 +202,10 @@ namespace Enemy_Space {
 
 			ship_node = 0;
 			alive = false;
+		}
 
-			if (shot) {
-				shot->destoryFiredWeapon();
-			}
+		for (int i = 0; i < weapons.size(); i++) {
+			delete weapons[i];
 		}
 	}
 
@@ -275,7 +275,7 @@ namespace Enemy_Space {
 		ship_node = root_scene_node->createChildSceneNode(entity_name);
 		ship_node->attachObject(entity);
 
-		boundingSphereRadius = 4;
+		boundingSphereRadius = 15;
 		ship_node->setPosition(initalPosition);
 		ship_node->setScale (boundingSphereRadius, boundingSphereRadius, boundingSphereRadius);
 	}
@@ -352,7 +352,8 @@ namespace Enemy_Space {
 		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(1.25, 0.0, -0.5))) * transformations;
 		AssignTransf(leftCannon, transformations);
 
-		boundingSphereRadius = 10;
+		boundingSphereRadius = 20;
+		ship_node->scale(boundingSphereRadius / 10.0, boundingSphereRadius / 10.0, boundingSphereRadius / 10.0);
 		ship_node->setPosition(pos);
 	}
 

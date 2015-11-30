@@ -7,6 +7,8 @@
 #include "OGRE/OgreEntity.h"
 #include "OIS/OIS.h"
 
+#define NEBULA_RADIUS 1500.0f
+
 enum PLANET_NAME {EARTH, VENUS, JUPITER, NEPTUNE, NEBULA};
 
 // Planet Space

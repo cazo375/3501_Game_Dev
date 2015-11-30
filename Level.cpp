@@ -35,13 +35,6 @@ namespace Level_Space {
 			planets.push_back(new Planet_Space::Planet(scene_manager, VENUS, Ogre::Vector3 (0.0f, 0.0f, 0.0f))); 
 			planets.push_back(new Planet_Space::Planet(scene_manager, NEPTUNE, Ogre::Vector3 (-150.0f, 150.0f, 500.0f))); 
 			planets.push_back(new Planet_Space::Planet(scene_manager, JUPITER, Ogre::Vector3 (100.0f, -75.0f, -320.0f))); 
-			enemies.push_back(new Enemy_Space::Enemy (scene_manager, Ogre::Vector3 (0.0f, 0.0f, 650.0f), 5));
-			enemies.push_back(new Enemy_Space::Enemy (scene_manager, Ogre::Vector3 (200.0f, 100.0f, 650.0f), 5));
-			enemies.push_back(new Enemy_Space::Enemy (scene_manager, Ogre::Vector3 (0.0f, 10.0f, 0.0), 5));
-			enemies.push_back(new Enemy_Space::Enemy (scene_manager, Ogre::Vector3 (0.0f, -5.0f, 0.0f), 5));
-			enemies.push_back(new Enemy_Space::Enemy (scene_manager, Ogre::Vector3 (0.0f, -10.0f, 0.0f), 5));
-			enemies.push_back(new Enemy_Space::Enemy (scene_manager, Ogre::Vector3 (0.0f, -20.0f, 0.0f), 5));
-
 			break;
 		case 1:
 			planets.push_back(new Planet_Space::Planet(scene_manager, EARTH));
@@ -50,6 +43,21 @@ namespace Level_Space {
 		} 
 
 		createAsteroidField(scene_manager);
+		createRandomEnemySpray(scene_manager);
+	}
+
+	// Creates A Random Enemy Spray For The Level
+	void Level::createRandomEnemySpray (Ogre::SceneManager* scene_manager) {
+		float nebula_buffer = 300.0f;
+		int numOfEnemiesInLevel = 1 + (levelNum * 2);
+
+		for (int i = 0; i < numOfEnemiesInLevel; i++) {
+			int enemy_type = 3 + (((double) rand() / (RAND_MAX)) * NUM_OF_ENEMY_TYPES);
+			float xPos = -nebula_buffer + (((double) rand() / (RAND_MAX)) * (nebula_buffer * 2));
+			float yPos = -nebula_buffer + (((double) rand() / (RAND_MAX)) * (nebula_buffer * 2));
+			float zPos = -nebula_buffer + (((double) rand() / (RAND_MAX)) * (nebula_buffer * 2));
+			enemies.push_back(new Enemy_Space::Enemy (scene_manager, Ogre::Vector3 (xPos, yPos, zPos), enemy_type));
+		}
 	}
 
 	// Destroys Our Level With All Of It's Contents

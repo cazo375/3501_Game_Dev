@@ -494,6 +494,13 @@ namespace ogre_application {
 		// Increment The Level Ticker
 		level_manager.incrementLevelTicker();
 
+		// Finally If All Enemies Have Been Destoryed Then Go To The Next Level
+		Level_Space::Level* currentLevel = level_manager.getCurrentLevelObj();
+		if (currentLevel->getEnemies().size() == 0) {
+			Ogre::SceneManager* scene_manager = ogre_root_->getSceneManager("MySceneManager");
+			level_manager.cycleNextLevel(scene_manager);
+		}
+
 		return true;
 	}
 
@@ -580,6 +587,8 @@ namespace ogre_application {
 				}
 			}
 		}
+
+		player->updatePlayerUI(currentLevel->getEnemies().size(), level_manager.getCurrentLevel());
 	}
 
 	// Runs The Planet Collsion Detection
@@ -646,6 +655,7 @@ namespace ogre_application {
 
 		player = new Player_Space::Player (scene_manager, camera);
 		player->createPlayer();
+		player->updatePlayerUI(level_manager.getCurrentLevelObj()->getEnemies().size(), level_manager.getCurrentLevel());
 	}
 
 	/*-------------------------------------- Explosion Methods --------------------------------*/

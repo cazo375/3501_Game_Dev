@@ -25,7 +25,12 @@
 #define ROTATION_THRUST 1.0f
 #define MAX_FORWARD_THRUST 1.5f // Number of elements in the chain
 #define MAX_REVRESE_THRUST -1.5f // Number of elements in the chain
-#define COLLISION_DETECTION_RAD 1.0f
+#define COLLISION_DETECTION_RAD 3.0f
+#define PLAYER_STARTING_HEALTH 50
+
+#define PLAYER_ENEMY_STRING "Remaining Enemies: "
+#define PLAYER_WEAPON_STRING "Current Weapon: "
+#define PLAYER_HEALTH_STRING "Current Health: "
 
 #ifndef PLAYER_H
 #define PLAYER_H
@@ -49,6 +54,9 @@ namespace Player_Space {
 		void resetPosition(void);
 		float getBoundingCircleRadius(void);
 
+		// Methods For Updating The Player
+		void updatePlayerUI (int enemies_remaining, int level_num);
+
 	private:
 		// Variables
 		Ogre::SceneManager* scene_manager;
@@ -56,7 +64,12 @@ namespace Player_Space {
 		Ogre::SceneNode* targetCube;
 		Ogre::Vector3 initialPosition;
 		Ogre::Quaternion initialOrientation;
-		Ogre::TextAreaOverlayElement* text_area;
+
+		// Texts
+		Ogre::TextAreaOverlayElement* current_weapon_text;
+		Ogre::TextAreaOverlayElement* amount_of_enemies_text;
+		Ogre::TextAreaOverlayElement* current_player_health_text;
+		Ogre::TextAreaOverlayElement* current_level_text;
 
 		// Movement Variables		
 		float currentForwardThrust;		// The current thrust of the ship
@@ -77,6 +90,7 @@ namespace Player_Space {
 		void destroyFiredWeapon (void);
 		void initialize(void);
 		void initOverlay(void);
+		void initTextArea (Ogre::TextAreaOverlayElement* area);
 	};
 }
 

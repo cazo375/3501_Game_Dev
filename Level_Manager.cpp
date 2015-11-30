@@ -41,8 +41,9 @@ namespace Level_Manager_Space {
 
 	// Creates Our Levels When Called
 	void Level_Manager::createAllLevels (void) {
-		levels.push_back(new Level_Space::Level(0));
-		levels.push_back(new Level_Space::Level(1));
+		for (int i = 0; i < MAX_LEVEL_AMOUNT; i++) {
+			levels.push_back(new Level_Space::Level(i));
+		}
 	}
 
 	// Checks To See If We Can Switch Levels

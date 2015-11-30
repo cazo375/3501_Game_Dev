@@ -56,7 +56,7 @@ namespace Planet_Space {
 			break;
 		case NEBULA :
 			createPlanetOnType (manager, "Nebula", "NebulaTexture", "reverse.sphere.mesh");
-			radius = 1500.0f;
+			radius = NEBULA_RADIUS;
 			break;
 		}
 
