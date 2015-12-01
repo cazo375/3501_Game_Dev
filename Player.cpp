@@ -263,4 +263,8 @@ namespace Player_Space {
 		current_level_text->setCaption("Level = " + Ogre::StringConverter::toString(level_num + 1));
 		amount_of_enemies_text->setCaption("Remaining Enemies: " + Ogre::StringConverter::toString(enemies_remaining));
 	}
+
+	Ogre::Vector3 Player::getDirection(){
+		return player_camera->getDirection();
+	}
 }

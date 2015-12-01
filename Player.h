@@ -57,6 +57,9 @@ namespace Player_Space {
 		// Methods For Updating The Player
 		void updatePlayerUI (int enemies_remaining, int level_num);
 
+		// Getters
+		Ogre::Vector3 getDirection();
+
 	private:
 		// Variables
 		Ogre::SceneManager* scene_manager;

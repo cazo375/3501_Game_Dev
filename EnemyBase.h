@@ -13,17 +13,19 @@ Our Generic Enemy Class. Holds The Data That Is Relevant To The Enemy.
 #include <vector>
 #include "Player.h"
 
+#define NEBULA_RADIUS 1500.0f
 #define NODE_MIN_RADIUS 1.0f 
-#define ENEMY_MOVE_SUPER_SPEED 2.2f
+#define ENEMY_MOVE_SUPER_SPEED 2.5f
 #define ENEMY_MOVE_FAST_SPEED 1.8f
-#define ENEMY_MOVE_SLOW_SPEED 0.5f
+#define ENEMY_MOVE_SLOW_SPEED 0.7f
 #define ENEMY_MOVE_SPEED 1.0f
 #define PLAYER_HOSTILE_RADIUS 120.0f
-#define NUM_OF_ENEMY_TYPES 6
+#define NUM_OF_ENEMY_TYPES 3
 
 namespace Enemy_Space {
 
-	enum Ai_State {PROWL, PURSUE, IDLE, FLEE, HALT, INTIMIDATE};
+	enum Ai_State {PROWL, PURSUE, IDLE, FLEE, HALT, INTIMIDATE, INTERCEPT, CHARGE, RETURN};
+	enum enemy_type{PEON, SCOUT, BOSS};
 
 
 	class Enemy : public Ship_Space::Ship {
@@ -33,7 +35,6 @@ namespace Enemy_Space {
 		Enemy (Ogre::SceneManager* scene_manager, Ogre::Vector3 initalPosition, int enemy_num = 1);
 		~Enemy (void);
 
-		void yWave();
 		void fireShot (void);			
 		void destoryEnemy (void);											
 		void flee(Ogre::Vector3 playerPos);
@@ -42,14 +43,20 @@ namespace Enemy_Space {
 		void pursue(Ogre::Vector3 playerPos);
 		void RotateShip(Ogre::Vector3 target);
 		void spotPlayer(Ogre::Vector3 playerPos);
+		void returnToBattle(void);
+		void charge(Ogre::Vector3 playerPos);
+		void intercept(Player_Space::Player* player);
 		void intimidate(Ogre::Vector3 playerPos);
-		void shouldFireShot (Player_Space::Player*);\
+		void shouldFireShot (Player_Space::Player*);
 		void maintainFiringRange(Ogre::Vector3 playerPos);
 		void advance (Player_Space::Player* player, Ogre::Real);				
 
 		// Getters And Setters
 		int getEnemyHealth(void);
 		float getBoundingCircleRadius(void);
+		boolean isInArea();
+		boolean inHostileRange(Ogre::Vector3 playerPos);
+		boolean inSpotRange(Ogre::Vector3 playerPos);
 		boolean inIntimidateRange(Ogre::Vector3 playerPos);
 		boolean enemyDead (void);
 		boolean should_run_collision (void);
@@ -64,6 +71,7 @@ namespace Enemy_Space {
 
 		// Creation Functions
 		float GetMagnatude(Ogre::Vector3);
+		Ogre::Vector3 toOrigin(void);
 		Ogre::Matrix4 RotationMatrix(Ogre::Vector3 axis, Ogre::Radian angle);
 		Ogre::Matrix4 TranslationMatrix(Ogre::Vector3 trans);
 		Ogre::Matrix4 ScalingMatrix(Ogre::Vector3 scale);
@@ -87,8 +95,10 @@ namespace Enemy_Space {
 		int currentPathIndex;
 
 		int STATE;
+		int ENEMY_TYPE;
 		Ogre::Real wait;
 		Ogre::Real lifeSpan;
+		Ogre::Real sleep;
 
 		// Collision Related Variables
 		float boundingSphereRadius;
