@@ -52,7 +52,7 @@ namespace Level_Space {
 		int numOfEnemiesInLevel = 1 + (levelNum * 2);
 
 		for (int i = 0; i < numOfEnemiesInLevel; i++) {
-			int enemy_type = 3 + (((double) rand() / (RAND_MAX)) * NUM_OF_ENEMY_TYPES);
+			int enemy_type = rand() % NUM_OF_ENEMY_TYPES + 1;
 			float xPos = -nebula_buffer + (((double) rand() / (RAND_MAX)) * (nebula_buffer * 2));
 			float yPos = -nebula_buffer + (((double) rand() / (RAND_MAX)) * (nebula_buffer * 2));
 			float zPos = -nebula_buffer + (((double) rand() / (RAND_MAX)) * (nebula_buffer * 2));

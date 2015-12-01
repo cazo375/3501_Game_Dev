@@ -61,6 +61,9 @@ namespace Player_Space {
 		Ogre::Vector3 getPlayerDirection();
 		Ogre::Vector3 getPlayerUpVector();
 
+		// Getters
+		Ogre::Vector3 getDirection();
+
 	private:
 		// Variables
 		Ogre::SceneManager* scene_manager;

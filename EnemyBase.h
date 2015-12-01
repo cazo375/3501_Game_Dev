@@ -72,8 +72,12 @@ namespace Enemy_Space {
 		// Creation Functions
 		float GetMagnatude(Ogre::Vector3);
 		Ogre::Vector3 toOrigin(void);
+		Ogre::Matrix4 RotationMatrix(Ogre::Vector3 axis, Ogre::Radian angle);
+		Ogre::Matrix4 TranslationMatrix(Ogre::Vector3 trans);
+		Ogre::Matrix4 ScalingMatrix(Ogre::Vector3 scale);
 		Ogre::Vector3 GetVectorFromTwoPoints(Ogre::Vector3 playerpos, Ogre::Vector3 Enemypos);
 		Ogre::Vector3 RandomVector3(void);
+		void AssignTransf(Ogre::SceneNode* node, Ogre::Matrix4 transf);
 		void UpdateTransf(Ogre::SceneNode* node, Ogre::Matrix4 transf);
 
 		void createEnemyByNum (Ogre::SceneManager*, Ogre::Vector3, int num = 4);	

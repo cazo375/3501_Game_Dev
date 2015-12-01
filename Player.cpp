@@ -17,6 +17,7 @@ namespace Player_Space {
 		shot = nullptr;
 		current_weapon_text = nullptr;
 		amount_of_enemies_text = nullptr;
+		current_player_health_text = nullptr;
 
 		// Weapon Bank
 		weapons.push_back(new Weapon_Space::Lazer("player"));
@@ -142,6 +143,11 @@ namespace Player_Space {
 		currentPitchChange = 0;	
 		currentYawChange = 0;	
 		currentRollChange = 0;	
+		health = PLAYER_STARTING_HEALTH;
+
+		if (current_player_health_text) {
+			current_player_health_text->setCaption("Current Health: " + Ogre::StringConverter::toString(health) + "/" + Ogre::StringConverter::toString(PLAYER_STARTING_HEALTH));
+		}
 	}
 
 	// Creates Our Player For Our Came
@@ -277,5 +283,9 @@ namespace Player_Space {
 
 	Ogre::Vector3 Player::getPlayerUpVector() {
 		return player_camera->getUp();
+	}
+
+	Ogre::Vector3 Player::getDirection(){
+		return player_camera->getDirection();
 	}
 }
