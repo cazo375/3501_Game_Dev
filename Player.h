@@ -57,6 +57,10 @@ namespace Player_Space {
 		// Methods For Updating The Player
 		void updatePlayerUI (int enemies_remaining, int level_num);
 
+		// More Getters / Setters
+		Ogre::Vector3 getPlayerDirection();
+		Ogre::Vector3 getPlayerUpVector();
+
 	private:
 		// Variables
 		Ogre::SceneManager* scene_manager;
@@ -91,6 +95,10 @@ namespace Player_Space {
 		void initialize(void);
 		void initOverlay(void);
 		void initTextArea (Ogre::TextAreaOverlayElement* area);
+
+		// Weapon Position
+		int weaponPositionToFire;
+		std::vector <Ogre::Vector3> gunPlacements;
 	};
 }
 

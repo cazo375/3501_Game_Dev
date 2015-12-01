@@ -94,7 +94,7 @@ namespace Enemy_Space {
 		else{
 			int randomToggler = rand() % 1 + 1;
 			if( randomToggler == 1){
-				STATE == PROWL;
+				STATE = PROWL;
 			}
 			else {
 				STATE = PURSUE;
@@ -153,7 +153,7 @@ namespace Enemy_Space {
 	void Enemy::maintainFiringRange(Ogre::Vector3 playerPos){
 		float distance = GetMagnatude(GetVectorFromTwoPoints(playerPos, ship_node->getPosition()));
 		if(distance < PLAYER_HOSTILE_RADIUS/2 ){
-			STATE == FLEE;
+			STATE = FLEE;
 		}
 		else if(distance > PLAYER_HOSTILE_RADIUS * 2){
 			STATE = PURSUE;
@@ -161,20 +161,6 @@ namespace Enemy_Space {
 		else {
 			STATE = INTIMIDATE;
 		}
-	}
-
-	void Enemy::yWave(){
-		int wait_time = 200;
-		if(wait<= 0){
-			wait = wait_time;
-		}
-		else if(wait > wait_time/2){
-		
-		}
-		else if(wait < wait_time/2){
-
-		}
-
 	}
 
 	// Cycles To The Next Graph Point
@@ -361,88 +347,7 @@ namespace Enemy_Space {
 	// Our Fourth Enemy Type
 	void Enemy::CreateEnemy4(Ogre::SceneManager* scene_manager, Ogre::Vector3 pos){
 
-		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
-		Ogre::Entity *entity;
-		Ogre::Matrix4 transformations;
-		Ogre::String part_name;
-
-		part_name = "body3";
-		entity = scene_manager->createEntity(entity_name + part_name, "Prism");  //mesh name on the right, entity on the left
-		ship_node = root_scene_node->createChildSceneNode(entity_name + part_name);
-		ship_node->attachObject(entity);
-
-		transformations = Ogre::Matrix4::IDENTITY;
-		transformations = transformations * ScalingMatrix(Ogre::Vector3(2.0, 2.0, 2.0));
-		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, -1.0), Ogre::Radian(Ogre::Math::PI))) * transformations;
-		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(0.0, 0.0, 1.0))) * transformations;
-		AssignTransf(ship_node, transformations);
-
-		part_name = "toparm3";
-		entity = scene_manager->createEntity(entity_name + part_name, "Cylinder");  //mesh name on the right, entity on the left
-		Ogre::SceneNode* topArm = ship_node->createChildSceneNode(entity_name + part_name);
-		topArm->attachObject(entity);
-
-		transformations = Ogre::Matrix4::IDENTITY;
-		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.3, 0.20, 0.3));
-		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(-0.5, -1.0, 0.5))) * transformations;
-		AssignTransf(topArm, transformations);
-
-		part_name = "bottomleftarm3";
-		entity = scene_manager->createEntity(entity_name + part_name, "Cylinder");  //mesh name on the right, entity on the left
-		Ogre::SceneNode* bottomLeftArm = ship_node->createChildSceneNode(entity_name + part_name);
-		bottomLeftArm->attachObject(entity);
-
-		transformations = Ogre::Matrix4::IDENTITY;
-		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.3, 0.20, 0.3));
-		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, -1.0), Ogre::Radian(Ogre::Math::PI/2))) * transformations;
-		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, -1.0), Ogre::Radian(Ogre::Math::PI/4))) * transformations;
-		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(-1.0, 0.5, 0.5))) * transformations;
-		AssignTransf(bottomLeftArm, transformations);
-
-		part_name = "bottomrightarm3";
-		entity = scene_manager->createEntity(entity_name + part_name, "Cylinder");  //mesh name on the right, entity on the left
-		Ogre::SceneNode* bottomRightArm = ship_node->createChildSceneNode(entity_name + part_name);
-		bottomRightArm->attachObject(entity);
-
-		transformations = Ogre::Matrix4::IDENTITY;
-		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.3, 0.20, 0.3));
-		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, 1.0), Ogre::Radian(Ogre::Math::PI/2))) * transformations;
-		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, 1.0), Ogre::Radian(Ogre::Math::PI/4))) * transformations;
-		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(0.0, 0.5, 0.5))) * transformations;
-		AssignTransf(bottomRightArm, transformations);
-
-		part_name = "topgun3";
-		entity = scene_manager->createEntity(entity_name + part_name, "Prism");  //mesh name on the right, entity on the left
-		Ogre::SceneNode* topGun = ship_node->createChildSceneNode(entity_name + part_name);
-		topGun->attachObject(entity);
-
-		transformations = Ogre::Matrix4::IDENTITY;
-		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.6, 0.6, 4.0));		
-		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, 1.0), Ogre::Radian(Ogre::Math::PI))) * transformations;
-		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(-0.8, -1.9, -1.0))) * transformations;
-		AssignTransf(topGun, transformations);
-
-		part_name = "bottomleftgun3";
-		entity = scene_manager->createEntity(entity_name + part_name, "Prism");  //mesh name on the right, entity on the left
-		Ogre::SceneNode* bottomLeftGun = ship_node->createChildSceneNode(entity_name + part_name);
-		bottomLeftGun->attachObject(entity);
-
-		transformations = Ogre::Matrix4::IDENTITY;
-		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.6, 0.6, 4.0));		
-		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, 1.0), Ogre::Radian(Ogre::Math::PI/4))) * transformations;
-		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(-1.25, 1.25, -1.0))) * transformations;
-		AssignTransf(bottomLeftGun, transformations);
-
-		part_name = "bottomrightgun3";
-		entity = scene_manager->createEntity(entity_name + part_name, "Prism");  //mesh name on the right, entity on the left
-		Ogre::SceneNode* bottomRightGun = ship_node->createChildSceneNode(entity_name + part_name);
-		bottomRightGun->attachObject(entity);
-
-		transformations = Ogre::Matrix4::IDENTITY;
-		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.6, 0.6, 4.0));		
-		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, -1.0), Ogre::Radian(Ogre::Math::PI/4))) * transformations;
-		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(0.75, 0.75, -1.0))) * transformations;
-		AssignTransf(bottomRightGun, transformations);
+		createDefaultShip(scene_manager, pos);
 
 		boundingSphereRadius = 10;
 		ship_node->setPosition(pos);
@@ -597,48 +502,6 @@ namespace Enemy_Space {
 	Ogre::Vector3 Enemy::GetVectorFromTwoPoints(Ogre::Vector3 playerpos, Ogre::Vector3 Enemypos){
 		Ogre::Vector3  playerdirection = (playerpos - Enemypos);
 		return playerdirection;
-	}
-
-	// Create a rotation matrix based on an angle and an axis
-	Ogre::Matrix4 Enemy::RotationMatrix(Ogre::Vector3 axis, Ogre::Radian angle){
-
-		Ogre::Matrix3 mat;
-		mat = Ogre::Matrix3::IDENTITY;
-		mat.FromAngleAxis(axis, angle);
-		return Ogre::Matrix4(mat);
-	}
-
-
-	// Create a translation matrix based on a vector of translations (x, y, z)
-	Ogre::Matrix4 Enemy::TranslationMatrix(Ogre::Vector3 trans){
-		Ogre::Matrix4 mat;
-		mat = Ogre::Matrix4::IDENTITY;
-		mat.setTrans(trans);
-		return mat;
-	}
-
-
-	// Create a scaling matrix based on a vector of scale factors (x, y, z)
-	Ogre::Matrix4 Enemy::ScalingMatrix(Ogre::Vector3 scale){
-		Ogre::Matrix4 mat;
-		mat = Ogre::Matrix4::IDENTITY;
-		mat.setScale(scale);
-		return mat;
-	}
-
-	void Enemy::AssignTransf(Ogre::SceneNode* node, Ogre::Matrix4 transf){
-
-		/* In many graphic frameworks, we would simply multiply our geometry by the transformation matrix.
-		However, OGRE stores the transformations of a node in a more efficient manner.
-		So, we need to decompose the transformation first into three components and then assign them
-		to the scene node.*/
-		Ogre::Vector3 trans, scale;
-		Ogre::Quaternion quat;
-
-		transf.decomposition(trans, scale, quat);
-		node->setScale(scale);
-		node->setOrientation(quat);
-		node->setPosition(trans);
 	}
 
 	void Enemy::UpdateTransf(Ogre::SceneNode* node, Ogre::Matrix4 transf){

@@ -21,7 +21,6 @@ namespace Weapon_Space {
 		BaseWeapon(void);
 		~BaseWeapon(void);
 
-
 		void advance(Ogre::Real);
 		void removeAllShots (void);
 
@@ -31,6 +30,7 @@ namespace Weapon_Space {
 
 		// Abstract Function
 		virtual void fire_weapon(Ogre::SceneManager*, Ogre::Vector3, Ogre::Vector3);
+		virtual void fire_weapon(Ogre::SceneManager*, Ogre::Vector3, Ogre::Vector3, Ogre::Vector3);
 		virtual void fire_weapon(Ogre::SceneManager*, Ogre::Vector3, Ogre::Vector3, Ogre::Quaternion);
 
 	protected:
@@ -79,6 +79,19 @@ namespace Weapon_Space {
 
 		void initialize_weapon(void);
 		void fire_weapon(Ogre::SceneManager*, Ogre::Vector3, Ogre::Vector3);
+	};
+
+	// Basic Spline Launcher
+	class Spline_Bomb_Launcher : public BaseWeapon {
+	public:
+		Spline_Bomb_Launcher(void);
+		Spline_Bomb_Launcher (Ogre::String);
+		~Spline_Bomb_Launcher(void);
+
+		void initialize_weapon(void);
+		void fire_weapon(Ogre::SceneManager*, Ogre::Vector3, Ogre::Vector3, Ogre::Vector3);
+	private:
+		void create_splinic_shot (Ogre::SceneManager*, Ogre::Vector3 pos, Ogre::Vector3 spline_dir, Ogre::Vector3 dir);
 	};
 
 	// Scatter Base Class

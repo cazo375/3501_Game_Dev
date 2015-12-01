@@ -20,7 +20,13 @@ Our Generic Weapon Class. Holds The Data That Is Relevant To The Weapons.
 #define LAZER_LIFE_SPAN 0.5f
 #define EXPLOSION_DELAY 0.5f
 
+// Spline Stuff
+#define SPLINE_FORWARD_INTERP 100.0f
+#define SPLINE_SIDE_INTERP 30.0f
+
 namespace Weapon_Shot_Space {
+
+	/*------------------------------------------------- Basic Weapon Shot ---------------------------------------------------------------*/
 	class Weapon_Shot {
 	public:
 		Weapon_Shot(void);
@@ -28,16 +34,17 @@ namespace Weapon_Shot_Space {
 		virtual ~Weapon_Shot(void);
 
 		// Public Methods For Moving The Shots In The Game
-		virtual void moveShot (Ogre::Real time = 0);
 		void destoryFiredWeapon (void);
-		virtual boolean shouldDestoryShot (void);
 
 		// Getters And Setters For The Object
 		Ogre::Vector3 getDirection (void);
 		float getDamageAmount (void);
 
+		// Virtual Functions
 		virtual void registerImpact (void);
+		virtual boolean shouldDestoryShot (void);
 		virtual Ogre::Vector3 getPosition (void);
+		virtual void moveShot (Ogre::Real time = 0);
 		virtual float getBoundingSphereRadius (void);
 
 		// For Actually Creating Our Entity
@@ -67,12 +74,12 @@ namespace Weapon_Shot_Space {
 		boolean destory;
 	};
 
-	// An Explosive Shot
+	/*------------------------------------------------- Explosive Shot ---------------------------------------------------------------*/
 	class Explosive_Shot : public Weapon_Shot {
 	public:
 		Explosive_Shot(void);
 		Explosive_Shot(Ogre::Vector3, Ogre::String, int damage = 1);
-		~Explosive_Shot(void);
+		virtual ~Explosive_Shot(void);
 
 		void moveShot (Ogre::Real time = 0);
 		void registerImpact (void);
@@ -87,6 +94,18 @@ namespace Weapon_Shot_Space {
 
 		// Functions
 		void explodeRound (void);
+	};
+
+	/*------------------------------------------------- Splinic Shot ---------------------------------------------------------------*/
+	class Splinic_Shot :  public Explosive_Shot {
+	public:
+		Splinic_Shot(void);
+		Splinic_Shot(Ogre::Vector3 init_pos, Ogre::Vector3 cross_product, Ogre::Vector3 init_direction, Ogre::String, int damage = 1);
+		~Splinic_Shot(void);
+
+		void moveShot (Ogre::Real time = 0);
+	protected:
+		std::vector<Ogre::Vector3> points;
 	};
 }
 

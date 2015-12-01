@@ -9,6 +9,7 @@ namespace Player_Space {
 		initialPosition = camera->getPosition();
 		initialOrientation = camera->getOrientation();
 		weaponTimer = 0;
+		weaponPositionToFire = 0;
 		health = PLAYER_STARTING_HEALTH;
 		currentWeaponIndex = 0;
 
@@ -22,6 +23,7 @@ namespace Player_Space {
 		weapons.push_back(new Weapon_Space::Bomb("player"));
 		weapons.push_back(new Weapon_Space::Scatter_Shot("player"));
 		weapons.push_back(new Weapon_Space::Scatter_Bomb_Shot("player"));
+		weapons.push_back(new Weapon_Space::Spline_Bomb_Launcher ("player"));
 
 		initialize();
 		initOverlay();
@@ -36,7 +38,6 @@ namespace Player_Space {
 		player_camera->setPosition(player_camera->getPosition() + player_camera->getUp()*currentUpDownThrust);
 		player_camera->setPosition(player_camera->getPosition() + player_camera->getRight()*currentSideThrust);
 		ship_node->setPosition(player_camera->getPosition());
-
 		weapons[currentWeaponIndex]->advance(time);
 
 		if (weaponTimer < WEAPON_SWITCH_DELAY) {
@@ -149,25 +150,30 @@ namespace Player_Space {
 		Ogre::Entity *entity = scene_manager->createEntity("player_target.cube", "cube.mesh");
 		entity->setMaterialName("CrosshairMaterial");
 
-		ship_node = root_scene_node->createChildSceneNode();
+		createDefaultShip(scene_manager, player_camera->getPosition());
 		ship_node->setPosition(player_camera->getPosition());
 
 		targetCube = ship_node->createChildSceneNode("player_target.cube");
 		targetCube->attachObject(entity);
 		targetCube->translate(0.0f, 0.0f, -30.0f);
+
+		// Create Out Weapon Placements
+		Ogre::Vector3 gunBase = player_camera->getPosition();
+		gunPlacements.push_back(Ogre::Vector3(-1.25f, 0, 4.0f));
+		gunPlacements.push_back(Ogre::Vector3(1.25f, 0, 4.0f));
 	}
 
 	// Fires The Weapon If Hasn't Been Fired
 	void Player::fireShot (void) {
+		// Fire The Weapon
 		if (weapons[currentWeaponIndex]->getOrientationNeeded()) {
 			weapons[currentWeaponIndex]->fire_weapon(scene_manager, ship_node->getPosition(), 
 				(targetCube->_getDerivedPosition() - ship_node->getPosition()).normalisedCopy(), ship_node->getOrientation());
 		}
 		else {
-			weapons[currentWeaponIndex]->fire_weapon(scene_manager, ship_node->getPosition(), (targetCube->_getDerivedPosition() - ship_node->getPosition()).normalisedCopy());
+			weapons[currentWeaponIndex]->fire_weapon(scene_manager, ship_node->getPosition(), (targetCube->_getDerivedPosition() -ship_node->getPosition()).normalisedCopy(), getPlayerUpVector());
 		}
 	}
-
 
 	float Player::getBoundingCircleRadius (void) {
 		return COLLISION_DETECTION_RAD;
@@ -262,5 +268,14 @@ namespace Player_Space {
 	void Player::updatePlayerUI (int enemies_remaining, int level_num) {
 		current_level_text->setCaption("Level = " + Ogre::StringConverter::toString(level_num + 1));
 		amount_of_enemies_text->setCaption("Remaining Enemies: " + Ogre::StringConverter::toString(enemies_remaining));
+	}
+
+	/*------------------------------------------------------------- Getters And Setters ------------------------------------------------------------------*/
+	Ogre::Vector3 Player::getPlayerDirection() {
+		return (targetCube->_getDerivedPosition() - ship_node->getPosition()).normalisedCopy();
+	}
+
+	Ogre::Vector3 Player::getPlayerUpVector() {
+		return player_camera->getUp();
 	}
 }

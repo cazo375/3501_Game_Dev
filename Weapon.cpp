@@ -71,6 +71,10 @@ namespace Weapon_Space {
 		}
 	}
 
+	void BaseWeapon::fire_weapon (Ogre::SceneManager* man, Ogre::Vector3 pos, Ogre::Vector3 dir, Ogre::Vector3 upDir) {
+		fire_weapon (man, pos, dir);
+	}
+
 	void BaseWeapon::fire_weapon(Ogre::SceneManager* man, Ogre::Vector3 pos, Ogre::Vector3 dir, Ogre::Quaternion rot) {
 		if (timeRemainingBeforeShot > fireRate) {
 			Weapon_Shot_Space::Weapon_Shot* newShot = new Weapon_Shot_Space::Weapon_Shot (dir, owner_object, weapon_damage);
@@ -80,7 +84,7 @@ namespace Weapon_Space {
 		}
 	}
 
-	/*------------------------ Standard Lazer Cannon -------------------*/
+	/*-------------------------------------------------------- Standard Laser Cannon ----------------------------------------------------*/
 	Lazer::Lazer(void) {
 		initialize_weapon();
 	}
@@ -102,7 +106,7 @@ namespace Weapon_Space {
 		owner_object = "unknown";
 	}
 
-	/*------------------------ Enemy Based Lazer Cannon -------------------*/
+	/*-------------------------------------------------------- Enemy Based Laser Cannon ----------------------------------------------------*/
 	Enemy_Lazer_Cannon::Enemy_Lazer_Cannon(void) {
 		initialize_weapon();
 	}
@@ -124,7 +128,7 @@ namespace Weapon_Space {
 		owner_object = "unknown";
 	}
 
-	/*------------------------ Bomb Launcher -------------------*/
+	/*-------------------------------------------------------- Bomb Launcher ----------------------------------------------------*/
 	Bomb::Bomb(void) {
 		initialize_weapon();
 	}
@@ -155,7 +159,50 @@ namespace Weapon_Space {
 		}
 	}
 
-	/*------------------------ Scatter Shot Base -------------------*/
+
+	/*-------------------------------------------------------- Spline Launcher Base ----------------------------------------------------*/
+	Spline_Bomb_Launcher::Spline_Bomb_Launcher(void) {
+		initialize_weapon();
+	}
+
+	Spline_Bomb_Launcher::Spline_Bomb_Launcher(Ogre::String owner) {
+		initialize_weapon();
+		owner_object = owner;
+	}
+
+	Spline_Bomb_Launcher::~Spline_Bomb_Launcher(void) {
+	}
+
+	void Spline_Bomb_Launcher::initialize_weapon(void) {
+		weapon_damage = 12;
+		fireRate = 60;
+		timeRemainingBeforeShot = 0;
+		needsOrientation = false;
+		weapon_name = "Spline Bomb Launcher";
+		owner_object = "unknown";
+	}
+
+	void Spline_Bomb_Launcher::fire_weapon (Ogre::SceneManager* man, Ogre::Vector3 pos, Ogre::Vector3 dir, Ogre::Vector3 upDir) {
+		if (timeRemainingBeforeShot > fireRate) {
+			Ogre::Vector3 upVector = upDir;
+			Ogre::Vector3 crossProduct = pos.crossProduct(upVector).normalisedCopy();
+
+			create_splinic_shot (man, pos, crossProduct, dir);
+			create_splinic_shot (man, pos, -crossProduct, dir);
+			create_splinic_shot (man, pos, upVector, dir);
+			create_splinic_shot (man, pos, -upVector, dir);
+
+			timeRemainingBeforeShot = 0;
+		}
+	}
+
+	void Spline_Bomb_Launcher::create_splinic_shot(Ogre::SceneManager* man, Ogre::Vector3 pos, Ogre::Vector3 spline_dir, Ogre::Vector3 dir) {
+		Weapon_Shot_Space::Weapon_Shot* newShot = new Weapon_Shot_Space::Splinic_Shot (pos, spline_dir, dir, owner_object, weapon_damage);
+		newShot->createEntity(man, pos);
+		shotsFired.push_back(newShot);
+	}
+
+	/*-------------------------------------------------------- Scatter Shot Base ----------------------------------------------------*/
 	Ogre::Vector3 Scatter_Base:: create_spray_dir (Ogre::Vector3 originalDir) {
 		// Randomly select three numbers to define a point in spherical coordinates
 		float xDisplacement = (-0.5 + ((double) rand() / (RAND_MAX))) * scatter_range;
@@ -169,7 +216,7 @@ namespace Weapon_Space {
 		return newDir;
 	}
 
-	/*------------------------ Scatter Shot Weapon  -------------------*/
+	/*------------------------------------------------------- Scatter Shot Weapon  ---------------------------------------------------*/
 	Scatter_Shot::Scatter_Shot(void) {
 		initialize_weapon();
 	}

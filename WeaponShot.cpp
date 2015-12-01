@@ -153,4 +153,52 @@ namespace Weapon_Shot_Space {
 			destoryFiredWeapon();
 		}
 	}
+
+
+	/*------------------------------------------------- Splinic Explosion Shell ----------------------------------*/
+	Splinic_Shot::Splinic_Shot(Ogre::Vector3 init_pos, Ogre::Vector3 cross_product, Ogre::Vector3 init_direction, Ogre::String name, int damage)
+		: Explosive_Shot (init_pos, name, damage) {
+			points.push_back(init_pos);
+			points.push_back(init_pos + (init_direction.normalisedCopy() * (SPLINE_FORWARD_INTERP / 2.0f)));
+			points.push_back(init_pos + (init_direction.normalisedCopy() * (SPLINE_FORWARD_INTERP)) + (cross_product * SPLINE_SIDE_INTERP / 2.0f));
+			points.push_back(init_pos + (init_direction.normalisedCopy() * (SPLINE_FORWARD_INTERP)) + (cross_product * SPLINE_SIDE_INTERP));
+	}
+
+	// Destroy The Splinic Shot
+	Splinic_Shot::~Splinic_Shot(void){
+		Weapon_Shot::destoryFiredWeapon();
+		if (explosion) {
+			delete explosion;
+			explosion = nullptr;
+		}
+	}
+
+	// Moves The Shot Accordingly
+	void Splinic_Shot::moveShot(Ogre::Real time) {
+
+		// If The Shot Still Exists
+		if (weapon_shot_node) {
+			lifeCounter += time;
+			float percentProgressed = lifeCounter / LAZER_LIFE_SPAN;
+
+			// Splinic Cofficents
+			float p1w = std::pow((1 - percentProgressed), 3);
+			float p2w = std::pow((1 - percentProgressed), 2) * 3 * percentProgressed;
+			float p3w = std::pow(percentProgressed, 2) * (1 - percentProgressed) * 3;
+			float p4w = std::pow(percentProgressed, 3);
+
+			// Splinic Interpolation
+			Ogre::Vector3 splinic_interp = p1w * points[0] + p2w * points[1] + p3w * points[2] + p4w * points[3];
+			weapon_shot_node->setPosition(splinic_interp);
+
+			if (lifeCounter > EXPLOSION_DELAY && !exploded) {
+				explodeRound();
+			}
+		}
+
+		// If The Explosion Exists Then Progress
+		if (explosion) {
+			explosion->advance(time);
+		}
+	}
 }

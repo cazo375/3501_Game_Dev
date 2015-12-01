@@ -39,6 +39,11 @@ namespace Ship_Space {
 
 		// Helper Functions
 		void clearWeapons(void);
+		void createDefaultShip (Ogre::SceneManager*, Ogre::Vector3);
+		Ogre::Matrix4 RotationMatrix(Ogre::Vector3 axis, Ogre::Radian angle);
+		Ogre::Matrix4 TranslationMatrix(Ogre::Vector3 trans);
+		Ogre::Matrix4 ScalingMatrix(Ogre::Vector3 scale);
+		void AssignTransf(Ogre::SceneNode* node, Ogre::Matrix4 transf);
 	};
 }
 
