@@ -142,7 +142,7 @@ namespace Weapon_Space {
 	}
 
 	void Bomb::initialize_weapon(void) {
-		weapon_damage = 1000;
+		weapon_damage = 10;
 		fireRate = 30;
 		timeRemainingBeforeShot = 0;
 		needsOrientation = false;
@@ -174,7 +174,7 @@ namespace Weapon_Space {
 	}
 
 	void Spline_Bomb_Launcher::initialize_weapon(void) {
-		weapon_damage = 12;
+		weapon_damage = 30;
 		fireRate = 60;
 		timeRemainingBeforeShot = 0;
 		needsOrientation = false;
@@ -230,7 +230,7 @@ namespace Weapon_Space {
 	}
 
 	void Scatter_Shot::initialize_weapon(void) {
-		weapon_damage = 1;
+		weapon_damage = 2;
 		fireRate = 30;
 		timeRemainingBeforeShot = 0;
 		scatter_range = 0.1f;
@@ -270,7 +270,7 @@ namespace Weapon_Space {
 	}
 
 	void Scatter_Bomb_Shot::initialize_weapon(void) {
-		weapon_damage = 10;
+		weapon_damage = 15;
 		fireRate = 70;
 		timeRemainingBeforeShot = 0;
 		scatter_range = 0.5f;

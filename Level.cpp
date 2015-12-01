@@ -48,7 +48,7 @@ namespace Level_Space {
 
 	// Creates A Random Enemy Spray For The Level
 	void Level::createRandomEnemySpray (Ogre::SceneManager* scene_manager) {
-		float nebula_buffer = 300.0f;
+		float nebula_buffer = 100.0f;
 		int numOfEnemiesInLevel = 1 + (levelNum * 2);
 
 		for (int i = 0; i < numOfEnemiesInLevel; i++) {
