@@ -377,7 +377,7 @@ namespace Mesh_Manager_Space {
 		object->setDynamic(false);
 
 		/* Create triangle list for the object */
-		Ogre::String material_name = "ObjectMaterial";
+		Ogre::String material_name = "ShipTexture";
 		object->begin(material_name, Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
 		/* Vertices of a cube */
@@ -514,106 +514,75 @@ namespace Mesh_Manager_Space {
 
 	void Mesh_Manager::createCylinder(Ogre::SceneManager* scene_manager){
 
-		/* Retrieve scene manager and root scene node */
+	int num_of_circle_samples = 1000;
+		float base_radius = 0.5;
+		float cylinder_height = 5.0;
 		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
 
+		/* Create the 3D object */
 		Ogre::ManualObject* object = NULL;
-		Ogre::String object_name = "Cylinder";
-		object = scene_manager->createManualObject(object_name);
+		object = scene_manager->createManualObject("cylinder");
 		object->setDynamic(false);
-		Ogre::String material_name = "ObjectMaterial";
 
+		/* Create triangle list for the object */
+		object->begin("ShipTexture", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
+		/* Add vertices to the object */
+		float theta; // Angles for circles
+		Ogre::Vector3 loop_center;
+		Ogre::Vector3 vertex_position;
+		Ogre::Vector3 vertex_normal;
+		Ogre::ColourValue vertex_color(1.0, 0.0, 0.0);
+		Ogre::ColourValue vertex_color2(0.0, 1.0, 0.0);
 
-		//---Create a cylinder---//
+		// Build our object mesh points, First Layer Will Be The Top Circle
+		for (int i = 0; i < num_of_circle_samples; i++) { 
+			theta = Ogre::Math::TWO_PI*i/num_of_circle_samples;
+			loop_center = Ogre::Vector3(base_radius*cos(theta), 0 - cylinder_height / 2, base_radius*sin(theta));
+			vertex_normal = loop_center - Ogre::Vector3(0, 0 - cylinder_height / 2, 0);
 
-		Ogre::Real origin = 0.0;
-		Ogre::Real height = 5.0;
-		Ogre::Real radius = 0.5;
-		const int cylinder_circle_resolution = 120;
-		int loop_count;
-		Ogre::ColourValue cylinder_colour = Ogre::ColourValue(0.0, 0.2, 1.0);
-		Ogre::Degree theata = Ogre::Degree(0);
-		Ogre::Degree alpha = Ogre::Degree(360/cylinder_circle_resolution);
-		Ogre::Vector3 cylinder_circle_center1;
-		Ogre::Vector3 cylinder_circle_center2;
-		Ogre::Vector3 cylinder_circle1[cylinder_circle_resolution];
-		Ogre::Vector3 cylinder_circle2[cylinder_circle_resolution];
-
-		cylinder_circle_center1.x = 0;
-		cylinder_circle_center1.y = origin - height/2;
-		cylinder_circle_center1.z = 0;
-
-		cylinder_circle_center2.x = 0;
-		cylinder_circle_center2.y = origin + height/2;
-		cylinder_circle_center2.z = 0;
-
-		for(int loop_count = 0; loop_count < cylinder_circle_resolution; loop_count++){
-			theata = theata + alpha;
-			cylinder_circle1[loop_count].x = Ogre::Math::Cos(theata) * radius;
-			cylinder_circle1[loop_count].y = origin - height/2;
-			cylinder_circle1[loop_count].z = Ogre::Math::Sin(theata) * radius;
-
-			cylinder_circle2[loop_count].x = Ogre::Math::Cos(theata) * radius;
-			cylinder_circle2[loop_count].y = origin + height/2;
-			cylinder_circle2[loop_count].z = Ogre::Math::Sin
-				(theata) * radius;
+			object->normal(vertex_normal.normalisedCopy());
+			object->position(loop_center);
+			object->colour(vertex_color);
+			object->textureCoord(i / (num_of_circle_samples * 1.0), 1);
 		}
 
-		//---bottom circle---//
-		object->begin(material_name, Ogre::RenderOperation::OT_TRIANGLE_FAN);
-		object->colour(Ogre::ColourValue(0.0, 0.0, 1.0));
-		object->position(cylinder_circle_center1);
+		// Build our object mesh points, First Layer Will Be The Bottom Circle
+		for (int i = 0; i < num_of_circle_samples; i++) { 
+			theta = Ogre::Math::TWO_PI*i/num_of_circle_samples;
+			loop_center = Ogre::Vector3(base_radius*cos(theta), 0 + cylinder_height / 2,  base_radius*sin(theta));
+			vertex_normal = loop_center - Ogre::Vector3(0, 0 + cylinder_height / 2, 0);
 
-		for(loop_count = 0; loop_count < cylinder_circle_resolution; loop_count++){
-			object->position(cylinder_circle1[loop_count]);
+			object->normal(vertex_normal.normalisedCopy());
+			object->position(loop_center);
+			object->colour(vertex_color2);
+			object->textureCoord(i / (num_of_circle_samples * 1.0), 0);
 		}
 
-		object->position(cylinder_circle1[0]);
-		object-> end();
+		// End Cap Center Points
+		loop_center = Ogre::Vector3(0, 0 - cylinder_height / 2, 0);
+		object->normal(loop_center.normalisedCopy());
+		object->position(loop_center);
+		object->colour(vertex_color);
 
-		//---body of cylinder---//
-		object->begin(material_name, Ogre::RenderOperation::OT_TRIANGLE_LIST);
-		object->colour(Ogre::ColourValue(1.0, 0.0, 0.0));
+		loop_center = Ogre::Vector3(0, 0 + cylinder_height / 2, 0);
+		object->normal(loop_center.normalisedCopy());
+		object->position(loop_center);
+		object->colour(vertex_color2);
 
-		for(loop_count = 0; loop_count < cylinder_circle_resolution-1; loop_count++){
-			object->position(cylinder_circle1[loop_count]);
-			object->position(cylinder_circle2[loop_count]);
-			object->position(cylinder_circle1[loop_count+1]);
-
-			object->position(cylinder_circle1[loop_count+1]);
-			object->position(cylinder_circle2[loop_count]);
-			object->position(cylinder_circle2[loop_count+1]);
+		// Triangleize Our Cylinder Meshing
+		for (int i= 0; i < num_of_circle_samples; i++) {
+			object->triangle(i, num_of_circle_samples + i, (i + 1) % num_of_circle_samples);
+			object->triangle((i + 1) % num_of_circle_samples, num_of_circle_samples + i, num_of_circle_samples + (i + 1) % num_of_circle_samples);
+			object->triangle((i + 1) % num_of_circle_samples, (num_of_circle_samples * 2), i);
+			object->triangle(num_of_circle_samples + i, (num_of_circle_samples * 2) + 1, num_of_circle_samples + (i + 1) % num_of_circle_samples);
 		}
-
-		object->position(cylinder_circle1[loop_count]);
-		object->position(cylinder_circle2[loop_count]);
-		object->position(cylinder_circle1[0]);
-
-		object->position(cylinder_circle1[0]);
-		object->position(cylinder_circle2[loop_count]);
-		object->position(cylinder_circle2[0]);
-
-		object->end();
-
-		//---top circle---//
-		object->begin(material_name, Ogre::RenderOperation::OT_TRIANGLE_FAN);
-		object->colour(Ogre::ColourValue(0.0, 1.0, 0.0));
-		object->position(cylinder_circle_center2);
-
-		for(loop_count = cylinder_circle_resolution-1; loop_count > 0; --loop_count){
-			object->position(cylinder_circle2[loop_count]);
-		}
-
-		object->position(cylinder_circle2[cylinder_circle_resolution-1]);
 
 		/* We finished the object */
 		object->end();
 
 		/* Convert triangle list to a mesh */
-		object->convertToMesh(object_name);
-
-
+		object->convertToMesh("Cylinder");
 
 	}
 
@@ -632,7 +601,7 @@ namespace Mesh_Manager_Space {
 		object->setDynamic(false);
 
 		/* Create triangle list for the object */
-		Ogre::String material_name = "ObjectMaterial";
+		Ogre::String material_name = "ShipTexture";
 		object->begin(material_name, Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
 		/* Vertices of a cube */

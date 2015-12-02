@@ -132,9 +132,9 @@ namespace Enemy_Space {
 				flee(player->getPosition());
 			}
 			else if(STATE == HALT){
-			
+
 			}
-			
+
 			// update clocks
 			weapons[currentWeaponIndex]->advance(time);
 			lifeSpan += 1;
@@ -150,7 +150,7 @@ namespace Enemy_Space {
 		}
 		ship_node->translate(currentDirection * ENEMY_MOVE_SUPER_SPEED);
 	}
-	
+
 	// Enemy charges at the player
 	void Enemy::charge(Ogre::Vector3 playerPos){
 		if(wait<= 0){
@@ -204,10 +204,10 @@ namespace Enemy_Space {
 
 	// Called When Pursing Player
 	void Enemy::pursue(Ogre::Vector3 playerPos){
-			Ogre::Vector3 newDirection = GetVectorFromTwoPoints(playerPos, ship_node->getPosition());
-			newDirection.normalise();
-			currentDirection = newDirection;
-			RotateShip(currentDirection);
+		Ogre::Vector3 newDirection = GetVectorFromTwoPoints(playerPos, ship_node->getPosition());
+		newDirection.normalise();
+		currentDirection = newDirection;
+		RotateShip(currentDirection);
 		if(ENEMY_TYPE == BOSS){
 			ship_node->translate(currentDirection * ENEMY_MOVE_SLOW_SPEED);
 		}
@@ -361,6 +361,8 @@ namespace Enemy_Space {
 		Ogre::String part_name;
 
 		entity = scene_manager->createEntity(entity_name, "cube.mesh");
+		entity->setMaterialName("ShipTexture");
+
 		ship_node = root_scene_node->createChildSceneNode(entity_name);
 		ship_node->attachObject(entity);
 
@@ -371,6 +373,7 @@ namespace Enemy_Space {
 
 		part_name = "rightarm2";
 		entity = scene_manager->createEntity(entity_name + part_name, "cube.mesh");  //mesh name on the right, entity on the left
+		entity->setMaterialName("ShipTexture");
 		Ogre::SceneNode* rightArm2 = ship_node->createChildSceneNode(entity_name + part_name);
 		rightArm2->attachObject(entity);
 
@@ -381,6 +384,7 @@ namespace Enemy_Space {
 
 		part_name = "leftarm2";
 		entity = scene_manager->createEntity(entity_name + part_name, "cube.mesh");  //mesh name on the right, entity on the left
+		entity->setMaterialName("ShipTexture");
 		Ogre::SceneNode* leftArm2 = ship_node->createChildSceneNode(entity_name + part_name);
 		leftArm2->attachObject(entity);
 
@@ -518,6 +522,7 @@ namespace Enemy_Space {
 
 		part_name = "bodyone4";
 		entity = scene_manager->createEntity(entity_name + part_name, "cube.mesh");
+		entity->setMaterialName("ShipTexture");
 		ship_node = root_scene_node->createChildSceneNode(entity_name + part_name);
 		ship_node->attachObject(entity);
 
@@ -527,6 +532,7 @@ namespace Enemy_Space {
 
 		part_name = "bodytwo4";
 		entity = scene_manager->createEntity(entity_name + part_name, "cube.mesh");
+		entity->setMaterialName("ShipTexture");
 		Ogre::SceneNode* shipbody2 = ship_node->createChildSceneNode(entity_name + part_name);
 		shipbody2->attachObject(entity);
 
@@ -643,9 +649,10 @@ namespace Enemy_Space {
 	}
 
 	// Create Our Fifth Type Of Enemy
-		void Enemy::CreateEnemy5 (Ogre::SceneManager* manager, Ogre::Vector3 initalPosition) {
+	void Enemy::CreateEnemy5 (Ogre::SceneManager* manager, Ogre::Vector3 initalPosition) {
 		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
 		Ogre::Entity *entity = scene_manager->createEntity("test" + enemy_num++, "cube.mesh");
+		entity->setMaterialName("ShipTexture");
 
 		ship_node = root_scene_node->createChildSceneNode(entity_name);
 		ship_node->attachObject(entity);
