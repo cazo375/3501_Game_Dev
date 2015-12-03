@@ -93,6 +93,8 @@ namespace Enemy_Space {
 		void buildPointGraph(void);
 		void cycleGraphPointIfNeeded(void);
 		int currentPathIndex;
+		Ogre::Vector3 initialDir;
+
 
 		int STATE;
 		int ENEMY_TYPE;

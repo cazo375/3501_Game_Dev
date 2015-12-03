@@ -16,7 +16,8 @@ namespace Enemy_Space {
 	// Enemy Constructor
 	Enemy::Enemy (Ogre::SceneManager* scene_man, Ogre::Vector3 initalPosition, int enemy_rep) : scene_manager(scene_man), alive(true), original_position(initalPosition){
 		shot = nullptr;
-		currentDirection = Ogre::Vector3(0.0,0.0,0.0);
+		currentDirection = Ogre::Vector3(0.0,0.0,-1.0);
+		initialDir = currentDirection;
 		entity_name = "enemey" + Ogre::StringConverter::toString(enemy_num++);
 		createEnemyByNum(scene_man, initalPosition, enemy_rep);
 		buildPointGraph();
@@ -207,7 +208,7 @@ namespace Enemy_Space {
 		Ogre::Vector3 newDirection = GetVectorFromTwoPoints(playerPos, ship_node->getPosition());
 		newDirection.normalise();
 		currentDirection = newDirection;
-		RotateShip(currentDirection);
+		RotateShip(playerPos);
 		if(ENEMY_TYPE == BOSS){
 			ship_node->translate(currentDirection * ENEMY_MOVE_SLOW_SPEED);
 		}
@@ -670,7 +671,7 @@ namespace Enemy_Space {
 
 	// Rotate enemy ship using an orbit transformation
 	void Enemy::RotateShip(Ogre::Vector3 target){
-		ship_node->lookAt(target, Ogre::Node::TS_WORLD, currentDirection);
+		ship_node->lookAt(target, Ogre::Node::TS_WORLD, initialDir);
 	}
 
 	Ogre::Vector3 Enemy::toOrigin(void){

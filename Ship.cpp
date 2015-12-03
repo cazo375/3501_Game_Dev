@@ -42,6 +42,7 @@ namespace Ship_Space {
 		Ogre::String entity_name = "base_ship" + Ogre::StringConverter::toString(ship_num++);
 
 		entity = scene_manager->createEntity(entity_name, "cube.mesh");
+		entity->setMaterialName("ShipTexture");
 		ship_node = root_scene_node->createChildSceneNode(entity_name);
 		ship_node->attachObject(entity);
 
@@ -52,6 +53,7 @@ namespace Ship_Space {
 
 		part_name = "rightarm2";
 		entity = scene_manager->createEntity(entity_name + part_name, "cube.mesh");  //mesh name on the right, entity on the left
+		entity->setMaterialName("ShipTexture");
 		Ogre::SceneNode* rightArm2 = ship_node->createChildSceneNode(entity_name + part_name);
 		rightArm2->attachObject(entity);
 
@@ -62,6 +64,7 @@ namespace Ship_Space {
 
 		part_name = "leftarm2";
 		entity = scene_manager->createEntity(entity_name + part_name, "cube.mesh");  //mesh name on the right, entity on the left
+		entity->setMaterialName("ShipTexture");
 		Ogre::SceneNode* leftArm2 = ship_node->createChildSceneNode(entity_name + part_name);
 		leftArm2->attachObject(entity);
 

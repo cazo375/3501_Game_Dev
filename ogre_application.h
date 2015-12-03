@@ -75,9 +75,6 @@ namespace ogre_application {
 		/* Camera demo */
 		void CreatePlanetField (void);
 		void TransformPlanetField (void);
-		void CreateEnemy1 (void);
-		void CreateEnemy2 (void);
-		void CreateEnemy3 (void);
 
 		/* Level Methods*/
 		void startGame(void);
