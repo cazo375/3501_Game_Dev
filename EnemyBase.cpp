@@ -35,7 +35,7 @@ namespace Enemy_Space {
 		}
 		else if(enemy_rep == 2){
 			ENEMY_TYPE = SCOUT;
-			STATE = INTERCEPT;
+			STATE = HALT;
 			boundingSphereRadius = 7;
 			health = 20;
 			currentWeaponIndex = 0;
@@ -64,40 +64,50 @@ namespace Enemy_Space {
 		if (ship_node) {
 
 			// Enemy State Scripts
-			if(ENEMY_TYPE == PEON){
-				if(lifeSpan > sleep){
-					maintainFiringRange(player->getPosition());
-				}
-				else if(!inHostileRange(player->getPosition())){
-					STATE = PROWL;
-				}
-				else if(inHostileRange(player->getPosition())){
-					STATE = INTIMIDATE;	
-					if(GetMagnatude(GetVectorFromTwoPoints(player->getPosition(), ship_node->getPosition())) <= PLAYER_HOSTILE_RADIUS/3){
-						STATE = FLEE;
-					}
-				}
-				spotPlayer(player->getPosition());
-			}
-
-			else if(ENEMY_TYPE == SCOUT){
-				// TO DO : inplement scout ai
-				STATE = PURSUE;
-			}
-
-			if(ENEMY_TYPE == BOSS){
-				if( ((int)(lifeSpan) % 1000) == 0 ){
-					Ogre::Vector3 newDirection = GetVectorFromTwoPoints(player->getPosition(), ship_node->getPosition());
-					newDirection.normalise();
-					currentDirection = newDirection;
-					RotateShip(currentDirection);
-					wait = 250;
-					STATE = CHARGE;
-				}
-			}
-
 			if(!isInArea()){
 				STATE = RETURN;
+			} else {
+				if(ENEMY_TYPE == PEON){
+					if(GetMagnatude(GetVectorFromTwoPoints(player->getPosition(), ship_node->getPosition())) <= SAFE_DISTANCE){
+							STATE = FLEE;
+					}
+					else if(inHostileRange(player->getPosition())){
+						STATE = INTIMIDATE;	
+					}
+					if(lifeSpan > sleep){
+						if(!inHostileRange(player->getPosition())){
+							STATE = PURSUE;
+						}
+					}
+					else if(!inHostileRange(player->getPosition())){
+						STATE = PROWL;
+						spotPlayer(player->getPosition());
+					}
+				}
+
+				else if(ENEMY_TYPE == SCOUT){
+					if(GetMagnatude(GetVectorFromTwoPoints(player->getPosition(), ship_node->getPosition())) <= SAFE_DISTANCE){
+							STATE = FLEE;
+					}
+					else if(inHostileRange(player->getPosition())){
+						STATE = HALT;	
+					}
+					else if(!inHostileRange(player->getPosition())){
+						STATE = PURSUE;
+					}
+
+				}
+
+				if(ENEMY_TYPE == BOSS){
+					if( ((int)(lifeSpan) % 1000) == 0 ){
+						Ogre::Vector3 newDirection = GetVectorFromTwoPoints(player->getPosition(), ship_node->getPosition());
+						newDirection.normalise();
+						currentDirection = newDirection;
+						RotateShip(currentDirection);
+						wait = 250;
+						STATE = CHARGE;
+					}
+				}
 			}
 
 
@@ -116,9 +126,6 @@ namespace Enemy_Space {
 			}
 			else if(STATE == CHARGE){
 				charge(player->getPosition());
-			}
-			else if(STATE == INTERCEPT){
-				intercept(player);
 			}
 			else if(STATE == INTIMIDATE){
 				intimidate(player->getPosition());
@@ -160,16 +167,6 @@ namespace Enemy_Space {
 		ship_node->translate(currentDirection * ENEMY_MOVE_SUPER_SPEED);
 	}
 
-	// Enemy flys ahead of player
-	void Enemy::intercept(Player_Space::Player* player){
-		if(wait <= 0){
-			currentDirection = player->getPosition().crossProduct(player->getDirection()) * PLAYER_HOSTILE_RADIUS;
-			currentDirection.normalise();
-			RotateShip(currentDirection);
-			wait = 200;
-		}
-		ship_node->translate(currentDirection * ENEMY_MOVE_SPEED);
-	}
 
 	// Enemy flys by the player
 	void Enemy::intimidate(Ogre::Vector3 playerPos){
@@ -211,6 +208,8 @@ namespace Enemy_Space {
 		RotateShip(playerPos);
 		if(ENEMY_TYPE == BOSS){
 			ship_node->translate(currentDirection * ENEMY_MOVE_SLOW_SPEED);
+		}else if(ENEMY_TYPE == SCOUT){
+			ship_node->translate(currentDirection * ENEMY_MOVE_FAST_SPEED);
 		}
 		else {
 			ship_node->translate(currentDirection * ENEMY_MOVE_SPEED);
@@ -227,19 +226,6 @@ namespace Enemy_Space {
 
 	}
 
-	// Have The Enemy Maintain The Firing Range
-	void Enemy::maintainFiringRange(Ogre::Vector3 playerPos){
-		float distance = GetMagnatude(GetVectorFromTwoPoints(playerPos, ship_node->getPosition()));
-		if(distance <= PLAYER_HOSTILE_RADIUS/4 ){
-			STATE == FLEE;
-		}
-		else if(distance >= PLAYER_HOSTILE_RADIUS){
-			STATE = PURSUE;
-		}
-		else {
-			STATE = HALT;
-		}
-	}
 
 
 	// Cycles To The Next Graph Point

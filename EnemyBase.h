@@ -20,11 +20,12 @@ Our Generic Enemy Class. Holds The Data That Is Relevant To The Enemy.
 #define ENEMY_MOVE_SLOW_SPEED 0.7f
 #define ENEMY_MOVE_SPEED 1.0f
 #define PLAYER_HOSTILE_RADIUS 120.0f
+#define SAFE_DISTANCE 50.0f
 #define NUM_OF_ENEMY_TYPES 3
 
 namespace Enemy_Space {
 
-	enum Ai_State {PROWL, PURSUE, IDLE, FLEE, HALT, INTIMIDATE, INTERCEPT, CHARGE, RETURN};
+	enum Ai_State {PROWL, PURSUE, IDLE, FLEE, HALT, INTIMIDATE, CHARGE, RETURN};
 	enum enemy_type{PEON, SCOUT, BOSS};
 
 
@@ -45,10 +46,8 @@ namespace Enemy_Space {
 		void spotPlayer(Ogre::Vector3 playerPos);
 		void returnToBattle(void);
 		void charge(Ogre::Vector3 playerPos);
-		void intercept(Player_Space::Player* player);
 		void intimidate(Ogre::Vector3 playerPos);
 		void shouldFireShot (Player_Space::Player*);
-		void maintainFiringRange(Ogre::Vector3 playerPos);
 		void advance (Player_Space::Player* player, Ogre::Real);				
 
 		// Getters And Setters
