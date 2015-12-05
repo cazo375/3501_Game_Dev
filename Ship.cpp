@@ -95,6 +95,75 @@ namespace Ship_Space {
 		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(1.25, 0.0, -2.5))) * transformations;
 		AssignTransf(leftCannon, transformations);
 
+		part_name = "dashboard";
+		entity = scene_manager->createEntity(entity_name + part_name, "cube.mesh");
+		entity->setMaterialName("DashBoard");
+		Ogre::SceneNode* dashboard = ship_node->createChildSceneNode(entity_name + part_name);
+		dashboard->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(2.0, 0.35, 0.05));
+		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(-1.0, 0.0, 0.0), Ogre::Radian(Ogre::Math::PI/4))) * transformations;
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(0.0, -0.65, -2.0))) * transformations;
+		AssignTransf(dashboard, transformations);
+
+		part_name = "windowParamright";
+		entity = scene_manager->createEntity(entity_name + part_name, "cube.mesh");
+		entity->setMaterialName("ShipTexture");
+		Ogre::SceneNode* windowParamright = ship_node->createChildSceneNode(entity_name + part_name);
+		windowParamright->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.10, 1.5, 0.10));
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(1.1, 0.0, -2.0))) * transformations;
+		AssignTransf(windowParamright, transformations);
+
+		part_name = "windowParamleft";
+		entity = scene_manager->createEntity(entity_name + part_name, "cube.mesh");
+		entity->setMaterialName("ShipTexture");
+		Ogre::SceneNode* windowParamleft = ship_node->createChildSceneNode(entity_name + part_name);
+		windowParamleft->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.10, 1.5, 0.10));
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(-1.1, 0.0, -2.0))) * transformations;
+		AssignTransf(windowParamleft, transformations);
+
+		part_name = "windowParamtop";
+		entity = scene_manager->createEntity(entity_name + part_name, "cube.mesh");
+		entity->setMaterialName("ShipTexture");
+		Ogre::SceneNode* windowParamtop = ship_node->createChildSceneNode(entity_name + part_name);
+		windowParamtop->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(1.5, 0.10, 0.10));
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(0.0, 0.65, -1.5))) * transformations;
+		AssignTransf(windowParamtop, transformations);
+		
+		part_name = "windowtopright";
+		entity = scene_manager->createEntity(entity_name + part_name, "cube.mesh");
+		entity->setMaterialName("ShipTexture");
+		Ogre::SceneNode* windowtopright = ship_node->createChildSceneNode(entity_name + part_name);
+		windowtopright->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.2, 0.3, 0.10));
+		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, 1.0), Ogre::Radian(Ogre::Math::PI/4))) * transformations;
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(0.85, 0.6, -1.5))) * transformations;
+		AssignTransf(windowtopright, transformations);
+
+		part_name = "windowtopleft";
+		entity = scene_manager->createEntity(entity_name + part_name, "cube.mesh");
+		entity->setMaterialName("ShipTexture");
+		Ogre::SceneNode* windowtopleft = ship_node->createChildSceneNode(entity_name + part_name);
+		windowtopleft->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.2, 0.3, 0.10));
+		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, -1.0), Ogre::Radian(Ogre::Math::PI/4))) * transformations;
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(-0.85, 0.6, -1.5))) * transformations;
+		AssignTransf(windowtopleft, transformations);
+
 	}
 
 	// Create a rotation matrix based on an angle and an axis

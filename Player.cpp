@@ -12,6 +12,7 @@ namespace Player_Space {
 		weaponPositionToFire = 0;
 		health = PLAYER_STARTING_HEALTH;
 		currentWeaponIndex = 0;
+		thirdP = false;
 
 		// Pointers
 		shot = nullptr;
@@ -35,17 +36,25 @@ namespace Player_Space {
 
 	// Advances the player by a frame
 	void Player::advance (Ogre::Real time) {
-		player_camera->setPosition(player_camera->getPosition() + player_camera->getDirection()*currentForwardThrust);
-		player_camera->setPosition(player_camera->getPosition() + player_camera->getUp()*currentUpDownThrust);
-		player_camera->setPosition(player_camera->getPosition() + player_camera->getRight()*currentSideThrust);
-		ship_node->setPosition(player_camera->getPosition());
-		weapons[currentWeaponIndex]->advance(time);
+		
 
+		  ship_node->setPosition(ship_node->getPosition() + player_camera->getDirection()*currentForwardThrust);
+		  ship_node->setPosition(ship_node->getPosition() + player_camera->getUp()*currentUpDownThrust);
+		  ship_node->setPosition(ship_node->getPosition() + player_camera->getRight()*currentSideThrust);
+		  if(thirdP == true){
+			player_camera->setPosition(ship_node->getPosition() + Ogre::Vector3(0.0,5.0,10.0));
+		  } else {
+		  player_camera->setPosition(ship_node->getPosition());
+		  }
+		
+		weapons[currentWeaponIndex]->advance(time);
+		
 		if (weaponTimer < WEAPON_SWITCH_DELAY) {
 			weaponTimer += time;
 		}
 
 		moveLazer();
+
 	}
 
 	// Apply Our Quaterion Rotations To What We Need
@@ -59,7 +68,12 @@ namespace Player_Space {
 		if (keyboard_->isKeyDown (OIS::KC_G)) {
 			initialize();
 		}
-
+		if (keyboard_->isKeyDown(OIS::KC_P)){
+			thirdP = true;
+		}
+		if (keyboard_->isKeyDown(OIS::KC_O)){
+			thirdP = false;
+		}
 		/* Camera translation */
 		if (keyboard_->isKeyDown(OIS::KC_W)){
 			currentForwardThrust = std::min (currentForwardThrust + ACCELERATION_STEP, MAX_FORWARD_THRUST);

@@ -86,6 +86,8 @@ namespace Player_Space {
 		float currentYawChange;			// Current Yaw Thruster
 		float currentRollChange;		// Current Roll Thruster
 
+		bool thirdP;                    //switch for third person
+
 		// Weapon Variables
 		float weaponTimer;
 
