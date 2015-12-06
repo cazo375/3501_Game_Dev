@@ -16,7 +16,7 @@ namespace Ship_Space {
 	class Ship {
 	public:
 		// Collision Mechancis
-		Ogre::Vector3 getPosition(void);
+		virtual Ogre::Vector3 getPosition(void);
 
 		// Projectile Mechanics
 		void moveLazer (void);

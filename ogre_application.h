@@ -119,6 +119,8 @@ namespace ogre_application {
 
 		// Main Ogre window
 		Ogre::RenderWindow* ogre_window_;
+		Ogre::Viewport* viewport;
+		void initCamera (Ogre::Camera*);
 
 		/* Animation-related variables */
 		bool animating_; // Whether animation is on or off

@@ -1,5 +1,5 @@
 #include "ogre_application.h"
-#include "path_config.h"
+#include "bin/path_config.h"
 
 /*
 this is a test//delete me
@@ -57,6 +57,7 @@ namespace ogre_application {
 	float camera_near_clip_distance_g = 0.1;
 	float camera_far_clip_distance_g = 5000.0;
 	Ogre::Vector3 camera_position_g(0.0, 0.0, 800.0);
+	Ogre::Vector3 third_person_camera_position_g(0.0, 3.0, 810.0);
 	Ogre::Vector3 targeting_cube_pos (0.0, 0.0, 750.0);
 	Ogre::Vector3 camera_look_at_g(0.0, 0.0, 0.0);
 	Ogre::Vector3 camera_up_g(0.0, 1.0, 0.0);
@@ -249,17 +250,16 @@ namespace ogre_application {
 			Ogre::Camera* camera = scene_manager->createCamera("MyCamera");
 			Ogre::SceneNode* camera_scene_node = root_scene_node->createChildSceneNode("MyCameraNode");
 			camera_scene_node->attachObject(camera);
+			initCamera(camera);
 
-			camera->setNearClipDistance(camera_near_clip_distance_g);
-			camera->setFarClipDistance(camera_far_clip_distance_g); 
-
-			camera->setPosition(camera_position_g);
-			camera->lookAt(camera_look_at_g);
-			camera->setFixedYawAxis(true, camera_up_g);
+			Ogre::Camera* camera2 = scene_manager->createCamera("MyThirdPersonCamera");
+			Ogre::SceneNode* camera_scene_node2 = root_scene_node->createChildSceneNode("MyThirdPersonCameraNode");
+			camera_scene_node->attachObject(camera2);
+			initCamera(camera2);
+			camera2->setPosition(third_person_camera_position_g);
 
 			/* Create viewport */
-			Ogre::Viewport *viewport = ogre_window_->addViewport(camera, viewport_z_order_g, viewport_left_g, viewport_top_g, viewport_width_g, viewport_height_g);
-
+			viewport = ogre_window_->addViewport(camera, viewport_z_order_g, viewport_left_g, viewport_top_g, viewport_width_g, viewport_height_g);
 			viewport->setAutoUpdated(true);
 			viewport->setBackgroundColour(viewport_background_color_g);
 
@@ -275,6 +275,13 @@ namespace ogre_application {
 		}
 	}
 
+	void OgreApplication::initCamera (Ogre::Camera* camera) {
+		camera->setNearClipDistance(camera_near_clip_distance_g);
+		camera->setFarClipDistance(camera_far_clip_distance_g); 
+		camera->setPosition(camera_position_g);
+		camera->lookAt(camera_look_at_g);
+		camera->setFixedYawAxis(true, camera_up_g);
+	}
 
 	void OgreApplication::InitEvents(void){
 
@@ -601,7 +608,7 @@ namespace ogre_application {
 			for (; iter != iter_end; iter++){
 				Planet_Space::Planet* nextPlanet = (*iter);
 				if (Collision_Manager::CollisionManager::runBoundingSphereCollision (nextPlanet->getPlanetPostion(), player->getPosition(), nextPlanet->getPlanetRadius(), player->getBoundingCircleRadius())) {
-					player->resetPosition();
+					//player->resetPosition();
 					break;
 				}
 			}
@@ -650,10 +657,14 @@ namespace ogre_application {
 	void OgreApplication::startGame(void) {
 		Ogre::SceneManager* scene_manager = ogre_root_->getSceneManager("MySceneManager");
 		Ogre::Camera* camera = scene_manager->getCamera("MyCamera");
+		Ogre::Camera* thirdPersoncamera = scene_manager->getCamera("MyThirdPersonCamera");
+
+		std::vector<Ogre::Camera*> cameras;
+		cameras.push_back(camera);
+		cameras.push_back(thirdPersoncamera);
 
 		level_manager.cycleNextLevel(scene_manager);
-
-		player = new Player_Space::Player (scene_manager, camera);
+		player = new Player_Space::Player (scene_manager, viewport, cameras);
 		player->createPlayer();
 		player->updatePlayerUI(level_manager.getCurrentLevelObj()->getEnemies().size(), level_manager.getCurrentLevel());
 	}

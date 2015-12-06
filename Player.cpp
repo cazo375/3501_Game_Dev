@@ -3,22 +3,29 @@
 namespace Player_Space {		
 
 	// Player Constructor
-	Player::Player(Ogre::SceneManager* manager, Ogre::Camera* camera) {
+	Player::Player(Ogre::SceneManager* manager, Ogre::Viewport* port, std::vector<Ogre::Camera*> cameras) {
 		scene_manager = manager;
-		player_camera = camera;
-		initialPosition = camera->getPosition();
-		initialOrientation = camera->getOrientation();
+		viewport = port;
+		player_cameras = cameras;
 		weaponTimer = 0;
 		weaponPositionToFire = 0;
 		health = PLAYER_STARTING_HEALTH;
 		currentWeaponIndex = 0;
-		thirdP = false;
+		cameraToDisplay = -1;
+		current_camera_switch_delay = CAMERA_SWITCH_DELAY;
 
 		// Pointers
 		shot = nullptr;
 		current_weapon_text = nullptr;
 		amount_of_enemies_text = nullptr;
 		current_player_health_text = nullptr;
+		ship_node = nullptr;
+		camera_node = nullptr;
+
+		// Setup our cameras
+		switchToNextCamera();
+		initialPosition = player_cameras[cameraToDisplay]->getPosition();
+		initialOrientation = player_cameras[cameraToDisplay]->getOrientation();
 
 		// Weapon Bank
 		weapons.push_back(new Weapon_Space::Lazer("player"));
@@ -34,23 +41,52 @@ namespace Player_Space {
 	Player::~Player() {
 	}
 
+	// Switches To The Next Camera When Called
+	void Player::switchToNextCamera(void) {
+		if (current_camera_switch_delay >= CAMERA_SWITCH_DELAY) {
+			if (++cameraToDisplay >= player_cameras.size()) {
+				cameraToDisplay = 0;
+			}
+			current_camera_switch_delay = 0;
+			viewport->setCamera(player_cameras[cameraToDisplay]);
+
+			if (camera_node && ship_node) {
+				// Now We Need To Setup Our Ship
+				Ogre::Vector3 variance_from_camera;
+				if (cameraToDisplay == 0) {
+					variance_from_camera = Ogre::Vector3(0.0, 0.0, 0.0);
+				} else {
+					variance_from_camera =  player_cameras[0]->getPosition() - player_cameras[cameraToDisplay]->getPosition();
+				}
+
+				// Set our Position Properly
+				camera_node->setPosition(player_cameras[cameraToDisplay]->getPosition());
+				ship_node->setPosition(Ogre::Vector3(0.0, 0.0, 0.0));
+				ship_node->translate(variance_from_camera);
+			}
+		}
+	}
+
 	// Advances the player by a frame
 	void Player::advance (Ogre::Real time) {
-		
+		camera_node->translate(player_cameras[cameraToDisplay]->getDirection()*currentForwardThrust);
+		camera_node->translate(player_cameras[cameraToDisplay]->getUp()*currentUpDownThrust);
+		camera_node->translate(player_cameras[cameraToDisplay]->getRight()*currentSideThrust);
 
-		  ship_node->setPosition(ship_node->getPosition() + player_camera->getDirection()*currentForwardThrust);
-		  ship_node->setPosition(ship_node->getPosition() + player_camera->getUp()*currentUpDownThrust);
-		  ship_node->setPosition(ship_node->getPosition() + player_camera->getRight()*currentSideThrust);
-		  if(thirdP == true){
-			player_camera->setPosition(ship_node->getPosition() + Ogre::Vector3(0.0,5.0,10.0));
-		  } else {
-		  player_camera->setPosition(ship_node->getPosition());
-		  }
-		
+		for (int i = 0; i < player_cameras.size(); i++) {
+			player_cameras[i]->setPosition(player_cameras[i]->getPosition() + player_cameras[cameraToDisplay]->getDirection()*currentForwardThrust);
+			player_cameras[i]->setPosition(player_cameras[i]->getPosition() + player_cameras[cameraToDisplay]->getUp()*currentUpDownThrust);
+			player_cameras[i]->setPosition(player_cameras[i]->getPosition() + player_cameras[cameraToDisplay]->getRight()*currentSideThrust);
+		}
+
 		weapons[currentWeaponIndex]->advance(time);
-		
+
 		if (weaponTimer < WEAPON_SWITCH_DELAY) {
 			weaponTimer += time;
+		}
+
+		if (current_camera_switch_delay < CAMERA_SWITCH_DELAY) {
+			current_camera_switch_delay += time;
 		}
 
 		moveLazer();
@@ -59,8 +95,10 @@ namespace Player_Space {
 
 	// Apply Our Quaterion Rotations To What We Need
 	void Player::applyRotation(Ogre::Quaternion& q) {
-		player_camera->rotate(q);
-		ship_node->setOrientation(player_camera->getOrientation());
+		for (int i = 0; i < player_cameras.size(); i++) {
+			player_cameras[i]->rotate(q);
+		}
+		camera_node->setOrientation(player_cameras[cameraToDisplay]->getOrientation());
 	}
 
 	// Applys A Captured Key Event To This Player
@@ -69,10 +107,7 @@ namespace Player_Space {
 			initialize();
 		}
 		if (keyboard_->isKeyDown(OIS::KC_P)){
-			thirdP = true;
-		}
-		if (keyboard_->isKeyDown(OIS::KC_O)){
-			thirdP = false;
+			switchToNextCamera();
 		}
 		/* Camera translation */
 		if (keyboard_->isKeyDown(OIS::KC_W)){
@@ -100,27 +135,27 @@ namespace Player_Space {
 		}
 
 		if (keyboard_->isKeyDown(OIS::KC_UP)){
-			applyRotation(Ogre::Quaternion(Ogre::Degree(ROTATION_THRUST), player_camera->getRight()));
+			applyRotation(Ogre::Quaternion(Ogre::Degree(ROTATION_THRUST), player_cameras[cameraToDisplay]->getRight()));
 		}
 
 		if (keyboard_->isKeyDown(OIS::KC_DOWN)){
-			applyRotation(Ogre::Quaternion(Ogre::Degree(-ROTATION_THRUST), player_camera->getRight()));
+			applyRotation(Ogre::Quaternion(Ogre::Degree(-ROTATION_THRUST), player_cameras[cameraToDisplay]->getRight()));
 		}
 
 		if (keyboard_->isKeyDown(OIS::KC_LEFT)){
-			applyRotation(Ogre::Quaternion(Ogre::Degree(ROTATION_THRUST), player_camera->getUp()));
+			applyRotation(Ogre::Quaternion(Ogre::Degree(ROTATION_THRUST), player_cameras[cameraToDisplay]->getUp()));
 		}
 
 		if (keyboard_->isKeyDown(OIS::KC_RIGHT)){
-			applyRotation(Ogre::Quaternion(Ogre::Degree(-ROTATION_THRUST), player_camera->getUp()));
+			applyRotation(Ogre::Quaternion(Ogre::Degree(-ROTATION_THRUST), player_cameras[cameraToDisplay]->getUp()));
 		}
 
 		if (keyboard_->isKeyDown(OIS::KC_Z)){
-			applyRotation(Ogre::Quaternion(Ogre::Degree(-ROTATION_THRUST), player_camera->getDirection()));
+			applyRotation(Ogre::Quaternion(Ogre::Degree(-ROTATION_THRUST), player_cameras[cameraToDisplay]->getDirection()));
 		}
 
 		if (keyboard_->isKeyDown(OIS::KC_X)){
-			applyRotation(Ogre::Quaternion(Ogre::Degree(ROTATION_THRUST), player_camera->getDirection()));
+			applyRotation(Ogre::Quaternion(Ogre::Degree(ROTATION_THRUST), player_cameras[cameraToDisplay]->getDirection()));
 		}
 
 		if (keyboard_->isKeyDown (OIS::KC_F)) {
@@ -170,28 +205,33 @@ namespace Player_Space {
 		Ogre::Entity *entity = scene_manager->createEntity("player_target.cube", "cube.mesh");
 		entity->setMaterialName("CrosshairMaterial");
 
-		createDefaultShip(scene_manager, player_camera->getPosition());
-		ship_node->setPosition(player_camera->getPosition());
+		createPlayerShip();
+		camera_node->setPosition(player_cameras[cameraToDisplay]->getPosition());
 
 		targetCube = ship_node->createChildSceneNode("player_target.cube");
 		targetCube->attachObject(entity);
 		targetCube->translate(0.0f, 0.0f, -30.0f);
 
+		std::cout << "Target Cube: " << targetCube ->_getDerivedPosition() << std::endl; 
+
 		// Create Out Weapon Placements
-		Ogre::Vector3 gunBase = player_camera->getPosition();
+		Ogre::Vector3 gunBase = player_cameras[cameraToDisplay]->getPosition();
 		gunPlacements.push_back(Ogre::Vector3(-1.25f, 0, 4.0f));
 		gunPlacements.push_back(Ogre::Vector3(1.25f, 0, 4.0f));
 	}
 
 	// Fires The Weapon If Hasn't Been Fired
 	void Player::fireShot (void) {
+
+		Ogre::Vector3 weapon_spawn_pos = ship_node->_getDerivedPosition() + (targetCube->_getDerivedPosition() -ship_node->_getDerivedPosition()).normalisedCopy() * 4.0;
+
 		// Fire The Weapon
 		if (weapons[currentWeaponIndex]->getOrientationNeeded()) {
-			weapons[currentWeaponIndex]->fire_weapon(scene_manager, ship_node->getPosition(), 
-				(targetCube->_getDerivedPosition() - ship_node->getPosition()).normalisedCopy(), ship_node->getOrientation());
+			weapons[currentWeaponIndex]->fire_weapon(scene_manager, weapon_spawn_pos, 
+				(targetCube->_getDerivedPosition() - ship_node->_getDerivedPosition()).normalisedCopy(), ship_node->getOrientation());
 		}
 		else {
-			weapons[currentWeaponIndex]->fire_weapon(scene_manager, ship_node->getPosition(), (targetCube->_getDerivedPosition() -ship_node->getPosition()).normalisedCopy(), getPlayerUpVector());
+			weapons[currentWeaponIndex]->fire_weapon(scene_manager, weapon_spawn_pos, (targetCube->_getDerivedPosition() -ship_node->_getDerivedPosition()).normalisedCopy(), getPlayerUpVector());
 		}
 	}
 
@@ -201,11 +241,11 @@ namespace Player_Space {
 
 	// Resets The Player When Called
 	void Player::resetPosition(void) {
-		ship_node->setPosition(initialPosition);
-		ship_node->setOrientation(initialOrientation);
+		camera_node->setPosition(initialPosition);
+		camera_node->setOrientation(initialOrientation);
 
-		player_camera->setPosition(initialPosition);
-		player_camera->setOrientation(initialOrientation);
+		player_cameras[cameraToDisplay]->setPosition(initialPosition);
+		player_cameras[cameraToDisplay]->setOrientation(initialOrientation);
 
 		health = PLAYER_STARTING_HEALTH;
 
@@ -292,14 +332,154 @@ namespace Player_Space {
 
 	/*------------------------------------------------------------- Getters And Setters ------------------------------------------------------------------*/
 	Ogre::Vector3 Player::getPlayerDirection() {
-		return (targetCube->_getDerivedPosition() - ship_node->getPosition()).normalisedCopy();
+		return (targetCube->_getDerivedPosition() - ship_node->_getDerivedPosition()).normalisedCopy();
 	}
 
 	Ogre::Vector3 Player::getPlayerUpVector() {
-		return player_camera->getUp();
+		return player_cameras[cameraToDisplay]->getUp();
 	}
 
 	Ogre::Vector3 Player::getDirection(){
-		return player_camera->getDirection();
+		return player_cameras[cameraToDisplay]->getDirection();
+	}
+
+	Ogre::Vector3 Player::getPosition() {
+		return ship_node->_getDerivedPosition();
+	}
+
+	/*-------------------------------------------------------- Ship Creation Functions --------------------------------------------------------------------*/
+	void Player::createPlayerShip(void) {
+		Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
+		Ogre::Entity *entity;
+		Ogre::Matrix4 transformations;
+		Ogre::String part_name;
+		Ogre::String entity_name = "base_ship" + Ogre::StringConverter::toString("player");
+
+		// First Create Our Camera Node
+		camera_node = root_scene_node->createChildSceneNode("player.camera.node");
+
+		// Now Create The Rest Of Ship
+		entity = scene_manager->createEntity(entity_name, "cube.mesh");
+		entity->setMaterialName("ShipTexture");
+		ship_node = camera_node->createChildSceneNode(entity_name);
+		ship_node->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(2.0, 2.0, 2.0));
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(0.0, 0.0, 0.0))) * transformations;
+		AssignTransf(ship_node, transformations);
+
+		part_name = "rightarm2";
+		entity = scene_manager->createEntity(entity_name + part_name, "cube.mesh");  //mesh name on the right, entity on the left
+		entity->setMaterialName("ShipTexture");
+		Ogre::SceneNode* rightArm2 = ship_node->createChildSceneNode(entity_name + part_name);
+		rightArm2->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.5, 0.5, 0.5));
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(-1.25, 0.0, -2.0))) * transformations;
+		AssignTransf(rightArm2, transformations);
+
+		part_name = "leftarm2";
+		entity = scene_manager->createEntity(entity_name + part_name, "cube.mesh");  //mesh name on the right, entity on the left
+		entity->setMaterialName("ShipTexture");
+		Ogre::SceneNode* leftArm2 = ship_node->createChildSceneNode(entity_name + part_name);
+		leftArm2->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.5, 0.5, 0.5));
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(1.25, 0.0, -2.0))) * transformations;
+		AssignTransf(leftArm2, transformations);
+
+		part_name = "rightcannon2";
+		entity = scene_manager->createEntity(entity_name + part_name, "Cylinder");  //mesh name on the right, entity on the left
+		Ogre::SceneNode* rightCannon = ship_node->createChildSceneNode(entity_name + part_name);
+		rightCannon->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.25, 0.25, 0.25));
+		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(1.0, 0.0, 0.0), Ogre::Radian(Ogre::Math::PI/2.0))) * transformations;
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(-1.25, 0.0, -2.5))) * transformations;
+		AssignTransf(rightCannon, transformations);
+
+		part_name = "leftcannon2";
+		entity = scene_manager->createEntity(entity_name + part_name, "Cylinder");  //mesh name on the right, entity on the left
+		Ogre::SceneNode* leftCannon = ship_node->createChildSceneNode(entity_name + part_name);
+		leftCannon->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.25, 0.25, 0.25));
+		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(1.0, 0.0, 0.0), Ogre::Radian(Ogre::Math::PI/2.0))) * transformations;
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(1.25, 0.0, -2.5))) * transformations;
+		AssignTransf(leftCannon, transformations);
+
+		part_name = "dashboard";
+		entity = scene_manager->createEntity(entity_name + part_name, "cube.mesh");
+		entity->setMaterialName("DashBoard");
+		Ogre::SceneNode* dashboard = ship_node->createChildSceneNode(entity_name + part_name);
+		dashboard->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(2.0, 0.35, 0.05));
+		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(-1.0, 0.0, 0.0), Ogre::Radian(Ogre::Math::PI/4))) * transformations;
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(0.0, -0.65, -2.0))) * transformations;
+		AssignTransf(dashboard, transformations);
+
+		part_name = "windowParamright";
+		entity = scene_manager->createEntity(entity_name + part_name, "cube.mesh");
+		entity->setMaterialName("ShipTexture");
+		Ogre::SceneNode* windowParamright = ship_node->createChildSceneNode(entity_name + part_name);
+		windowParamright->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.10, 1.5, 0.10));
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(1.1, 0.0, -2.0))) * transformations;
+		AssignTransf(windowParamright, transformations);
+
+		part_name = "windowParamleft";
+		entity = scene_manager->createEntity(entity_name + part_name, "cube.mesh");
+		entity->setMaterialName("ShipTexture");
+		Ogre::SceneNode* windowParamleft = ship_node->createChildSceneNode(entity_name + part_name);
+		windowParamleft->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.10, 1.5, 0.10));
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(-1.1, 0.0, -2.0))) * transformations;
+		AssignTransf(windowParamleft, transformations);
+
+		part_name = "windowParamtop";
+		entity = scene_manager->createEntity(entity_name + part_name, "cube.mesh");
+		entity->setMaterialName("ShipTexture");
+		Ogre::SceneNode* windowParamtop = ship_node->createChildSceneNode(entity_name + part_name);
+		windowParamtop->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(1.5, 0.10, 0.10));
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(0.0, 0.65, -1.5))) * transformations;
+		AssignTransf(windowParamtop, transformations);
+
+		part_name = "windowtopright";
+		entity = scene_manager->createEntity(entity_name + part_name, "cube.mesh");
+		entity->setMaterialName("ShipTexture");
+		Ogre::SceneNode* windowtopright = ship_node->createChildSceneNode(entity_name + part_name);
+		windowtopright->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.2, 0.3, 0.10));
+		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, 1.0), Ogre::Radian(Ogre::Math::PI/4))) * transformations;
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(0.85, 0.6, -1.5))) * transformations;
+		AssignTransf(windowtopright, transformations);
+
+		part_name = "windowtopleft";
+		entity = scene_manager->createEntity(entity_name + part_name, "cube.mesh");
+		entity->setMaterialName("ShipTexture");
+		Ogre::SceneNode* windowtopleft = ship_node->createChildSceneNode(entity_name + part_name);
+		windowtopleft->attachObject(entity);
+
+		transformations = Ogre::Matrix4::IDENTITY;
+		transformations = transformations * ScalingMatrix(Ogre::Vector3(0.2, 0.3, 0.10));
+		transformations = Ogre::Matrix4(RotationMatrix(Ogre::Vector3(0.0, 0.0, -1.0), Ogre::Radian(Ogre::Math::PI/4))) * transformations;
+		transformations = Ogre::Matrix4(TranslationMatrix(Ogre::Vector3(-0.85, 0.6, -1.5))) * transformations;
+		AssignTransf(windowtopleft, transformations);
 	}
 }

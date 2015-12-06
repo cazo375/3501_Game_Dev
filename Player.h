@@ -28,6 +28,8 @@
 #define COLLISION_DETECTION_RAD 3.0f
 #define PLAYER_STARTING_HEALTH 50
 
+#define CAMERA_SWITCH_DELAY 3.0f
+
 #define PLAYER_ENEMY_STRING "Remaining Enemies: "
 #define PLAYER_WEAPON_STRING "Current Weapon: "
 #define PLAYER_HEALTH_STRING "Current Health: "
@@ -39,7 +41,7 @@ namespace Player_Space {
 
 	class Player: public Ship_Space::Ship {
 	public:
-		Player(Ogre::SceneManager* manager, Ogre::Camera* camera);
+		Player(Ogre::SceneManager* manager, Ogre::Viewport*, std::vector<Ogre::Camera*> cameras);
 		~Player(void);
 
 		// Movement Methods
@@ -63,11 +65,13 @@ namespace Player_Space {
 
 		// Getters
 		Ogre::Vector3 getDirection();
+		Ogre::Vector3 getPosition (void);
 
 	private:
 		// Variables
 		Ogre::SceneManager* scene_manager;
-		Ogre::Camera* player_camera;
+		Ogre::Viewport* viewport;
+		Ogre::SceneNode* camera_node;
 		Ogre::SceneNode* targetCube;
 		Ogre::Vector3 initialPosition;
 		Ogre::Quaternion initialOrientation;
@@ -86,8 +90,6 @@ namespace Player_Space {
 		float currentYawChange;			// Current Yaw Thruster
 		float currentRollChange;		// Current Roll Thruster
 
-		bool thirdP;                    //switch for third person
-
 		// Weapon Variables
 		float weaponTimer;
 
@@ -100,10 +102,17 @@ namespace Player_Space {
 		void initialize(void);
 		void initOverlay(void);
 		void initTextArea (Ogre::TextAreaOverlayElement* area);
+		void createPlayerShip (void);
 
 		// Weapon Position
 		int weaponPositionToFire;
 		std::vector <Ogre::Vector3> gunPlacements;
+
+		// Cameras
+		int cameraToDisplay;
+		float current_camera_switch_delay;
+		void switchToNextCamera(void);
+		std::vector<Ogre::Camera*> player_cameras;
 	};
 }
 
