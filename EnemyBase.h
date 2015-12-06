@@ -37,7 +37,8 @@ namespace Enemy_Space {
 		~Enemy (void);
 
 		void fireShot (void);			
-		void destoryEnemy (void);											
+		void destoryEnemy (void);			
+		void collided(void);
 		void flee(Ogre::Vector3 playerPos);
 		void registerHit (int damageAmount);
 		void prowl(Ogre::Vector3 playerPos);
@@ -53,6 +54,8 @@ namespace Enemy_Space {
 		// Getters And Setters
 		int getEnemyHealth(void);
 		float getBoundingCircleRadius(void);
+		Ogre::Vector3 getPosition(void);
+		Ogre::Vector3 getDirection(void);
 		boolean isInArea();
 		boolean inHostileRange(Ogre::Vector3 playerPos);
 		boolean inSpotRange(Ogre::Vector3 playerPos);

@@ -1,5 +1,5 @@
 #include "ogre_application.h"
-#include "bin/path_config.h"
+#include "path_config.h"
 
 /*
 this is a test//delete me
@@ -525,6 +525,7 @@ namespace ogre_application {
 	void OgreApplication::runCollisionDetection(void) {
 		runLazerCollisionDetection();
 		runPlanetCollisionDetection();
+		runEnemyCollisionDetection();
 	}
 
 	// Runs the Lazer Collision Detection
@@ -617,6 +618,24 @@ namespace ogre_application {
 		// If The Player Escapes The Nebula
 		if (!Collision_Manager::CollisionManager::runBoundingSphereCollision (nebula.getPlanetPostion(), player->getPosition(), nebula.getPlanetRadius() - 600, player->getBoundingCircleRadius())) {
 			player->resetPosition();
+		}
+	}
+
+	// Runs The Enemy Collsion Detection
+	void OgreApplication::runEnemyCollisionDetection(void) {
+		Level_Space::Level* currentLevel = level_manager.getCurrentLevelObj();
+		if (currentLevel) {
+			std::vector<Enemy_Space::Enemy*> enemies = currentLevel->getEnemies();
+			std::vector<Enemy_Space::Enemy*>::iterator iter = enemies.begin();
+			std::vector<Enemy_Space::Enemy*>::iterator iter_end = enemies.end();
+			for (; iter != iter_end; iter++){
+				Enemy_Space::Enemy* nextEnemy = (*iter);
+				if (Collision_Manager::CollisionManager::runBoundingSphereCollision (nextEnemy->getPosition(), player->getPosition(), nextEnemy->getBoundingCircleRadius(), player->getBoundingCircleRadius())) {
+					player->registerHit(25);
+					nextEnemy->collided();
+					break;
+				}
+			}
 		}
 	}
 
