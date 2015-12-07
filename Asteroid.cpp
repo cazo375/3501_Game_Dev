@@ -16,7 +16,7 @@ namespace Asteroid_Space {
 			drift = Ogre::Vector3(((double) rand() / RAND_MAX)*0.2, ((double) rand() / RAND_MAX)*0.2, ((double) rand() / RAND_MAX)*0.2);
 			asteroidName = "asteroid" + Ogre::StringConverter::toString(asteriod_num++);
 
-			Ogre::Vector3 pos = Ogre::Vector3(-300 + 600 * (rand() % 1000) / 1000.0f, -300 + 600 * (rand() % 1000) / 1000.0f, 600 * (rand() % 1000) / 1000.0f);
+			Ogre::Vector3 pos = Ogre::Vector3(-700 + 1400 * (rand() % 1000) / 1000.0f, -700 + 1400 * (rand() % 1000) / 1000.0f, -700 + 1400 * (rand() % 1000) / 1000.0f);
 			createAsteroid(pos);
 	}
 

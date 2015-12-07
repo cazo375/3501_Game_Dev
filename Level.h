@@ -14,7 +14,7 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 
-#define NUM_ASTEROIDS_PER_LEVEL 100
+#define NUM_ASTEROIDS_PER_LEVEL 240
 
 // The Actual Space For Levels... They Will Be Cycled Through The Level_Manager
 namespace Level_Space {

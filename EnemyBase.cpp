@@ -29,7 +29,7 @@ namespace Enemy_Space {
 			health = 10;
 			ship_node->scale(1.5, 1.5, 1.5);
 			boundingSphereRadius = 5;
-			sleep = rand() % 4000 + 700;
+			sleep = rand() % 1700 + 700;
 			currentWeaponIndex = 0;
 			weapons.push_back(new Weapon_Space::Enemy_Lazer_Cannon(entity_name));
 		}
