@@ -104,7 +104,12 @@ namespace Player_Space {
 	// Applys A Captured Key Event To This Player
 	void Player::applyKeyEvent (OIS::Keyboard* keyboard_) {
 		if (keyboard_->isKeyDown (OIS::KC_G)) {
-			initialize();
+			currentForwardThrust = 0;
+			currentSideThrust = 0;
+			currentUpDownThrust = 0;	
+			currentPitchChange = 0;	
+			currentYawChange = 0;	
+			currentRollChange = 0;	
 		}
 		if (keyboard_->isKeyDown(OIS::KC_P)){
 			switchToNextCamera();

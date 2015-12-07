@@ -31,14 +31,53 @@ namespace Level_Space {
 	// Creates Our Level With All It's Entites
 	void Level::createLevel (Ogre::SceneManager* scene_manager) {
 		switch (levelNum) {
-		case 0: 
-			//planets.push_back(new Planet_Space::Planet(scene_manager, VENUS, Ogre::Vector3 (0.0f, 0.0f, 0.0f))); 
+		case 0:  
 			planets.push_back(new Planet_Space::Planet(scene_manager, NEPTUNE, Ogre::Vector3 (-150.0f, 150.0f, 500.0f))); 
 			planets.push_back(new Planet_Space::Planet(scene_manager, JUPITER, Ogre::Vector3 (100.0f, -75.0f, -320.0f))); 
 			break;
 		case 1:
-			planets.push_back(new Planet_Space::Planet(scene_manager, EARTH));
+			planets.push_back(new Planet_Space::Planet(scene_manager, EARTH, Ogre::Vector3 (-250.0f, -250.0f, 400.0f)));
 			planets.push_back(new Planet_Space::Planet(scene_manager, JUPITER, Ogre::Vector3 (150.0f, 300.0f, -200.0f))); 
+			break;
+		case 2: 
+			planets.push_back(new Planet_Space::Planet(scene_manager, NEPTUNE, Ogre::Vector3 (-150.0f, 150.0f, 500.0f))); 
+			planets.push_back(new Planet_Space::Planet(scene_manager, EARTH, Ogre::Vector3 (100.0f, -75.0f, -320.0f)));
+			planets.push_back(new Planet_Space::Planet(scene_manager, JUPITER, Ogre::Vector3 (0.0f, 500.0f, 0.0f))); 
+			break;
+		case 3: 
+			planets.push_back(new Planet_Space::Planet(scene_manager, VENUS, Ogre::Vector3 (500.0f, -100.0f, 0.0f))); 
+			planets.push_back(new Planet_Space::Planet(scene_manager, NEPTUNE, Ogre::Vector3 (-350.0f, 150.0f, -500.0f))); 
+			planets.push_back(new Planet_Space::Planet(scene_manager, JUPITER, Ogre::Vector3 (100.0f, -75.0f, -320.0f))); 
+			break;
+		case 4: 
+			planets.push_back(new Planet_Space::Planet(scene_manager, VENUS, Ogre::Vector3 (0.0f, 0.0f, 0.0f))); 
+			planets.push_back(new Planet_Space::Planet(scene_manager, NEPTUNE, Ogre::Vector3 (-150.0f, 150.0f, 350.0f))); 
+			planets.push_back(new Planet_Space::Planet(scene_manager, EARTH, Ogre::Vector3 (0.0f, 600.0f, 100.0f))); 
+			break;
+		case 5: 
+			planets.push_back(new Planet_Space::Planet(scene_manager, VENUS, Ogre::Vector3 (500.0f, 0.0f, 0.0f))); 
+			planets.push_back(new Planet_Space::Planet(scene_manager, EARTH, Ogre::Vector3 (-500.0f, 0.0f, 0.0f))); 
+			break;
+		case 6: 
+			planets.push_back(new Planet_Space::Planet(scene_manager, JUPITER, Ogre::Vector3 (0.0f, 0.0f, 500.0f))); 
+			break;
+		case 7: 
+			planets.push_back(new Planet_Space::Planet(scene_manager, VENUS, Ogre::Vector3 (-150.0f, -750.0f, 200.0f))); 
+			planets.push_back(new Planet_Space::Planet(scene_manager, JUPITER, Ogre::Vector3 (0.0f, 0.0f, 0.0f))); 
+			planets.push_back(new Planet_Space::Planet(scene_manager, VENUS, Ogre::Vector3 (100.0f, -750.0f, -320.0f))); 
+			break;
+		case 8: 
+			planets.push_back(new Planet_Space::Planet(scene_manager, EARTH, Ogre::Vector3 (0.0f, 400.0f, 0.0f))); 
+			planets.push_back(new Planet_Space::Planet(scene_manager, EARTH, Ogre::Vector3 (-250.0f, 50.0f, -250.0f))); 
+			planets.push_back(new Planet_Space::Planet(scene_manager, EARTH, Ogre::Vector3 (200.0f, -300.0f, 100.0f))); 
+			planets.push_back(new Planet_Space::Planet(scene_manager, EARTH, Ogre::Vector3 (700.0f, 200.0f, -500.0f))); 
+			planets.push_back(new Planet_Space::Planet(scene_manager, EARTH, Ogre::Vector3 (0.0f, 0.0f, 0.0f))); 
+			break;
+		case 9: 
+			planets.push_back(new Planet_Space::Planet(scene_manager, VENUS, Ogre::Vector3 (400.0f, 0.0f, 0.0f))); 
+			planets.push_back(new Planet_Space::Planet(scene_manager, EARTH, Ogre::Vector3 (0.0f, -300.0f, -250.0f))); 
+			planets.push_back(new Planet_Space::Planet(scene_manager, NEPTUNE, Ogre::Vector3 (-150.0f, 150.0f, 500.0f))); 
+			planets.push_back(new Planet_Space::Planet(scene_manager, JUPITER, Ogre::Vector3 (100.0f, -700.0f, -320.0f))); 
 			break;
 		} 
 
