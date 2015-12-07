@@ -526,6 +526,7 @@ namespace ogre_application {
 		runLazerCollisionDetection();
 		runPlanetCollisionDetection();
 		runEnemyCollisionDetection();
+		runAsteroidCollisionDetection();
 	}
 
 	// Runs the Lazer Collision Detection
@@ -636,6 +637,28 @@ namespace ogre_application {
 					nextEnemy->collided();
 					break;
 				}
+			}
+		}
+	}
+
+	// Runs The Enemy Collsion Detection
+	void OgreApplication::runAsteroidCollisionDetection(void) {
+		int i = 0;
+		Level_Space::Level* currentLevel = level_manager.getCurrentLevelObj();
+		if (currentLevel) {
+			std::vector<Asteroid_Space::Asteroid*> asteroids = currentLevel->getAsteroids();
+			std::vector<Asteroid_Space::Asteroid*>::iterator iter = asteroids.begin();
+			std::vector<Asteroid_Space::Asteroid*>::iterator iter_end = asteroids.end();
+			i = 0;
+			for (; iter != iter_end; iter++){
+				Asteroid_Space::Asteroid* nextAsteroid = (*iter);
+				if (Collision_Manager::CollisionManager::runBoundingSphereCollision (nextAsteroid->getPosition(), player->getPosition(), 8.0f, player->getBoundingCircleRadius())) {
+					player->registerHit(5);
+					spawnExplosionAt(nextAsteroid->getPosition());
+					currentLevel->destoryAsteroidAt(i);
+					break;
+				}
+				i++;
 			}
 		}
 	}

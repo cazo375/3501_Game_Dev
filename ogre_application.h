@@ -103,6 +103,7 @@ namespace ogre_application {
 		void runLazerCollisionDetection (void);
 		void runPlanetCollisionDetection (void);
 		void runEnemyCollisionDetection (void);
+		void runAsteroidCollisionDetection(void);
 		void destoryAstroid (int index);
 
 		// Enemies Shoot A Players
