@@ -609,6 +609,7 @@ namespace ogre_application {
 			for (; iter != iter_end; iter++){
 				Planet_Space::Planet* nextPlanet = (*iter);
 				if (Collision_Manager::CollisionManager::runBoundingSphereCollision (nextPlanet->getPlanetPostion(), player->getPosition(), nextPlanet->getPlanetRadius(), player->getBoundingCircleRadius())) {
+					player->registerHit(50);
 					//player->resetPosition();
 					break;
 				}
