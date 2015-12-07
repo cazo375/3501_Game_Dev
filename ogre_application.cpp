@@ -625,25 +625,29 @@ namespace ogre_application {
 
 	// Runs The Enemy Collsion Detection
 	void OgreApplication::runEnemyCollisionDetection(void) {
+		int i;
 		Level_Space::Level* currentLevel = level_manager.getCurrentLevelObj();
 		if (currentLevel) {
 			std::vector<Enemy_Space::Enemy*> enemies = currentLevel->getEnemies();
 			std::vector<Enemy_Space::Enemy*>::iterator iter = enemies.begin();
 			std::vector<Enemy_Space::Enemy*>::iterator iter_end = enemies.end();
+			i = 0;
 			for (; iter != iter_end; iter++){
 				Enemy_Space::Enemy* nextEnemy = (*iter);
 				if (Collision_Manager::CollisionManager::runBoundingSphereCollision (nextEnemy->getPosition(), player->getPosition(), nextEnemy->getBoundingCircleRadius(), player->getBoundingCircleRadius())) {
 					player->registerHit(25);
-					nextEnemy->collided();
+					spawnExplosionAt(nextEnemy->getPosition());
+					currentLevel->destoryEnemyAt(i);
 					break;
 				}
+				i++;
 			}
 		}
 	}
 
 	// Runs The Enemy Collsion Detection
 	void OgreApplication::runAsteroidCollisionDetection(void) {
-		int i = 0;
+		int i;
 		Level_Space::Level* currentLevel = level_manager.getCurrentLevelObj();
 		if (currentLevel) {
 			std::vector<Asteroid_Space::Asteroid*> asteroids = currentLevel->getAsteroids();

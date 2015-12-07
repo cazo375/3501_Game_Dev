@@ -38,7 +38,6 @@ namespace Enemy_Space {
 
 		void fireShot (void);			
 		void destoryEnemy (void);			
-		void collided(void);
 		void flee(Ogre::Vector3 playerPos);
 		void registerHit (int damageAmount);
 		void prowl(Ogre::Vector3 playerPos);

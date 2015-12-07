@@ -278,15 +278,6 @@ namespace Enemy_Space {
 		weapons[currentWeaponIndex]->fire_weapon(scene_manager, ship_node->getPosition(), currentDirection);
 	}
 
-	void Enemy::collided(void){
-		float nebula_buffer = 100.0f;
-		Ogre::Real xPos = -nebula_buffer + (((double) rand() / (RAND_MAX)) * (nebula_buffer * 2));
-		Ogre::Real yPos = -nebula_buffer + (((double) rand() / (RAND_MAX)) * (nebula_buffer * 2));
-		Ogre::Real zPos = -nebula_buffer + (((double) rand() / (RAND_MAX)) * (nebula_buffer * 2));
-		ship_node->setPosition(xPos, yPos, zPos);
-	}
-
-
 	boolean Enemy::inHostileRange(Ogre::Vector3 playerPos){
 		float distance = GetMagnatude(GetVectorFromTwoPoints(playerPos, ship_node->getPosition()));
 		if(distance <= PLAYER_HOSTILE_RADIUS ){
