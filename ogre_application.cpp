@@ -1,5 +1,5 @@
 #include "ogre_application.h"
-#include "path_config.h"
+#include "bin/path_config.h"
 
 /*
 this is a test//delete me

@@ -23,6 +23,7 @@ namespace Player_Space {
 		camera_node = nullptr;
 
 		// Setup our cameras
+		storeCameraInitialPositions();
 		switchToNextCamera();
 		initialPosition = player_cameras[cameraToDisplay]->getPosition();
 		initialOrientation = player_cameras[cameraToDisplay]->getOrientation();
@@ -49,21 +50,32 @@ namespace Player_Space {
 			}
 			current_camera_switch_delay = 0;
 			viewport->setCamera(player_cameras[cameraToDisplay]);
+			setPlayerShipRelativeToCamera();
+		}
+	}
 
-			if (camera_node && ship_node) {
-				// Now We Need To Setup Our Ship
-				Ogre::Vector3 variance_from_camera;
-				if (cameraToDisplay == 0) {
-					variance_from_camera = Ogre::Vector3(0.0, 0.0, 0.0);
-				} else {
-					variance_from_camera =  player_cameras[0]->getPosition() - player_cameras[cameraToDisplay]->getPosition();
-				}
-
-				// Set our Position Properly
-				camera_node->setPosition(player_cameras[cameraToDisplay]->getPosition());
-				ship_node->setPosition(Ogre::Vector3(0.0, 0.0, 0.0));
-				ship_node->translate(variance_from_camera);
+	// Sets Player's Ship Relative To The Current Camera
+	void Player::setPlayerShipRelativeToCamera(void) {
+		if (camera_node && ship_node) {
+			// Now We Need To Setup Our Ship
+			Ogre::Vector3 variance_from_camera;
+			if (cameraToDisplay == 0) {
+				variance_from_camera = Ogre::Vector3(0.0, 0.0, 0.0);
+			} else {
+				variance_from_camera =  player_cameras[0]->getPosition() - player_cameras[cameraToDisplay]->getPosition();
 			}
+
+			// Set our Position Properly
+			camera_node->setPosition(player_cameras[cameraToDisplay]->getPosition());
+			ship_node->setPosition(Ogre::Vector3(0.0, 0.0, 0.0));
+			ship_node->translate(variance_from_camera);
+		}
+	}
+
+	// Stores The Camera's Initial Positions So We Know Where To Put Them When The Player Dies
+	void Player::storeCameraInitialPositions(void) {
+		for (int i = 0; i <player_cameras.size(); i++) {
+			initialCameraPositions.push_back(player_cameras[i]->getPosition());
 		}
 	}
 
@@ -246,14 +258,13 @@ namespace Player_Space {
 
 	// Resets The Player When Called
 	void Player::resetPosition(void) {
-		camera_node->setPosition(initialPosition);
-		camera_node->setOrientation(initialOrientation);
-
-		player_cameras[cameraToDisplay]->setPosition(initialPosition);
-		player_cameras[cameraToDisplay]->setOrientation(initialOrientation);
-
+		for (int i = 0; i < player_cameras.size(); i++) {
+			player_cameras[i]->setPosition(initialCameraPositions[i]);
+			player_cameras[i]->setOrientation(initialOrientation);
+		}
+		setPlayerShipRelativeToCamera();
+		camera_node->setOrientation(player_cameras[cameraToDisplay]->getOrientation());
 		health = PLAYER_STARTING_HEALTH;
-
 		initialize();
 	}
 

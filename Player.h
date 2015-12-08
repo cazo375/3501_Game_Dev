@@ -112,7 +112,10 @@ namespace Player_Space {
 		int cameraToDisplay;
 		float current_camera_switch_delay;
 		void switchToNextCamera(void);
+		void storeCameraInitialPositions (void);
+		void setPlayerShipRelativeToCamera (void);
 		std::vector<Ogre::Camera*> player_cameras;
+		std::vector<Ogre::Vector3> initialCameraPositions;
 	};
 }
 
